@@ -210,7 +210,7 @@ underneath it.
 | [Codex](https://github.com/openai/codex) | **Supported** | Hooks + MCP server |
 | [Hermes Agent](https://github.com/NousResearch/hermes-agent) | **Supported** | Memory provider plugin |
 | [Pi](https://github.com/mariozechner/pi-coding-agent) | **Supported** | Extension + Hooks |
-| [Gemini CLI](https://github.com/google-gemini/gemini-cli) | Planned | — |
+| [Gemini CLI](https://github.com/google-gemini/gemini-cli) | **Supported** | MCP server + GEMINI.md sync |
 
 
 > Don't see your favorite harness? file an [issue](https://github.com/Signet-AI/signetai/issues) and request that it be added!
@@ -358,29 +358,35 @@ Connectors
 
 | Package | Role |
 |---|---|
-| [`@signet/core`](./packages/core) | Types, identity, SQLite, hybrid + graph search |
-| [`@signet/cli`](./packages/cli) | CLI, setup wizard, dashboard |
-| [`@signet/daemon`](./packages/daemon) | API server, distillation layer, auth, analytics, diagnostics |
-| [`@signet/sdk`](./packages/sdk) | Typed client, React hooks, Vercel/OpenAI helpers, plugin-facing primitives |
-| [`packages/forge`](./packages/forge) | Forge native terminal harness and reference runtime implementation |
-| [`@signet/connector-base`](./packages/connector-base) | Shared connector primitives and utilities |
-| [`@signet/connector-claude-code`](./packages/connector-claude-code) | Claude Code integration |
-| [`@signet/connector-opencode`](./packages/connector-opencode) | OpenCode integration |
-| [`@signet/connector-openclaw`](./packages/connector-openclaw) | OpenClaw integration |
-| [`@signet/connector-codex`](./packages/connector-codex) | Codex CLI integration |
-| [`@signet/connector-oh-my-pi`](./packages/connector-oh-my-pi) | Oh My Pi integration |
-| [`@signet/connector-hermes-agent`](./packages/connector-hermes-agent) | Hermes Agent integration |
-| [`@signet/connector-pi`](./packages/connector-pi) | Pi coding agent integration |
-| [`@signet/oh-my-pi-extension`](./packages/oh-my-pi-extension) | Oh My Pi extension bridge |
-| [`@signet/pi-extension`](./packages/pi-extension) | Pi extension — memory tools, lifecycle, and session hooks |
-| [`@signet/opencode-plugin`](./packages/opencode-plugin) | OpenCode runtime plugin — memory tools and session hooks |
-| [`@signetai/signet-memory-openclaw`](./packages/adapters/openclaw) | OpenClaw runtime plugin |
-| [`@signet/extension`](./packages/extension) | Browser extension for Chrome and Firefox |
-| [`@signet/desktop`](./packages/desktop) | Electron desktop application |
-| [`@signet/tray`](./packages/tray) | Shared tray/menu bar utilities |
-| [`@signet/native`](./packages/native) | Native accelerators |
-| [`predictor`](./packages/predictor) | Experimental Rust sidecar for learned relevance ranking |
-| [`signetai`](./packages/signetai) | Meta-package (`signet` binary) |
+| [`@signet/core`](./platform/core) | Types, identity, SQLite, hybrid + graph search |
+| [`@signet/cli`](./surfaces/cli) | CLI, setup wizard, dashboard |
+| [`@signet/daemon`](./platform/daemon) | API server, distillation layer, auth, analytics, diagnostics |
+| [`signet-dashboard`](./surfaces/dashboard) | Svelte dashboard built to static assets and served by the daemon |
+| [`@signet/sdk`](./libs/sdk) | Typed client, React hooks, Vercel AI SDK middleware |
+| [`runtimes/forge`](./runtimes/forge) | Forge native terminal harness and reference runtime implementation |
+| [`@signet/connector-base`](./libs/connector-base) | Shared connector primitives and utilities |
+| [`@signet/connector-claude-code`](./integrations/claude-code/connector) | Claude Code integration |
+| [`@signet/connector-opencode`](./integrations/opencode/connector) | OpenCode integration |
+| [`@signet/connector-openclaw`](./integrations/openclaw/connector) | OpenClaw integration |
+| [`@signet/connector-codex`](./integrations/codex/connector) | Codex CLI integration |
+| [`@signet/connector-gemini`](./integrations/gemini/connector) | Gemini CLI integration |
+| [`@signet/connector-oh-my-pi`](./integrations/oh-my-pi/connector) | Oh My Pi integration |
+| [`@signet/connector-hermes-agent`](./integrations/hermes-agent/connector) | Hermes Agent integration |
+| [`@signet/connector-pi`](./integrations/pi/connector) | Pi coding agent integration |
+| [`@signet/oh-my-pi-extension`](./integrations/oh-my-pi/extension) | Oh My Pi extension bridge |
+| [`@signet/pi-extension`](./integrations/pi/extension) | Pi extension — memory tools, lifecycle, and session hooks |
+| [`@signet/opencode-plugin`](./integrations/opencode/plugin) | OpenCode runtime plugin — memory tools and session hooks |
+| [`@signetai/signet-memory-openclaw`](./integrations/openclaw/memory-adapter) | OpenClaw runtime plugin |
+| [`@signet/extension`](./surfaces/browser-extension) | Browser extension for Chrome and Firefox |
+| [`@signet/desktop`](./surfaces/desktop) | Electron desktop application |
+| [`@signet/tray`](./surfaces/tray) | Shared tray/menu bar utilities |
+| [`@signet/native`](./platform/native) | Native accelerators |
+| [`predictor`](./platform/predictor) | Experimental Rust sidecar for learned relevance ranking |
+| [`signetai`](./dist/signetai) | Meta-package (`signet` binary) |
+| [`@signet/web`](./web/marketing) | Astro marketing site deployed to Cloudflare Pages |
+| [`reviews-worker`](./web/workers/reviews) | Cloudflare Worker for review automation |
+| [`signet.secrets`](./plugins/core/secrets) | Core Signet-native secrets plugin |
+| [`memorybench`](./memorybench) | Benchmark harness, datasets, providers, reports, and local benchmark UI |
 
 ## Documentation
 
@@ -399,6 +405,7 @@ Connectors
 - [Knowledge Graph](./docs/KNOWLEDGE-GRAPH.md)
 - [Benchmarks](./docs/BENCHMARKING.md)
 - [Roadmap](./ROADMAP.md)
+- [Repository Map](./docs/REPO_MAP.md)
 
 ## Research
 
@@ -426,8 +433,8 @@ bun run lint
 ```
 
 ```bash
-cd packages/daemon && bun run dev        # Daemon dev (watch mode)
-cd packages/cli/dashboard && bun run dev # Dashboard dev
+cd platform/daemon && bun run dev        # Daemon dev (watch mode)
+cd surfaces/dashboard && bun run dev # Dashboard dev
 ```
 
 Requirements:

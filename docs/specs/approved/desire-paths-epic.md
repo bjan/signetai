@@ -93,7 +93,7 @@ regardless of content significance.
 
 **What to build:**
 
-1. Create `packages/daemon/src/pipeline/significance-gate.ts` with
+1. Create `platform/daemon/src/pipeline/significance-gate.ts` with
    `significanceGate()` function.
 2. Gate checks three signals:
    - **Turn count**: fewer than `minTurns` (default 5) substantive
@@ -115,10 +115,10 @@ regardless of content significance.
 - `pipeline.noveltyThreshold` (default 0.15)
 
 **Files:**
-- `packages/daemon/src/pipeline/significance-gate.ts` — new module
-- `packages/daemon/src/pipeline/worker.ts` — call gate before extraction
-- `packages/core/src/types.ts` — config additions
-- `packages/daemon/src/memory-config.ts` — wire defaults
+- `platform/daemon/src/pipeline/significance-gate.ts` — new module
+- `platform/daemon/src/pipeline/worker.ts` — call gate before extraction
+- `platform/core/src/types.ts` — config additions
+- `platform/daemon/src/memory-config.ts` — wire defaults
 
 **Estimate:** 1-2 days.
 
@@ -156,10 +156,10 @@ of discovery method.
    persist confidence/reason.
 
 **Files:**
-- `packages/core/src/migrations/` — new migration
-- `packages/daemon/src/pipeline/graph-transactions.ts` — assign confidence
-- `packages/daemon/src/pipeline/graph-traversal.ts` — weighted filtering
-- `packages/daemon/src/pipeline/knowledge-graph.ts` — upsertDependency
+- `platform/core/src/migrations/` — new migration
+- `platform/daemon/src/pipeline/graph-transactions.ts` — assign confidence
+- `platform/daemon/src/pipeline/graph-traversal.ts` — weighted filtering
+- `platform/daemon/src/pipeline/knowledge-graph.ts` — upsertDependency
 
 **Estimate:** 1-2 days.
 
@@ -188,7 +188,7 @@ path length, confidence floor.
 3. Reduce `maxDependencyHops` default from 30 to 10.
 
 **Files:**
-- `packages/daemon/src/pipeline/graph-traversal.ts` — config + enforcement
+- `platform/daemon/src/pipeline/graph-traversal.ts` — config + enforcement
 
 **Estimate:** Half day.
 
@@ -219,9 +219,9 @@ No blast radius / impact analysis endpoint exists.
 4. Add tool descriptions to connector-generated CLAUDE.md/AGENTS.md.
 
 **Files:**
-- `packages/daemon/src/mcp-server.ts` — tool registration
-- `packages/daemon/src/daemon.ts` — impact endpoint
-- `packages/daemon/src/pipeline/graph-traversal.ts` — upstream walk
+- `platform/daemon/src/mcp-server.ts` — tool registration
+- `platform/daemon/src/daemon.ts` — impact endpoint
+- `platform/daemon/src/pipeline/graph-traversal.ts` — upstream walk
 - Connector packages — generated instruction updates
 
 **Estimate:** 1-2 days.
@@ -261,10 +261,10 @@ endpoint works. Constellation view integration in progress.
    `/api/diagnostics/graph`.
 
 **Files:**
-- `packages/core/src/migrations/` — new migration
-- `packages/daemon/src/pipeline/community-detection.ts` — new module
-- `packages/daemon/src/daemon.ts` — endpoints
-- `packages/daemon/src/diagnostics.ts` — modularity metric
+- `platform/core/src/migrations/` — new migration
+- `platform/daemon/src/pipeline/community-detection.ts` — new module
+- `platform/daemon/src/daemon.ts` — endpoints
+- `platform/daemon/src/diagnostics.ts` — modularity metric
 - Dashboard: constellation overlay changes
 
 **Estimate:** 2-3 days.
@@ -318,11 +318,11 @@ traversal-primary, flat-gap-fill — is live and producing results.
    anchored search produces no results.
 
 **Files:**
-- `packages/daemon/src/memory-search.ts` — traversal-primary flow (DONE)
-- `packages/daemon/src/pipeline/graph-search.ts` — stop-word filtering (DONE)
-- `packages/daemon/src/pipeline/graph-traversal.ts` — mention fallback, scope filter (DONE)
-- `packages/daemon/src/pipeline/graph-traversal.ts` — FTS5 entity resolution (TODO)
-- `packages/core/src/search.ts` — entity search additions (TODO)
+- `platform/daemon/src/memory-search.ts` — traversal-primary flow (DONE)
+- `platform/daemon/src/pipeline/graph-search.ts` — stop-word filtering (DONE)
+- `platform/daemon/src/pipeline/graph-traversal.ts` — mention fallback, scope filter (DONE)
+- `platform/daemon/src/pipeline/graph-traversal.ts` — FTS5 entity resolution (TODO)
+- `platform/core/src/search.ts` — entity search additions (TODO)
 
 ---
 
@@ -373,8 +373,8 @@ scoped/benchmark memories. The remember endpoint must be self-sufficient.
   not redundant.
 
 **Files:**
-- `packages/daemon/src/inline-entity-linker.ts` — new module (COMPLETE)
-- `packages/daemon/src/daemon.ts` — integration at remember endpoint (COMPLETE)
+- `platform/daemon/src/inline-entity-linker.ts` — new module (COMPLETE)
+- `platform/daemon/src/daemon.ts` — integration at remember endpoint (COMPLETE)
 
 ---
 
@@ -401,10 +401,10 @@ memories, some of which are fragments missing surrounding context.
    combined. Required for path feedback propagation (DP-9).
 
 **Files:**
-- `packages/daemon/src/pipeline/context-construction.ts` — new module
-- `packages/daemon/src/pipeline/graph-traversal.ts` — return path
+- `platform/daemon/src/pipeline/context-construction.ts` — new module
+- `platform/daemon/src/pipeline/graph-traversal.ts` — return path
   structure, not just memoryIds
-- `packages/daemon/src/pipeline/worker.ts` — use constructed context
+- `platform/daemon/src/pipeline/worker.ts` — use constructed context
 
 **Estimate:** 2-3 days.
 
@@ -437,7 +437,7 @@ disabled by default (safe).
 
 **Files:**
 - `predictor/` — Rust crate fixes
-- `packages/daemon/src/pipeline/graph-traversal.ts` — cache invalidation
+- `platform/daemon/src/pipeline/graph-traversal.ts` — cache invalidation
 
 **Estimate:** 1-2 days.
 
@@ -483,9 +483,9 @@ which paths through those aspects were useful.
    (alpha=0.1) per path. (Informed by Ori-Mnemos Q-value reranking.)
 
 **Files:**
-- `packages/daemon/src/pipeline/aspect-feedback.ts` — path-level feedback
-- `packages/daemon/src/pipeline/graph-transactions.ts` — edge updates
-- `packages/daemon/src/pipeline/knowledge-graph.ts` — confidence updates
+- `platform/daemon/src/pipeline/aspect-feedback.ts` — path-level feedback
+- `platform/daemon/src/pipeline/graph-transactions.ts` — edge updates
+- `platform/daemon/src/pipeline/knowledge-graph.ts` — confidence updates
 
 **Estimate:** 3-5 days.
 
@@ -519,8 +519,8 @@ training data).
 
 **Files:**
 - `predictor/` — Rust crate: path features
-- `packages/daemon/src/pipeline/graph-traversal.ts` — emit path objects
-- `packages/daemon/src/pipeline/worker.ts` — scorer integration
+- `platform/daemon/src/pipeline/graph-traversal.ts` — emit path objects
+- `platform/daemon/src/pipeline/worker.ts` — scorer integration
 
 **Estimate:** 3-5 days.
 
@@ -557,8 +557,8 @@ Depends on: DP-10 (path scoring).
 
 **Files:**
 - `predictor/` — temporal path features
-- `packages/daemon/src/pipeline/graph-traversal.ts` — pre-warming
-- `packages/daemon/src/pipeline/worker.ts` — session-start pre-traversal
+- `platform/daemon/src/pipeline/graph-traversal.ts` — pre-warming
+- `platform/daemon/src/pipeline/worker.ts` — session-start pre-traversal
 
 **Estimate:** 3-4 days.
 
@@ -595,9 +595,9 @@ connections. Insurance against local optima.
 `exploration.stalenessThreshold` (10).
 
 **Files:**
-- `packages/daemon/src/pipeline/explorer.ts` — new module
-- `packages/daemon/src/pipeline/worker.ts` — integrate at session start
-- `packages/core/src/types.ts` — config additions
+- `platform/daemon/src/pipeline/explorer.ts` — new module
+- `platform/daemon/src/pipeline/worker.ts` — integrate at session start
+- `platform/core/src/types.ts` — config additions
 
 **Estimate:** 2-3 days.
 
@@ -631,8 +631,8 @@ connections.
    (Informed by Zikkaron reconsolidation model.)
 
 **Files:**
-- `packages/daemon/src/pipeline/worker.ts` — post-dedup bridge check
-- `packages/daemon/src/pipeline/graph-transactions.ts` — bridge edges
+- `platform/daemon/src/pipeline/worker.ts` — post-dedup bridge check
+- `platform/daemon/src/pipeline/graph-transactions.ts` — bridge edges
 
 **Estimate:** 2-3 days.
 
@@ -658,8 +658,8 @@ lives in the space between entities.
 Depends on: DP-12 or DP-13 (need cross-entity detection).
 
 **Files:**
-- `packages/core/src/types.ts` — `principle` entity type
-- `packages/daemon/src/pipeline/principle-detection.ts` — new module
+- `platform/core/src/types.ts` — `principle` entity type
+- `platform/daemon/src/pipeline/principle-detection.ts` — new module
 - Dashboard: principle notification component
 
 **Estimate:** 3-4 days.
@@ -681,10 +681,10 @@ entities earn their keep?
 5. Replace threshold-based pruning with informed pruning.
 
 **Files:**
-- `packages/daemon/src/pipeline/entity-health.ts` — new module
-- `packages/daemon/src/diagnostics.ts` — health scoring
+- `platform/daemon/src/pipeline/entity-health.ts` — new module
+- `platform/daemon/src/diagnostics.ts` — health scoring
 - Dashboard: health visualization
-- `packages/daemon/src/daemon.ts` — health endpoint
+- `platform/daemon/src/daemon.ts` — health endpoint
 
 **Estimate:** 2-3 days.
 
@@ -726,9 +726,9 @@ entities with many edges dominating results regardless of query fit.
 - `dampening.resolutionBoost` (default 1.25)
 
 **Files:**
-- `packages/daemon/src/pipeline/dampening.ts` -- new module
-- `packages/daemon/src/memory-search.ts` -- post-fusion integration
-- `packages/core/src/types.ts` -- config additions
+- `platform/daemon/src/pipeline/dampening.ts` -- new module
+- `platform/daemon/src/memory-search.ts` -- post-fusion integration
+- `platform/core/src/types.ts` -- config additions
 
 **Estimate:** 1-2 days.
 
@@ -769,10 +769,10 @@ was doing.
 (Informed by Zikkaron hippocampal replay model.)
 
 **Files:**
-- `packages/daemon/src/pipeline/checkpoint.ts` -- new module
-- `packages/daemon/src/daemon.ts` -- checkpoint endpoints
-- `packages/core/src/migrations/` -- checkpoint schema additions
-- `packages/connector-claude-code/` -- compaction hook registration
+- `platform/daemon/src/pipeline/checkpoint.ts` -- new module
+- `platform/daemon/src/daemon.ts` -- checkpoint endpoints
+- `platform/core/src/migrations/` -- checkpoint schema additions
+- `integrations/claude-code/connector/` -- compaction hook registration
 
 **Estimate:** 3-5 days.
 
@@ -804,9 +804,9 @@ type but currently receive no special treatment.
 (Informed by Zikkaron decision auto-protection.)
 
 **Files:**
-- `packages/daemon/src/inline-entity-linker.ts` -- decision regex
-- `packages/daemon/src/pipeline/graph-transactions.ts` -- protection
-- `packages/core/src/types.ts` -- decision chain type
+- `platform/daemon/src/inline-entity-linker.ts` -- decision regex
+- `platform/daemon/src/pipeline/graph-transactions.ts` -- protection
+- `platform/core/src/types.ts` -- decision chain type
 
 **Estimate:** 1-2 days.
 
@@ -855,9 +855,9 @@ near-duplicate memories accumulate.
 - `pipeline.writeGateContinuityDiscount` (default 0.15)
 
 **Files:**
-- `packages/daemon/src/pipeline/write-gate.ts` -- new module
-- `packages/daemon/src/pipeline/worker.ts` -- integration
-- `packages/core/src/types.ts` -- config additions
+- `platform/daemon/src/pipeline/write-gate.ts` -- new module
+- `platform/daemon/src/pipeline/worker.ts` -- integration
+- `platform/core/src/types.ts` -- config additions
 
 **Estimate:** 1-2 days.
 
@@ -892,8 +892,8 @@ missed cross-entity links.
 - `consolidation.similarityThreshold` (default 0.7)
 
 **Files:**
-- `packages/daemon/src/pipeline/sleep-replay.ts` -- new module
-- `packages/daemon/src/daemon.ts` -- idle timer integration
+- `platform/daemon/src/pipeline/sleep-replay.ts` -- new module
+- `platform/daemon/src/daemon.ts` -- idle timer integration
 
 **Estimate:** 2-3 days.
 

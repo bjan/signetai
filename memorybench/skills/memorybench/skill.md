@@ -82,7 +82,7 @@ What should we call your memory provider?
 
 ### 2. Memory Code Location
 Where is your memory implementation?
-- Examples: `src/lib/memory`, `packages/memory`, `src/services/context`
+- Examples: `src/lib/memory`, `libs/memory`, `src/services/context`
 
 ### 3. Benchmark Dataset
 Which dataset matches your use case?

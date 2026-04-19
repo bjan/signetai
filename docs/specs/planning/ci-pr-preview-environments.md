@@ -17,7 +17,7 @@ draft_quality: "auto-generated, needs user validation before implementation"
 ## Problem
 
 Frontend changes to the marketing site (web/) and dashboard
-(packages/cli/dashboard/) cannot be visually reviewed without
+(surfaces/dashboard/) cannot be visually reviewed without
 checking out the branch locally and running a dev server. This slows
 review for UI PRs and makes regressions in layout or styling easy to
 miss.
@@ -46,7 +46,7 @@ CI workflow calls `wrangler pages deploy` with the PR branch, and
 Cloudflare assigns a `<hash>.signetai-sh.pages.dev` URL.
 
 **Dashboard previews**: Build the dashboard static output
-(`packages/cli/dashboard/build/`) in CI. Upload the build artifact
+(`surfaces/dashboard/build/`) in CI. Upload the build artifact
 to Cloudflare Pages as a separate project (or a subdirectory deploy).
 Since the dashboard calls daemon APIs at localhost:3850, the preview
 is visual-only (no live data). Add a banner component that renders
@@ -79,8 +79,8 @@ contains expected landmarks (title, nav, main content area). Use
 
 ## Validation criteria
 
-- PR touching `web/src/` gets a preview URL posted within 3 minutes.
-- PR touching `packages/cli/dashboard/` gets a dashboard preview URL.
+- PR touching `web/marketing/src/` gets a preview URL posted within 3 minutes.
+- PR touching `surfaces/dashboard/` gets a dashboard preview URL.
 - Preview URLs return 200 and render the expected page structure.
 - Closed PRs have their preview deployments cleaned up.
 

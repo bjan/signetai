@@ -85,7 +85,7 @@ title: "SSM Integration Research"
 ## Current Pipeline: The Heuristic Map
 
 The memory pipeline spans ~19,800 LOC across 52+ files in
-`packages/daemon/src/pipeline/`. Here is what each stage does today and
+`platform/daemon/src/pipeline/`. Here is what each stage does today and
 where it approximates temporal dynamics with static rules:
 
 ### Significance Gate (`significance-gate.ts`)
@@ -954,7 +954,7 @@ title: "SSM Integration Research"
 
 ## Proof of Concept Results (2026-03-20)
 
-Standalone benchmark at `packages/predictor/bench/ssm_proof_of_concept.py`.
+Standalone benchmark at `platform/predictor/bench/ssm_proof_of_concept.py`.
 No production code changes. Selective SSM (Mamba-style, 50K params) vs
 MLP baseline (3.2K params) vs production heuristic on synthetic data
 matching the exact 17-dim feature layout from `protocol.rs`.
@@ -1384,11 +1384,11 @@ See companion documents for full citations:
   FENRec hard negatives, TSTR protocol
 
 **Proof of concept and tooling:**
-- `packages/predictor/bench/ssm_proof_of_concept.py` -- standalone
+- `platform/predictor/bench/ssm_proof_of_concept.py` -- standalone
   benchmark (SSM vs MLP vs heuristic, canary suite, SNR curves,
   dual-error test, latency benchmark, Phase 0 gates). Supports
   `--data` for LLM-generated JSONL, `--compare` for side-by-side.
-- `packages/predictor/bench/generate_scenarios.py` -- LLM-based
+- `platform/predictor/bench/generate_scenarios.py` -- LLM-based
   synthetic data generator. 14 pattern types, curriculum weighting,
   schema validation. Outputs JSONL matching 17-dim feature layout.
 

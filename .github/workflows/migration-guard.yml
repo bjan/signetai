@@ -33,7 +33,7 @@ jobs:
             });
 
             const touchesMigration = files.some((f) =>
-              /^packages\/core\/src\/migrations\/.+\.ts$/i.test(f.filename),
+              /^platform\/core\/src\/migrations\/.+\.ts$/i.test(f.filename),
             );
 
             if (!touchesMigration) {

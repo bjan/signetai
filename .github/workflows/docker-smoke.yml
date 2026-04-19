@@ -4,7 +4,12 @@ on:
   pull_request:
     paths:
       - "deploy/docker/**"
-      - "packages/**"
+      - "platform/**"
+      - "surfaces/**"
+      - "integrations/**"
+      - "libs/**"
+      - "dist/**"
+      - "runtimes/**"
       - "scripts/**"
       - "public/**"
       - "web/**"
@@ -22,7 +27,12 @@ on:
       - main
     paths:
       - "deploy/docker/**"
-      - "packages/**"
+      - "platform/**"
+      - "surfaces/**"
+      - "integrations/**"
+      - "libs/**"
+      - "dist/**"
+      - "runtimes/**"
       - "scripts/**"
       - "public/**"
       - "web/**"

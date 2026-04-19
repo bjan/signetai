@@ -9,6 +9,17 @@ node_modules
 **/.svelte-kit
 **/target
 
+# `dist/` is a source bucket in this repo. Keep the publish package
+# sources available to Docker while still excluding generated outputs.
+!dist
+!dist/signetai
+!dist/signetai/**
+dist/signetai/.turbo
+dist/signetai/dashboard
+dist/signetai/dist
+dist/signetai/node_modules
+dist/signetai/skills
+
 # Local/dev artifacts that should never enter the Docker build context
 .bench
 .bun-tmp
@@ -24,9 +35,9 @@ marketing
 references
 
 # Heavy generated package artifacts
-packages/desktop/release
-packages/desktop/resources
-packages/cli/dashboard/dogfood-output
+surfaces/desktop/release
+surfaces/desktop/resources
+surfaces/dashboard/dogfood-output
 
 # MemoryBench local datasets/secrets/results are not needed for image builds
 memorybench/data

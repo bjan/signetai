@@ -87,7 +87,7 @@ min_signet_version: "0.76.0"
 1. Publisher forks the monorepo, adds their package under
    `publishers/{username}/`.
 2. Publisher opens a PR against `main`.
-3. The reviews Cloudflare Worker (`workers/reviews/`) runs automated
+3. The reviews Cloudflare Worker (`web/workers/reviews/`) runs automated
    checks on PR creation/update:
    - Manifest schema validation (required fields, valid types).
    - Entrypoint file exists and is parseable.

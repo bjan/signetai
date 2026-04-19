@@ -121,7 +121,7 @@ over a rolling window (default: last 20 invocations) are flagged:
 
 The deprecation sweep runs as part of the pipeline's maintenance
 stage (existing maintenance worker in
-`packages/daemon/src/pipeline/`).
+`platform/daemon/src/pipeline/`).
 
 ### D. Skill Evolution
 

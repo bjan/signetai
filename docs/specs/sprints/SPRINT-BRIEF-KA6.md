@@ -147,10 +147,10 @@ ALTER TABLE entities ADD COLUMN pinned_at TEXT;
 ```
 
 Use the standard `addColumnIfMissing` / PRAGMA table_info pattern.
-Register as version 22 in `packages/core/src/migrations/index.ts`.
+Register as version 22 in `platform/core/src/migrations/index.ts`.
 
 **Knowledge graph helpers:** Add to
-`packages/daemon/src/knowledge-graph.ts`:
+`platform/daemon/src/knowledge-graph.ts`:
 
 ```typescript
 export function pinEntity(
@@ -177,7 +177,7 @@ pinned_at = NULL`. `getPinnedEntities` returns all pinned entities
 for an agent, ordered by `pinned_at DESC`.
 
 **Focal entity resolution:** Update `resolveFocalEntities()` in
-`packages/daemon/src/pipeline/graph-traversal.ts`. Pinned entities
+`platform/daemon/src/pipeline/graph-traversal.ts`. Pinned entities
 are priority 0 — they are ALWAYS included as focal entities,
 regardless of which signal source resolves additional entities.
 
@@ -205,7 +205,7 @@ export interface FocalEntityResult {
 The `source` field still reflects the non-pinned resolution source.
 `pinnedEntityIds` is the subset that came from pinning.
 
-**API endpoints:** Add to `packages/daemon/src/daemon.ts`:
+**API endpoints:** Add to `platform/daemon/src/daemon.ts`:
 
 ```
 POST /api/knowledge/entities/:id/pin
@@ -233,7 +233,7 @@ loop, aspect weights are set once by structural assignment and never
 updated. The structural graph diverges from what the user actually
 needs. With it, the graph reshapes itself based on outcomes.
 
-**Where:** `packages/daemon/src/pipeline/aspect-feedback.ts` (new)
+**Where:** `platform/daemon/src/pipeline/aspect-feedback.ts` (new)
 
 When a session ends, the system already knows which memories were
 injected at session-start and which the user actually searched for
@@ -314,12 +314,12 @@ readonly feedback?: {
 };
 ```
 
-Add to `PipelineV2Config` in `packages/core/src/types.ts` and wire
-defaults in `packages/daemon/src/memory-config.ts`.
+Add to `PipelineV2Config` in `platform/core/src/types.ts` and wire
+defaults in `platform/daemon/src/memory-config.ts`.
 
 ### 3. Aspect weight decay
 
-**Where:** `packages/daemon/src/pipeline/aspect-feedback.ts`
+**Where:** `platform/daemon/src/pipeline/aspect-feedback.ts`
 
 Without decay, aspect weights only go up. Aspects that were important
 six months ago but haven't been confirmed recently should lose weight
@@ -356,13 +356,13 @@ WHERE agent_id = ?
 ```
 
 **Wiring:** Call from the maintenance worker
-(`packages/daemon/src/pipeline/maintenance-worker.ts`) on a
+(`platform/daemon/src/pipeline/maintenance-worker.ts`) on a
 configurable interval — default every 10 sessions or daily,
 whichever comes first.
 
 ### 4. Per-entity health signal
 
-**Where:** `packages/daemon/src/knowledge-graph.ts`
+**Where:** `platform/daemon/src/knowledge-graph.ts`
 
 Add a helper that computes per-entity health from predictor
 comparison data:
@@ -412,7 +412,7 @@ show no indicator.
 
 ### 5. Superseded memory propagation
 
-**Where:** `packages/daemon/src/knowledge-graph.ts`
+**Where:** `platform/daemon/src/knowledge-graph.ts`
 
 When a memory is superseded (via `supersedeAttribute`), its
 `entity_attributes` row is already marked `status = 'superseded'`.
@@ -473,7 +473,7 @@ Data source: compute from `entity_aspects` table directly.
 
 ### 7. Feedback configuration
 
-Add to `PipelineV2Config` in `packages/core/src/types.ts`:
+Add to `PipelineV2Config` in `platform/core/src/types.ts`:
 
 ```typescript
 readonly feedback?: {
@@ -487,7 +487,7 @@ readonly feedback?: {
 };
 ```
 
-Wire defaults in `packages/daemon/src/memory-config.ts` with YAML
+Wire defaults in `platform/daemon/src/memory-config.ts` with YAML
 parsing, same pattern as `traversal` and `structural` configs.
 
 Guard: feedback only runs when `feedback.enabled && graph.enabled`.
@@ -496,22 +496,22 @@ Guard: feedback only runs when `feedback.enabled && graph.enabled`.
 
 ## Key Files
 
-- `packages/core/src/migrations/022-entity-pinning.ts` — new
+- `platform/core/src/migrations/022-entity-pinning.ts` — new
   migration for pinned column
-- `packages/core/src/migrations/index.ts` — register migration 022
-- `packages/core/src/types.ts` — feedback config types
-- `packages/daemon/src/knowledge-graph.ts` — pin/unpin helpers,
+- `platform/core/src/migrations/index.ts` — register migration 022
+- `platform/core/src/types.ts` — feedback config types
+- `platform/daemon/src/knowledge-graph.ts` — pin/unpin helpers,
   entity health, superseded propagation
-- `packages/daemon/src/pipeline/graph-traversal.ts` — pinned entity
+- `platform/daemon/src/pipeline/graph-traversal.ts` — pinned entity
   resolution in `resolveFocalEntities()`
-- `packages/daemon/src/pipeline/aspect-feedback.ts` — new, FTS
+- `platform/daemon/src/pipeline/aspect-feedback.ts` — new, FTS
   overlap feedback and aspect decay
-- `packages/daemon/src/pipeline/maintenance-worker.ts` — wire decay
+- `platform/daemon/src/pipeline/maintenance-worker.ts` — wire decay
   and superseded propagation
-- `packages/daemon/src/hooks.ts` — wire FTS feedback at session-end
-- `packages/daemon/src/daemon.ts` — pin/unpin and health API endpoints
-- `packages/daemon/src/memory-config.ts` — feedback config defaults
-- `packages/cli/dashboard/src/lib/components/tabs/KnowledgeTab.svelte`
+- `platform/daemon/src/hooks.ts` — wire FTS feedback at session-end
+- `platform/daemon/src/daemon.ts` — pin/unpin and health API endpoints
+- `platform/daemon/src/memory-config.ts` — feedback config defaults
+- `surfaces/dashboard/src/lib/components/tabs/KnowledgeTab.svelte`
   — pin toggle, health indicators, feedback stats
 
 ## What NOT to Build

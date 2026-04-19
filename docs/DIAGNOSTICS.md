@@ -14,9 +14,9 @@ An optional maintenance worker ties them together, running repairs autonomously
 on a schedule.
 
 Source files:
-- `packages/daemon/src/diagnostics.ts`
-- `packages/daemon/src/repair-actions.ts`
-- `packages/daemon/src/pipeline/maintenance-worker.ts`
+- `platform/daemon/src/diagnostics.ts`
+- `platform/daemon/src/repair-actions.ts`
+- `platform/daemon/src/pipeline/maintenance-worker.ts`
 
 
 Health Domains

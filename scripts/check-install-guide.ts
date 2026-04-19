@@ -29,10 +29,10 @@ function runRules(path: string, content: string, rules: Rule[]): string[] {
 }
 
 function main(): void {
-	const skillPath = "web/public/skill.md";
+	const skillPath = "web/marketing/public/skill.md";
 	const readmePath = "README.md";
-	const heroPath = "web/src/components/landing/Hero.astro";
-	const ctaPath = "web/src/components/landing/Cta.astro";
+	const heroPath = "web/marketing/src/components/landing/Hero.astro";
+	const ctaPath = "web/marketing/src/components/landing/Cta.astro";
 
 	const expectedPrompt =
 		"Install and fully configure Signet AI by following this guide exactly: https://signetai.sh/skill.md";

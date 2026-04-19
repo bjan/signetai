@@ -102,7 +102,7 @@ session-start`, `user-prompt-submit`, `session-end`, `pre-compaction`) don't
 parse or forward `session_id` from stdin. Claude Code sends it as a common field
 on all hook events (ref: [Claude Code hooks docs](https://code.claude.com/docs/en/hooks)).
 
-**CLI changes** (`packages/cli/src/cli.ts`):
+**CLI changes** (`surfaces/cli/src/cli.ts`):
 - In each hook command's stdin parser, extract `session_id` (or `sessionId`)
 - Forward as `sessionKey` in the POST body to the daemon
 - All hooks already accept `sessionKey` on the daemon side — this just connects the pipe
@@ -118,11 +118,11 @@ on all hook events (ref: [Claude Code hooks docs](https://code.claude.com/docs/e
 }
 ```
 
-### 1. Migration: `packages/core/src/migrations/016-session-checkpoints.ts`
+### 1. Migration: `platform/core/src/migrations/016-session-checkpoints.ts`
 
 Create the table + indexes above. Register in `migrations/index.ts`.
 
-### 2. Continuity state module: `packages/daemon/src/continuity-state.ts`
+### 2. Continuity state module: `platform/daemon/src/continuity-state.ts`
 
 **New file.** Separate from session-tracker.ts (which stays focused on runtime
 claim mutex). This module tracks per-session accumulation state for checkpointing.
@@ -156,7 +156,7 @@ Path normalization: `projectNormalized` is set via `fs.realpathSync()` on init,
 falling back to raw path if realpath fails. All checkpoint queries use the
 normalized path.
 
-### 3. Checkpoint module: `packages/daemon/src/session-checkpoints.ts`
+### 3. Checkpoint module: `platform/daemon/src/session-checkpoints.ts`
 
 New file with core checkpoint operations:
 
@@ -218,7 +218,7 @@ summary verbatim.
 For pre-compaction (trigger `"pre_compaction"`, Phase 3): daemon accumulated
 state + runtime-provided sessionContext.
 
-### 6. Hook integration: `packages/daemon/src/hooks.ts`
+### 6. Hook integration: `platform/daemon/src/hooks.ts`
 
 **handleSessionStart** (modify):
 - Call `initContinuity(sessionKey, harness, project)` to set up accumulator
@@ -245,7 +245,7 @@ state + runtime-provided sessionContext.
 - Write a checkpoint with trigger `"pre_compaction"`
 - Include `req.sessionContext` in the digest if provided
 
-### 7. SessionKey plumbing in CLI: `packages/cli/src/cli.ts`
+### 7. SessionKey plumbing in CLI: `surfaces/cli/src/cli.ts`
 
 For each hook command (`session-start`, `user-prompt-submit`, `session-end`,
 `pre-compaction`), update the stdin parser to extract `session_id` and forward
@@ -258,17 +258,17 @@ sessionKey = parsed.session_id || parsed.sessionId || "";
 // ... forward sessionKey in body
 ```
 
-### 8. Redaction: `packages/daemon/src/session-checkpoints.ts`
+### 8. Redaction: `platform/daemon/src/session-checkpoints.ts`
 
 Agent-initiated digests (Phase 2) may contain secrets/tokens. Before storing:
 - Apply a denylist pattern scan (common patterns: Bearer tokens, API keys,
   base64-encoded credentials, env var patterns like `$SECRET_NAME`)
 - Redact matches with `[REDACTED]`
 - Same redaction applied before serving via `/api/checkpoints` responses
-- Reuse existing content normalization from `packages/daemon/src/content-normalization.ts`
+- Reuse existing content normalization from `platform/daemon/src/content-normalization.ts`
   if applicable
 
-### 9. Configuration: `packages/core/src/types.ts`
+### 9. Configuration: `platform/core/src/types.ts`
 
 Add under `PipelineV2Config` (nested, not top-level):
 
@@ -283,9 +283,9 @@ readonly continuity?: {
 };
 ```
 
-Wire defaults in `packages/daemon/src/memory-config.ts`.
+Wire defaults in `platform/daemon/src/memory-config.ts`.
 
-### 10. API endpoints: `packages/daemon/src/daemon.ts`
+### 10. API endpoints: `platform/daemon/src/daemon.ts`
 
 Read-only endpoints behind auth middleware:
 
@@ -296,7 +296,7 @@ Read-only endpoints behind auth middleware:
 ### 11. Checkpoint pruning: daemon scheduler
 
 Wire `pruneCheckpoints()` into the existing daemon maintenance/scheduler loop
-(see `packages/daemon/src/scheduler/`), NOT into session-tracker cleanup.
+(see `platform/daemon/src/scheduler/`), NOT into session-tracker cleanup.
 Run on the same cadence as other maintenance tasks.
 
 ## Platform Support Matrix
@@ -353,17 +353,17 @@ them via API.
 
 | File | Action | Description |
 |---|---|---|
-| `packages/core/src/migrations/016-session-checkpoints.ts` | create | New migration |
-| `packages/core/src/migrations/index.ts` | modify | Register migration 016 |
-| `packages/core/src/types.ts` | modify | Add continuity config under PipelineV2Config |
-| `packages/daemon/src/continuity-state.ts` | create | Per-session accumulation state |
-| `packages/daemon/src/session-checkpoints.ts` | create | Checkpoint read/write/prune/redact |
-| `packages/daemon/src/hooks.ts` | modify | Wire checkpoint triggers + recovery injection |
-| `packages/daemon/src/daemon.ts` | modify | Add /api/checkpoints routes with auth |
-| `packages/daemon/src/memory-config.ts` | modify | Wire continuity config defaults |
-| `packages/cli/src/cli.ts` | modify | Parse session_id from stdin in all hook commands |
-| `packages/daemon/src/mcp/tools.ts` | modify | Add session_digest MCP tool (Phase 2) |
-| `packages/connector-claude-code/src/index.ts` | modify | Add PreCompaction hook (Phase 3) |
+| `platform/core/src/migrations/016-session-checkpoints.ts` | create | New migration |
+| `platform/core/src/migrations/index.ts` | modify | Register migration 016 |
+| `platform/core/src/types.ts` | modify | Add continuity config under PipelineV2Config |
+| `platform/daemon/src/continuity-state.ts` | create | Per-session accumulation state |
+| `platform/daemon/src/session-checkpoints.ts` | create | Checkpoint read/write/prune/redact |
+| `platform/daemon/src/hooks.ts` | modify | Wire checkpoint triggers + recovery injection |
+| `platform/daemon/src/daemon.ts` | modify | Add /api/checkpoints routes with auth |
+| `platform/daemon/src/memory-config.ts` | modify | Wire continuity config defaults |
+| `surfaces/cli/src/cli.ts` | modify | Parse session_id from stdin in all hook commands |
+| `platform/daemon/src/mcp/tools.ts` | modify | Add session_digest MCP tool (Phase 2) |
+| `integrations/claude-code/connector/src/index.ts` | modify | Add PreCompaction hook (Phase 3) |
 
 ## Verification
 

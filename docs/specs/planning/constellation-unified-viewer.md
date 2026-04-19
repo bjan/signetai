@@ -21,7 +21,7 @@ Spec metadata:
 - Registry: `docs/specs/INDEX.md`
 
 Related docs:
-- `packages/cli/dashboard/src/lib/components/embeddings/` (current renderers)
+- `surfaces/dashboard/src/lib/components/embeddings/` (current renderers)
 - `docs/DASHBOARD.md` (design tokens, component conventions)
 - `docs/specs/complete/knowledge-architecture-schema.md`
 

@@ -593,8 +593,8 @@ Required tests:
 Required local commands before PR:
 
 ```bash
-bun test packages/daemon/src/secrets*.test.ts
-bun test packages/daemon/src/plugin*.test.ts
+bun test platform/daemon/src/secrets*.test.ts
+bun test platform/daemon/src/plugin*.test.ts
 bun run typecheck
 bun run lint
 ```

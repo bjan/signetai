@@ -3,13 +3,13 @@
 import { execSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 
-const REFERENCE_FILE = "packages/signetai/package.json";
-const EXCLUDED_FILES = new Set(["packages/cli/dashboard/package.json"]);
-const EXCLUDED_CARGO_FILES = new Set(["packages/forge/Cargo.toml"]);
-const FORGE_VERSION_FILE = "packages/forge/forge-version.json";
+const REFERENCE_FILE = "dist/signetai/package.json";
+const EXCLUDED_FILES = new Set(["surfaces/dashboard/package.json"]);
+const EXCLUDED_CARGO_FILES = new Set(["runtimes/forge/Cargo.toml"]);
+const FORGE_VERSION_FILE = "runtimes/forge/forge-version.json";
 const FORGE_MANIFEST_FILES = [
-	"packages/cli/templates/forge/manifest.json",
-	"packages/signetai/templates/forge/manifest.json",
+	"surfaces/cli/templates/forge/manifest.json",
+	"dist/signetai/templates/forge/manifest.json",
 ];
 
 function parseSemver(version: string): [number, number, number] {
@@ -54,7 +54,7 @@ function getRemoteVersion(filePath: string): string | null {
 }
 
 function listTargetPackageFiles(): string[] {
-	const output = execSync("git ls-files package.json 'packages/**/package.json'", {
+	const output = execSync("git ls-files package.json 'platform/**/package.json' 'surfaces/**/package.json' 'integrations/**/package.json' 'libs/**/package.json' 'dist/**/package.json' 'web/**/package.json'", {
 		encoding: "utf8",
 	});
 
@@ -82,7 +82,7 @@ function updateFileVersion(filePath: string, targetVersion: string): boolean {
 }
 
 function listCargoFiles(): string[] {
-	const output = execSync("git ls-files 'packages/**/Cargo.toml'", {
+	const output = execSync("git ls-files 'platform/**/Cargo.toml' 'runtimes/**/Cargo.toml'", {
 		encoding: "utf8",
 	});
 
@@ -198,7 +198,7 @@ function main() {
 
 	const packageFiles = listTargetPackageFiles();
 	if (packageFiles.length === 0) {
-		throw new Error("No package.json files found under packages/");
+		throw new Error("No workspace package.json files found");
 	}
 
 	const updated: string[] = [];
@@ -228,7 +228,7 @@ function main() {
 	// ships real version strings instead of "workspace:*".
 	const resolved = resolveWorkspaceProtocols(packageFiles, targetVersion);
 
-	// Sync Cargo.toml files under packages/
+	// Sync Cargo.toml files under platform/ and runtimes/
 	const cargoUpdated: string[] = [];
 	const cargoFiles = listCargoFiles();
 	for (const file of cargoFiles) {

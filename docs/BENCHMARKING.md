@@ -4,6 +4,11 @@ Signet memory benchmarks run through `memorybench/`. The benchmark harness owns
 the datasets, checkpointing, answer generation, judging, retrieval metrics, and
 reports. Signet is only a MemoryBench provider.
 
+`memorybench/` is a root workspace because it is a development harness, not a
+Signet runtime package. Runtime code still belongs under `platform/`, human
+surfaces under `surfaces/`, integrations under `integrations/`, and reusable
+libraries under `libs/`.
+
 ## Default developer run
 
 ```bash

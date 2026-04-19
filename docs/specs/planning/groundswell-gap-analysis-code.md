@@ -17,7 +17,7 @@ The pipeline is structurally sound and the PRD's framing holds up. Most componen
 
 ---
 
-### 1. Extraction (`packages/daemon/src/pipeline/extraction.ts`)
+### 1. Extraction (`platform/daemon/src/pipeline/extraction.ts`)
 
 **What exists:**
 - Hard-coded constants at file top: `MAX_FACTS = 20`, `MAX_ENTITIES = 15`, `MAX_INPUT_CHARS = 12000`
@@ -37,10 +37,10 @@ The pipeline is structurally sound and the PRD's framing holds up. Most componen
 
 ---
 
-### 2. Decision Engine (`packages/daemon/src/pipeline/decision.ts`)
+### 2. Decision Engine (`platform/daemon/src/pipeline/decision.ts`)
 
 **What exists:**
-- `DECISION_ACTIONS` in `packages/core/src/types.ts`: `["add", "update", "delete", "none"]`
+- `DECISION_ACTIONS` in `platform/core/src/types.ts`: `["add", "update", "delete", "none"]`
 - `DecisionAction` type is a union of those four strings
 - `CANDIDATE_LIMIT = 5` hard-coded
 - Decision prompt asks LLM to choose add/update/delete/none
@@ -57,7 +57,7 @@ The pipeline is structurally sound and the PRD's framing holds up. Most componen
 
 ---
 
-### 3. Contradiction Detection (`packages/daemon/src/pipeline/contradiction.ts`)
+### 3. Contradiction Detection (`platform/daemon/src/pipeline/contradiction.ts`)
 
 **What exists:**
 - `detectSemanticContradiction(factContent, targetContent, provider, timeoutMs)`
@@ -75,7 +75,7 @@ The pipeline is structurally sound and the PRD's framing holds up. Most componen
 
 ---
 
-### 4. Significance Gate (`packages/daemon/src/pipeline/significance-gate.ts`)
+### 4. Significance Gate (`platform/daemon/src/pipeline/significance-gate.ts`)
 
 **What exists:**
 - Three-signal assessment: turn count, entity overlap, content novelty
@@ -96,7 +96,7 @@ The pipeline is structurally sound and the PRD's framing holds up. Most componen
 
 ---
 
-### 5. Behavioral Feedback (`packages/daemon/src/pipeline/aspect-feedback.ts`)
+### 5. Behavioral Feedback (`platform/daemon/src/pipeline/aspect-feedback.ts`)
 
 **What exists:**
 - `applyFtsOverlapFeedback()` -- FTS hit count drives aspect weight deltas
@@ -114,7 +114,7 @@ The pipeline is structurally sound and the PRD's framing holds up. Most componen
 
 ---
 
-### 6. Dampening (`packages/daemon/src/pipeline/dampening.ts`)
+### 6. Dampening (`platform/daemon/src/pipeline/dampening.ts`)
 
 **What exists:**
 - Three stages: gravity, hub, resolution
@@ -134,7 +134,7 @@ The pipeline is structurally sound and the PRD's framing holds up. Most componen
 
 ---
 
-### 7. Prospective Indexing (`packages/daemon/src/pipeline/prospective-index.ts`)
+### 7. Prospective Indexing (`platform/daemon/src/pipeline/prospective-index.ts`)
 
 **What exists:**
 - `buildPrompt(content, max)` generates "what would a user search for?" hints
@@ -152,7 +152,7 @@ The pipeline is structurally sound and the PRD's framing holds up. Most componen
 
 ---
 
-### 8. Summarization (`packages/daemon/src/pipeline/summary-worker.ts` + `summary-condensation.ts`)
+### 8. Summarization (`platform/daemon/src/pipeline/summary-worker.ts` + `summary-condensation.ts`)
 
 **What exists in `summary-condensation.ts`:**
 - Two-tier hierarchy: `session` -> `arc` (threshold: 8 sessions) -> `epoch` (threshold: 4 arcs)
@@ -175,7 +175,7 @@ The pipeline is structurally sound and the PRD's framing holds up. Most componen
 
 ---
 
-### 9. Supersession (`packages/daemon/src/pipeline/supersession.ts`)
+### 9. Supersession (`platform/daemon/src/pipeline/supersession.ts`)
 
 **What exists:**
 - `detectAttributeContradiction()` -- four-signal heuristic (negation, antonyms, value conflict, temporal markers)
@@ -196,7 +196,7 @@ The pipeline is structurally sound and the PRD's framing holds up. Most componen
 
 ---
 
-### 10. Graph Persistence (`packages/daemon/src/pipeline/graph-transactions.ts`)
+### 10. Graph Persistence (`platform/daemon/src/pipeline/graph-transactions.ts`)
 
 **What exists:**
 - `txPersistEntities()` -- upserts entity triples, increments mention counts
@@ -237,7 +237,7 @@ The pipeline is structurally sound and the PRD's framing holds up. Most componen
 
 ---
 
-### 12. Multi-Agent Scoping (`packages/daemon/src/agent-id.ts` + `packages/core/src/agents.ts`)
+### 12. Multi-Agent Scoping (`platform/daemon/src/agent-id.ts` + `platform/core/src/agents.ts`)
 
 **What exists in `agent-id.ts`:**
 - `resolveAgentId()` -- extracts agentId from body, session key parse (`agent:{id}:...`), fallback to `"default"`
@@ -260,7 +260,7 @@ The pipeline is structurally sound and the PRD's framing holds up. Most componen
 
 ---
 
-## Core Types Assessment (`packages/core/src/types.ts`)
+## Core Types Assessment (`platform/core/src/types.ts`)
 
 | Type | Current State | Gap |
 |------|--------------|-----|
@@ -311,4 +311,4 @@ The pipeline is structurally sound and the PRD's framing holds up. Most componen
 
 ---
 
-*Generated from codebase audit of `/home/nicholai/signet/signetai/packages/` on 2026-03-27*
+*Generated from a pre-refactor codebase audit on 2026-03-27*

@@ -220,7 +220,7 @@ Inline Entity Linker
 ---
 
 Before any async pipeline job runs, the inline entity linker
-(`packages/daemon/src/inline-entity-linker.ts`) performs a fast,
+(`platform/daemon/src/inline-entity-linker.ts`) performs a fast,
 synchronous mention-linking pass at memory write time. This is a
 mechanical helper, not a semantic author.
 
@@ -550,7 +550,7 @@ timeout (default 45,000 ms) and throws a descriptive error on abort. HTTP
 errors surface the status code and the first 200 characters of the response
 body. The `available` check uses a 3-second timeout against `GET /api/tags`.
 For live prompt harness commands, see
-`packages/daemon/src/pipeline/README.md`.
+`platform/daemon/src/pipeline/README.md`.
 
 **ClaudeCodeProvider** invokes the Claude Code CLI as a subprocess:
 `claude -p <prompt> --model <model> --no-session-persistence --output-format text`.
@@ -697,7 +697,7 @@ includes `content`, `contentType`, optional `title`, and `byteLength`.
 Embedding Tracker
 ---
 
-The embedding tracker (`packages/daemon/src/embedding-tracker.ts`) is a
+The embedding tracker (`platform/daemon/src/embedding-tracker.ts`) is a
 background polling loop that detects stale or missing embeddings and
 refreshes them in small batches. It is separate from the extraction
 pipeline and runs alongside it.
@@ -741,7 +741,7 @@ Configuration lives under `embeddingTracker` in the pipeline config:
 Session Checkpoints
 ---
 
-Session checkpoints (`packages/daemon/src/session-checkpoints.ts`) capture
+Session checkpoints (`platform/daemon/src/session-checkpoints.ts`) capture
 periodic snapshots of session state for continuity recovery. They store
 a digest of the session's current focus, prompt count, memory queries,
 and recent remembers.
@@ -825,7 +825,7 @@ Prospective Indexing (Hints)
 
 After a memory is written, a `prospective_index` job is enqueued in
 `memory_jobs`. The hints worker
-(`packages/daemon/src/pipeline/prospective-index.ts`) processes these
+(`platform/daemon/src/pipeline/prospective-index.ts`) processes these
 jobs as a background polling loop, generating hypothetical future
 queries — "hints" — that the memory might answer.
 
@@ -869,7 +869,7 @@ Post-Fusion Dampening
 
 After hybrid recall combines traversal, FTS, vector results, and
 prospective hints into a candidate pool, structured evidence shaping
-(`packages/daemon/src/pipeline/structured-evidence.ts`) scores candidates
+(`platform/daemon/src/pipeline/structured-evidence.ts`) scores candidates
 across separate lexical, semantic, hint, and traversal channels. This is
 the recall-side SEC layer: traversal can contribute structure, but
 traversal-only memories are capped below directly anchored evidence;
@@ -881,7 +881,7 @@ near-duplicates for one facet.
 
 After structured evidence shaping produces a fused score list, the
 dampening pipeline
-(`packages/daemon/src/pipeline/dampening.ts`) applies three corrections
+(`platform/daemon/src/pipeline/dampening.ts`) applies three corrections
 before the final sort. The goal is to break score bunching where relevant
 and irrelevant results land at similar fusion scores.
 

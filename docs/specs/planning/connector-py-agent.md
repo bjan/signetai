@@ -21,8 +21,8 @@ Spec metadata:
 - Registry: `docs/specs/INDEX.md`
 
 Related docs:
-- `packages/connector-base/src/index.ts` (BaseConnector contract)
-- `packages/connector-claude-code/src/index.ts` (reference connector)
+- `libs/connector-base/src/index.ts` (BaseConnector contract)
+- `integrations/claude-code/connector/src/index.ts` (reference connector)
 - `docs/specs/approved/signet-runtime.md`
 
 ---
@@ -49,7 +49,7 @@ injection, no transcript persistence, and no memory extraction for Python agents
 
 ### A) BaseConnector subclass
 
-Create `packages/connector-py-agent/src/index.ts` extending `BaseConnector`.
+Create `integrations/py-agent/connector/src/index.ts` extending `BaseConnector`.
 Implement the four abstract methods:
 - `install(basePath)` — patch PyAgent's YAML config with hook commands,
   compose identity extras via `composeIdentityExtras()`, symlink skills.

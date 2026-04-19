@@ -127,7 +127,7 @@ An agent passport is a portable identity bundle:
 
 ### E. Auth Middleware Integration
 
-The daemon's auth module (`packages/daemon/src/auth/`) gains an
+The daemon's auth module (`platform/daemon/src/auth/`) gains an
 optional signature-based auth path:
 
 - API requests can include `X-Signet-Agent-Id` and

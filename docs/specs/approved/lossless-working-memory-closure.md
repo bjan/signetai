@@ -286,7 +286,7 @@ follow-up parity wave tracked under rust cutover specs.
 
 Minimum contract:
 
-- request/response shape changes are mirrored into `packages/daemon-rs/`
+- request/response shape changes are mirrored into `platform/daemon-rs/`
   in the same PR
 - touched endpoints keep parity guard coverage so divergences are visible
 - behavior deltas that cannot be mirrored in-wave are explicitly documented

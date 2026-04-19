@@ -38,7 +38,7 @@ discover it through memory retrieval — not just filesystem search.
 
 ### 1. Migration: `skill_meta` table
 
-New migration file in `packages/core/src/migrations/`. Check
+New migration file in `platform/core/src/migrations/`. Check
 `migrations/index.ts` for the next available number.
 
 ```sql
@@ -77,7 +77,7 @@ When a skill is installed and its frontmatter is thin (description
 - `tags` for domain grouping
 
 Use the existing `LlmProvider` from
-`packages/daemon/src/pipeline/provider.ts`. Same model config as the
+`platform/daemon/src/pipeline/provider.ts`. Same model config as the
 extraction worker. New prompt function alongside
 `extractFactsAndEntities()`.
 
@@ -120,7 +120,7 @@ On remove:
 
 ### 6. Configuration
 
-Add under `PipelineV2Config` in `packages/core/src/types.ts`:
+Add under `PipelineV2Config` in `platform/core/src/types.ts`:
 
 ```typescript
 readonly procedural?: {
@@ -134,20 +134,20 @@ readonly procedural?: {
 };
 ```
 
-Wire defaults in `packages/daemon/src/memory-config.ts`.
+Wire defaults in `platform/daemon/src/memory-config.ts`.
 
 ## Key Files
 
-- `packages/core/src/migrations/` — new migration goes here
-- `packages/core/src/migrations/index.ts` — register migration
-- `packages/core/src/types.ts` — add procedural config
-- `packages/core/src/skills.ts` — existing skill registry
-- `packages/daemon/src/memory-config.ts` — wire config defaults
-- `packages/daemon/src/pipeline/provider.ts` — LlmProvider for enrichment
-- `packages/daemon/src/pipeline/decision.ts` — existing extraction prompts
-- `packages/daemon/src/db-accessor.ts` — ReadDb/WriteDb typed accessor
-- `packages/daemon/src/db-helpers.ts` — vector blob helpers
-- `packages/daemon/src/daemon.ts` — file watcher, API routes
+- `platform/core/src/migrations/` — new migration goes here
+- `platform/core/src/migrations/index.ts` — register migration
+- `platform/core/src/types.ts` — add procedural config
+- `platform/core/src/skills.ts` — existing skill registry
+- `platform/daemon/src/memory-config.ts` — wire config defaults
+- `platform/daemon/src/pipeline/provider.ts` — LlmProvider for enrichment
+- `platform/daemon/src/pipeline/decision.ts` — existing extraction prompts
+- `platform/daemon/src/db-accessor.ts` — ReadDb/WriteDb typed accessor
+- `platform/daemon/src/db-helpers.ts` — vector blob helpers
+- `platform/daemon/src/daemon.ts` — file watcher, API routes
 
 ## What NOT to Build (P2+)
 

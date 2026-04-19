@@ -48,7 +48,7 @@ and deprecation decisions blind.
 
 ### A. CLI Bridge (`signet mcp`)
 
-New CLI command group under `packages/cli/src/commands/`:
+New CLI command group under `surfaces/cli/src/commands/`:
 
 - `signet mcp list` — queries `GET /api/marketplace/servers` to show
   installed servers with enabled/disabled status.
@@ -63,7 +63,7 @@ New CLI command group under `packages/cli/src/commands/`:
 
 The bridge does not maintain its own MCP client connection. It calls
 the daemon API which already manages server lifecycle and transport
-(`packages/daemon/src/routes/marketplace.ts`).
+(`platform/daemon/src/routes/marketplace.ts`).
 
 ### B. Invocation Tracking Table
 
@@ -87,7 +87,7 @@ CREATE INDEX idx_mcp_inv_agent  ON mcp_invocations(agent_id, created_at);
 
 The daemon records a row on every tool call — both CLI-originated
 (via the bridge API) and agent-originated (via MCP transport hooks
-in `packages/daemon/src/mcp/tools.ts`).
+in `platform/daemon/src/mcp/tools.ts`).
 
 ### C. Analytics API
 

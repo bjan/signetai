@@ -400,7 +400,7 @@ The daemon can be installed as a system service (systemd on Linux,
 launchd on macOS) using the daemon package's bun scripts:
 
 ```bash
-cd packages/daemon
+cd platform/daemon
 bun run install:service    # Install as systemd/launchd service
 bun run uninstall:service  # Remove the service
 ```

@@ -49,13 +49,13 @@ for agent-driven development where the agent needs a clear recipe.
    snapshot test.
 2. **Add a database migration** (`add-migration.md`): Naming
    convention (sequential number), file location in
-   `packages/core/src/migrations/`, registration in the index,
+   `platform/core/src/migrations/`, registration in the index,
    agent_id requirement, idempotency rules, testing approach.
 3. **Add a dashboard tab** (`add-dashboard-tab.md`): Svelte 5
    component creation, navigation registration, shadcn-svelte
    component usage, design token reference, build and preview.
 4. **Add a connector** (`add-connector.md`): Package scaffold under
-   `packages/`, connector-base inheritance, install hook
+   `integrations/<tool>/connector/`, connector-base inheritance, install hook
    implementation, harness config patching, CLI registration.
 5. **Add a CLI command** (`add-cli-command.md`): Command file
    location, argument parsing, daemon API integration, help text,

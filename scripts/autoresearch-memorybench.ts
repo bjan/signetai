@@ -231,7 +231,7 @@ function latestReports(limit = 8): string[] {
 function printProcesses(): void {
 	const result = spawnSync(
 		"pgrep",
-		["-af", "bench-memory|memorybench/src/index|packages/daemon/src/daemon|llama-server|vllm"],
+		["-af", "bench-memory|memorybench/src/index|platform/daemon/src/daemon|llama-server|vllm"],
 		{
 			encoding: "utf8",
 		},

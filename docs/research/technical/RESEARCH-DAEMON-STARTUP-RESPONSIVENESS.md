@@ -17,7 +17,7 @@ functionally unresponsive. `/health` timed out and `signet status` hung.
 
 ## Current startup shape
 
-`packages/daemon/src/daemon.ts` performs database initialization,
+`platform/daemon/src/daemon.ts` performs database initialization,
 configuration loading, worker startup, and other background boot work before
 and around HTTP server readiness.
 

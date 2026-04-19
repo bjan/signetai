@@ -20,7 +20,7 @@ bun test ./tests/integration/pipeline-llm.test.ts
 ```
 
 Note: these tests are NOT discovered by the default `bun test` command
-because `bunfig.toml` scopes test discovery to `packages/`. Run them
+because `bunfig.toml` scopes test discovery to `platform/, surfaces/, integrations/, libs/, dist/, and web/`. Run them
 with an explicit `./` path prefix.
 
 ### Design

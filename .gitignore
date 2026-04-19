@@ -30,6 +30,7 @@
 .pnpm-store/
 .ruff_cache/
 .specstory/
+.turbo/
 .vscode/
 .worktrees/
 /marketing/

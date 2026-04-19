@@ -6,10 +6,10 @@ import { execSync } from "child_process";
 import { existsSync } from "fs";
 import { join } from "path";
 
-const nativeDir = join(import.meta.dir, "..", "packages", "native");
+const nativeDir = join(import.meta.dir, "..", "platform", "native");
 
 if (!existsSync(nativeDir)) {
-	console.log("[signet] packages/native not found, skipping native build");
+	console.log("[signet] platform/native not found, skipping native build");
 	process.exit(0);
 }
 

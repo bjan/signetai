@@ -32,7 +32,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          REFERENCE_FILE="packages/signetai/package.json"
+          REFERENCE_FILE="dist/signetai/package.json"
           REFERENCE_VERSION=$(jq -r '.version' "$REFERENCE_FILE")
 
           REMOTE_REFERENCE_JSON=$(git show "origin/main:$REFERENCE_FILE" 2>/dev/null || true)
@@ -50,9 +50,9 @@ jobs:
             fi
           fi
 
-          PACKAGE_FILES=$(git ls-files package.json 'packages/**/package.json' | grep -v '^packages/cli/dashboard/package.json$')
+          PACKAGE_FILES=$(git ls-files package.json 'platform/**/package.json' 'surfaces/**/package.json' 'integrations/**/package.json' 'libs/**/package.json' 'dist/**/package.json' | grep -v '^surfaces/dashboard/package.json$')
           if [ -z "$PACKAGE_FILES" ]; then
-            echo "No package.json files found under packages/."
+            echo "No workspace package.json files found."
             exit 1
           fi
 
@@ -73,8 +73,8 @@ jobs:
             exit 1
           fi
 
-          FORGE_SOURCE="packages/forge/forge-version.json"
-          FORGE_MANIFESTS="packages/cli/templates/forge/manifest.json packages/signetai/templates/forge/manifest.json"
+          FORGE_SOURCE="runtimes/forge/forge-version.json"
+          FORGE_MANIFESTS="surfaces/cli/templates/forge/manifest.json dist/signetai/templates/forge/manifest.json"
           for file in $FORGE_MANIFESTS; do
             if [ ! -f "$file" ]; then
               echo "Skipping Forge metadata comparison for missing template copy: $file"

@@ -182,7 +182,7 @@ After each step:
 2. `bun test` — all existing tests must pass
 3. `bun run build` — daemon builds successfully
 4. Manual smoke test:
-   - Start daemon: `bun packages/daemon/src/daemon.ts`
+   - Start daemon: `bun platform/daemon/src/daemon.ts`
    - Dashboard loads at localhost:3850
    - `curl localhost:3850/health` returns ok
    - `curl localhost:3850/api/status` returns status

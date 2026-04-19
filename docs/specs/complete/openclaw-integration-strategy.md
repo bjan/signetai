@@ -115,7 +115,7 @@ clear tests, explicit rollback.
 - Why: reduces duplicate growth from formatting-only variance
 - Size target: ~50 lines
 - Migration: none
-- Signet source: `packages/daemon/src/content-normalization.ts`
+- Signet source: `platform/daemon/src/content-normalization.ts`
 
 **PR 2: Importance-aware score calibration**
 - Files: `extensions/memory-lancedb/index.ts` (`MemoryDB.search`)
@@ -124,7 +124,7 @@ clear tests, explicit rollback.
 - Why: importance is stored but currently does not affect ordering
 - Size target: ~20-30 lines
 - Migration: none
-- Signet source: `packages/core/src/search.ts` (ranking normalization patterns)
+- Signet source: `platform/core/src/search.ts` (ranking normalization patterns)
 
 **PR 3: Provider availability tracker (ring buffer)**
 - Files: new small utility + integration point in embedding call path
@@ -133,7 +133,7 @@ clear tests, explicit rollback.
 - Why: adds operational visibility without persistent storage changes
 - Size target: ~80 lines
 - Migration: none
-- Signet source: `packages/daemon/src/diagnostics.ts`
+- Signet source: `platform/daemon/src/diagnostics.ts`
 
 ### Wave 2: Medium complexity, still low-risk
 
@@ -172,21 +172,21 @@ clear tests, explicit rollback.
 - What: optional `expiresAt`, filter expired rows, cleanup path
 - Size target: ~60 lines
 - Migration: likely yes (new column)
-- Signet source: `packages/daemon/src/pipeline/retention-worker.ts`
+- Signet source: `platform/daemon/src/pipeline/retention-worker.ts`
 
 **PR 8: Rate-limited repair actions**
 - Files: new utility + minimal call-site integration
 - What: cooldown + hourly budget for maintenance actions
 - Size target: ~100 lines
 - Migration: none
-- Signet source: `packages/daemon/src/repair-actions.ts`
+- Signet source: `platform/daemon/src/repair-actions.ts`
 
 **PR 9: Optional reranking with timeout guard**
 - Files: new utility + search integration
 - What: rerank top-N with strict timeout and fallback to original order
 - Size target: ~120 lines
 - Migration: none
-- Signet source: `packages/daemon/src/pipeline/reranker.ts`
+- Signet source: `platform/daemon/src/pipeline/reranker.ts`
 
 ### PR Quality Bar (required for every submission)
 

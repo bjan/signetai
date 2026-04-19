@@ -91,11 +91,11 @@ Prevent these proactively:
 8. **Code hygiene misses**
    - Run lint and remove dead vars/imports before review.
    - Keep comments aligned with implementation.
-   - In `packages/cli/dashboard/`, never run broad Biome autofix
+   - In `surfaces/dashboard/`, never run broad Biome autofix
      blindly. Scope it narrowly, inspect the diff, and rerun:
 
 ```bash
-cd packages/cli/dashboard && bun run check
+cd surfaces/dashboard && bun run check
 ```
 
 9. **Publish/install integrity drift**
@@ -163,38 +163,43 @@ consume it directly from workspace source.
 Run a single test file directly with:
 
 ```bash
-bun test packages/daemon/src/pipeline/worker.test.ts
+bun test platform/daemon/src/pipeline/worker.test.ts
 ```
 
 ## Package map
 
-| Package | Purpose | Target |
-|---|---|---|
-| `@signet/core` | Types, DB, search, manifest, identity | node |
-| `@signet/connector-base` | Shared connector primitives | node |
-| `@signet/cli` | Setup, config, daemon management, dashboard | node |
-| `@signet/daemon` | HTTP API, hooks, file watching, memory pipeline | bun |
-| `@signet/extension` | Browser extension UI | browser |
-| `@signet/sdk` | Third-party integration SDK | node |
-| `@signet/connector-claude-code` | Claude Code install-time integration | node |
-| `@signet/connector-opencode` | OpenCode install-time integration | node |
-| `@signet/connector-openclaw` | OpenClaw install-time integration | node |
-| `@signet/connector-codex` | Codex CLI install-time integration | node |
-| `@signet/connector-oh-my-pi` | Oh My Pi install-time integration | node |
-| `@signet/connector-pi` | Pi install-time integration | node |
-| `@signet/connector-hermes-agent` | Hermes Agent install-time integration + Python plugin | node |
-| `@signet/connector-gemini` | Gemini CLI install-time integration | node |
-| `@signet/opencode-plugin` | OpenCode runtime plugin | node |
-| `@signet/oh-my-pi-extension` | Oh My Pi extension/runtime bundle | browser |
-| `@signet/pi-extension-base` | Shared Pi/OMP extension utilities (raw TS) | node |
-| `@signet/pi-extension` | Pi extension/runtime bundle | node |
-| `@signetai/signet-memory-openclaw` | OpenClaw runtime adapter | node |
-| `@signet/desktop` | Electron desktop shell / packaging | node |
-| `@signet/tray` | Shared tray/menu bar state utilities | node |
-| `signetai` | Meta-package bundling CLI + daemon | - |
-| `@signet/web` | Marketing website | cloudflare |
-| `@signet/native` | Native accelerators | node |
-| `predictor` | Rust predictive memory scorer | rust |
+| Package | Location | Purpose | Target |
+|---|---|---|---|
+| `@signet/core` | `platform/core` | Types, DB, search, manifest, identity | node |
+| `@signet/daemon` | `platform/daemon` | HTTP API, hooks, file watching, memory pipeline | bun |
+| `platform/daemon-rs` | `platform/daemon-rs` | Rust shadow runtime and parity logging | rust |
+| `@signet/native` | `platform/native` | Native accelerators | node |
+| `predictor` | `platform/predictor` | Rust predictive memory scorer | rust |
+| `@signet/cli` | `surfaces/cli` | Setup, config, daemon management, dashboard | node |
+| `signet-dashboard` | `surfaces/dashboard` | Svelte dashboard served by the daemon | browser |
+| `@signet/desktop` | `surfaces/desktop` | Electron desktop shell / packaging | node |
+| `@signet/tray` | `surfaces/tray` | Shared tray/menu bar state utilities | node |
+| `@signet/extension` | `surfaces/browser-extension` | Browser extension UI | browser |
+| `@signet/sdk` | `libs/sdk` | Third-party integration SDK | node |
+| `@signet/connector-base` | `libs/connector-base` | Shared connector primitives | node |
+| `@signet/connector-claude-code` | `integrations/claude-code/connector` | Claude Code install-time integration | node |
+| `@signet/connector-opencode` | `integrations/opencode/connector` | OpenCode install-time integration | node |
+| `@signet/connector-openclaw` | `integrations/openclaw/connector` | OpenClaw install-time integration | node |
+| `@signet/connector-codex` | `integrations/codex/connector` | Codex CLI install-time integration | node |
+| `@signet/connector-gemini` | `integrations/gemini/connector` | Gemini CLI install-time integration | node |
+| `@signet/connector-oh-my-pi` | `integrations/oh-my-pi/connector` | Oh My Pi install-time integration | node |
+| `@signet/connector-pi` | `integrations/pi/connector` | Pi install-time integration | node |
+| `@signet/connector-hermes-agent` | `integrations/hermes-agent/connector` | Hermes Agent install-time integration + Python plugin | node |
+| `@signet/opencode-plugin` | `integrations/opencode/plugin` | OpenCode runtime plugin | node |
+| `@signet/oh-my-pi-extension` | `integrations/oh-my-pi/extension` | Oh My Pi extension/runtime bundle | browser |
+| `@signet/pi-extension-base` | `integrations/pi/extension-base` | Shared Pi/OMP extension utilities (raw TS) | node |
+| `@signet/pi-extension` | `integrations/pi/extension` | Pi extension/runtime bundle | node |
+| `@signetai/signet-memory-openclaw` | `integrations/openclaw/memory-adapter` | OpenClaw runtime adapter | node |
+| `signetai` | `dist/signetai` | Meta-package bundling CLI + daemon | - |
+| `@signet/web` | `web/marketing` | Marketing website | cloudflare |
+| `reviews-worker` | `web/workers/reviews` | Cloudflare review worker | cloudflare |
+| `signet.secrets` | `plugins/core/secrets` | Core Signet secrets plugin | bun |
+| `memorybench` | `memorybench` | Benchmark harness and local benchmark UI | node |
 
 ### Important package responsibilities
 
@@ -205,7 +210,7 @@ bun test packages/daemon/src/pipeline/worker.test.ts
   hook lifecycle, session bypass, update checker.
 - **`@signet/daemon`**: Hono HTTP server on port 3850, file watching,
   auto-commit, pipeline V2, session tracker, update system.
-- **`packages/daemon-rs`**: Rust shadow runtime for parity work and
+- **`platform/daemon-rs`**: Rust shadow runtime for parity work and
   divergence logging. JS daemon changes must preserve parity
   expectations.
 - **`@signet/connector-*`**: install-time harness integrations. Distinct
@@ -229,7 +234,7 @@ Use **shadcn-svelte** components for UI work whenever possible:
 Dashboard commands:
 
 ```bash
-cd packages/cli/dashboard
+cd surfaces/dashboard
 bun install
 bun run dev
 bun run build
@@ -241,7 +246,7 @@ bun run check
 Astro static site deployed to Cloudflare Pages.
 
 ```bash
-cd web
+cd web/marketing
 bun run dev
 bun run build
 bun run deploy
@@ -270,7 +275,7 @@ User edits $SIGNET_WORKSPACE/AGENTS.md
 ### Memory pipeline
 
 The daemon runs a plugin-first memory pipeline in
-`packages/daemon/src/pipeline/`.
+`platform/daemon/src/pipeline/`.
 
 - Connectors send `x-signet-runtime-path: plugin|legacy`.
 - The session tracker allows one active runtime path per session and
@@ -302,10 +307,10 @@ Rules:
 
 ### Database, auth, and data location
 
-- Migrations live in `packages/core/src/migrations/` and run on daemon
+- Migrations live in `platform/core/src/migrations/` and run on daemon
   startup. Add new migrations sequentially and register them in the
   index.
-- Auth lives in `packages/daemon/src/auth/` with middleware, policy,
+- Auth lives in `platform/daemon/src/auth/` with middleware, policy,
   rate limiting, and token management.
 - User data lives in `$SIGNET_WORKSPACE/` (default `~/.agents/`):
 
@@ -384,7 +389,7 @@ Before finishing:
 ### Daemon commands
 
 ```bash
-cd packages/daemon
+cd platform/daemon
 bun run start
 bun run dev
 bun run install:service
@@ -394,7 +399,7 @@ bun run uninstall:service
 ### CLI commands
 
 ```bash
-cd packages/cli
+cd surfaces/cli
 bun src/cli.ts setup
 bun src/cli.ts status
 ```

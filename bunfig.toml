@@ -1,5 +1,5 @@
 [test]
 
-# Scope test discovery to packages/ and web/ only.
-# Prevents bun from picking up test files in references/.
-root = "packages"
+# Test discovery now runs through workspace package scripts instead of one
+# shared source root. Avoid adding a root here or package-local `bun test`
+# commands will resolve against the wrong subtree after the layout split.

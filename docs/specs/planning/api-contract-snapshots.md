@@ -37,7 +37,7 @@ caught only by manual review or downstream test failures.
 
 ## Proposed approach
 
-**Snapshot test file** (`packages/daemon/src/__tests__/api-contracts.test.ts`):
+**Snapshot test file** (`platform/daemon/src/__tests__/api-contracts.test.ts`):
 A bun test file that starts a daemon instance (or uses the test
 helper), sends requests to each critical route, and snapshots the
 response shape. Use bun's built-in snapshot testing (`expect().toMatchSnapshot()`).
@@ -56,7 +56,7 @@ values to their type strings (`"string"`, `"number"`, `"array"`, etc.).
 - `GET /api/skills`
 - `GET /api/sessions`
 
-**Snapshot files**: Stored in `packages/daemon/src/__tests__/__snapshots__/`.
+**Snapshot files**: Stored in `platform/daemon/src/__tests__/__snapshots__/`.
 Checked into git. Updated via `bun test --update-snapshots` when
 changes are intentional.
 

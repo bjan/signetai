@@ -21,16 +21,16 @@ jobs:
           ACTUAL=$(sha256sum /tmp/bun-install.ps1 | awk '{print toupper($1)}')
 
           # Extract the pinned hash from our installer
-          PINNED=$(grep -oP '"[A-F0-9]{64}"' web/public/install.ps1 | tr -d '"')
+          PINNED=$(grep -oP '"[A-F0-9]{64}"' web/marketing/public/install.ps1 | tr -d '"')
 
           echo "Pinned hash: $PINNED"
           echo "Actual hash: $ACTUAL"
 
           if [ "$ACTUAL" != "$PINNED" ]; then
-            echo "::error::Bun installer hash has changed upstream. Update the pinned hash in web/public/install.ps1"
+            echo "::error::Bun installer hash has changed upstream. Update the pinned hash in web/marketing/public/install.ps1"
             echo ""
             echo "New hash: $ACTUAL"
-            echo "Run: sed -i 's/$PINNED/$ACTUAL/' web/public/install.ps1"
+            echo "Run: sed -i 's/$PINNED/$ACTUAL/' web/marketing/public/install.ps1"
             exit 1
           fi
 

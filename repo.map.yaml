@@ -1,0 +1,109 @@
+version: 1
+updated_at: "2026-04-19"
+
+areas:
+  platform:
+    purpose: "Engine/runtime code: core data model, daemon, Rust daemon parity, predictor, native accelerators."
+    risk:
+      - "agent_id and visibility scoping"
+      - "auth and rate limits on mutation/admin routes"
+      - "SQLite migrations and runtime parity"
+      - "pipeline side effects and background workers"
+    packages:
+      - path: platform/core
+        name: "@signet/core"
+      - path: platform/daemon
+        name: "@signet/daemon"
+      - path: platform/native
+        name: "@signet/native"
+      - path: platform/daemon-rs
+        name: "daemon-rs"
+      - path: platform/predictor
+        name: "predictor"
+
+  surfaces:
+    purpose: "Human-facing ways to operate Signet."
+    packages:
+      - path: surfaces/cli
+        name: "@signet/cli"
+      - path: surfaces/dashboard
+        name: "signet-dashboard"
+      - path: surfaces/desktop
+        name: "@signet/desktop"
+      - path: surfaces/tray
+        name: "@signet/tray"
+      - path: surfaces/browser-extension
+        name: "@signet/extension"
+
+  integrations:
+    purpose: "External harness integrations grouped by the tool they connect to."
+    rule: "Group by external system first, then connector/plugin/adapter role."
+    packages:
+      - path: integrations/claude-code/connector
+        name: "@signet/connector-claude-code"
+      - path: integrations/codex/connector
+        name: "@signet/connector-codex"
+      - path: integrations/forge/connector
+        name: "@signet/connector-forge"
+      - path: integrations/gemini/connector
+        name: "@signet/connector-gemini"
+      - path: integrations/hermes-agent/connector
+        name: "@signet/connector-hermes-agent"
+      - path: integrations/oh-my-pi/connector
+        name: "@signet/connector-oh-my-pi"
+      - path: integrations/oh-my-pi/extension
+        name: "@signet/oh-my-pi-extension"
+      - path: integrations/openclaw/connector
+        name: "@signet/connector-openclaw"
+      - path: integrations/openclaw/memory-adapter
+        name: "@signetai/signet-memory-openclaw"
+      - path: integrations/opencode/connector
+        name: "@signet/connector-opencode"
+      - path: integrations/opencode/plugin
+        name: "@signet/opencode-plugin"
+      - path: integrations/pi/connector
+        name: "@signet/connector-pi"
+      - path: integrations/pi/extension
+        name: "@signet/pi-extension"
+      - path: integrations/pi/extension-base
+        name: "@signet/pi-extension-base"
+
+  plugins:
+    purpose: "Signet-native plugins loaded by Signet. External-tool plugins live under integrations/<tool>/plugin."
+    core:
+      - path: plugins/core/secrets
+        id: "signet.secrets"
+
+  libs:
+    purpose: "Reusable developer libraries that are not product runtimes."
+    packages:
+      - path: libs/sdk
+        name: "@signet/sdk"
+      - path: libs/connector-base
+        name: "@signet/connector-base"
+
+  dist:
+    purpose: "Assembled shipping artifacts."
+    packages:
+      - path: dist/signetai
+        name: "signetai"
+
+  runtimes:
+    purpose: "Separate runtime ecosystems kept in the monorepo."
+    packages:
+      - path: runtimes/forge
+        name: "forge"
+
+  web:
+    purpose: "Marketing site and web workers."
+    packages:
+      - path: web/marketing
+        name: "@signet/web"
+      - path: web/workers/reviews
+        name: "reviews-worker"
+
+  memorybench:
+    purpose: "Benchmark harness, datasets, providers, reports, and local benchmark UI."
+    packages:
+      - path: memorybench
+        name: "memorybench"

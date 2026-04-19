@@ -149,7 +149,7 @@ understand the pipeline internals, they can read it directly.
 
 ### What changes in the session-start hook
 
-`handleSessionStart()` in `packages/daemon/src/hooks.ts` already
+`handleSessionStart()` in `platform/daemon/src/hooks.ts` already
 builds an `inject` string from memories, date/time, and metadata.
 The system prompt becomes the first section of that inject string,
 before memories and other context.
@@ -213,14 +213,14 @@ Could be done as aliases first, deprecating the old names.
 
 | File | Change |
 |------|--------|
-| `packages/core/src/markdown.ts` | Remove or empty `buildSignetBlock()`. Keep `SIGNET_BLOCK_START`/`END` constants for migration detection. |
-| `packages/daemon/src/hooks.ts` | Add system prompt to `handleSessionStart()` inject output |
-| `packages/connector-claude-code/src/index.ts` | Stop injecting Signet block into generated files. Optionally strip existing blocks on install. |
-| `packages/connector-opencode/src/index.ts` | Same as above |
-| `packages/connector-openclaw/src/index.ts` | Same as above |
-| `packages/connector-codex/src/index.ts` | Same as above |
-| `packages/connector-oh-my-pi/src/index.ts` | Apply the same legacy block cleanup during install |
-| `packages/daemon-rs/crates/signet-daemon/src/routes/hooks.rs` | Mirror session-start system prompt injection to keep shadow parity |
+| `platform/core/src/markdown.ts` | Remove or empty `buildSignetBlock()`. Keep `SIGNET_BLOCK_START`/`END` constants for migration detection. |
+| `platform/daemon/src/hooks.ts` | Add system prompt to `handleSessionStart()` inject output |
+| `integrations/claude-code/connector/src/index.ts` | Stop injecting Signet block into generated files. Optionally strip existing blocks on install. |
+| `integrations/opencode/connector/src/index.ts` | Same as above |
+| `integrations/openclaw/connector/src/index.ts` | Same as above |
+| `integrations/codex/connector/src/index.ts` | Same as above |
+| `integrations/oh-my-pi/connector/src/index.ts` | Apply the same legacy block cleanup during install |
+| `platform/daemon-rs/crates/signet-daemon/src/routes/hooks.rs` | Mirror session-start system prompt injection to keep shadow parity |
 
 
 ## Implementation Decisions (This Phase)

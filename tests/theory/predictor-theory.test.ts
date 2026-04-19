@@ -18,11 +18,11 @@ import {
 	applyTopicDiversity,
 	maybeExplore,
 	type RankedCandidate,
-} from "../../packages/daemon/src/predictor-scoring";
+} from "../../platform/daemon/src/predictor-scoring";
 
-import { computeNdcg } from "../../packages/daemon/src/predictor-comparison";
+import { computeNdcg } from "../../platform/daemon/src/predictor-comparison";
 
-import { getAlphaFloor, computeEffectiveAlpha, type PredictorState } from "../../packages/daemon/src/predictor-state";
+import { getAlphaFloor, computeEffectiveAlpha, type PredictorState } from "../../platform/daemon/src/predictor-state";
 
 // ---------------------------------------------------------------------------
 // Helpers -- build test data without coupling to internals

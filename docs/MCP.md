@@ -48,7 +48,7 @@ for agent-initiated, on-demand operations.
 Tool Reference
 --------------
 
-All tools are defined in `packages/daemon/src/mcp/tools.ts`. Tool handlers
+All tools are defined in `platform/daemon/src/mcp/tools.ts`. Tool handlers
 call the daemon's HTTP API internally and use the shared recall/remember
 surface helpers from `@signet/core` so MCP, CLI, and harness integrations do
 not drift into separate request shapes or result formatting.

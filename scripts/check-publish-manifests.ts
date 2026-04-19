@@ -56,7 +56,7 @@ export function isPublishableWorkspacePackage(pkg: PackageJson): boolean {
 }
 
 export function listWorkspacePackageFiles(): string[] {
-	const output = execSync("git ls-files package.json 'packages/**/package.json'", {
+	const output = execSync("git ls-files package.json 'platform/**/package.json' 'surfaces/**/package.json' 'integrations/**/package.json' 'libs/**/package.json' 'dist/**/package.json' 'web/**/package.json'", {
 		encoding: "utf8",
 	});
 

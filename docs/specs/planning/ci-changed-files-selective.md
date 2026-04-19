@@ -33,17 +33,19 @@ slows feedback loops, and creates noise when unrelated packages fail.
 
 ## Proposed approach
 
-**Dependency graph script** (`scripts/ci-affected.ts`): Parse each
-`packages/*/package.json` for `dependencies` and `devDependencies`
-referencing workspace packages. Build an adjacency list. Given a set
-of changed paths, resolve to package names, then walk forward edges
-to collect the full closure. Output a JSON array of affected package
+**Dependency graph script** (`scripts/ci-affected.ts`): Read the root
+workspace globs and `repo.map.yaml`, then parse each discovered
+`package.json` for `dependencies` and `devDependencies` referencing
+workspace packages. Build an adjacency list. Given a set of changed
+paths, resolve to workspace package names, then walk forward edges to
+collect the full closure. Output a JSON array of affected package
 directories.
 
 **Changed-file detection**: Use `git diff --name-only origin/main...HEAD`
-in CI. Map each changed path to its owning package via directory prefix
-(`packages/<name>/`). Root-level changes (package.json, bunfig.toml,
-tsconfig) trigger full suite as a safeguard.
+in CI. Map each changed path to its owning workspace package via the
+resolved workspace directory prefixes. Root-level changes (`package.json`,
+`bunfig.toml`, `tsconfig`, `turbo.json`, `repo.map.yaml`) trigger the full
+suite as a safeguard.
 
 **GitHub Actions matrix**: The PR workflow calls the affected script,
 then feeds the output into a dynamic matrix for build, test, and
@@ -70,8 +72,8 @@ unconditionally on a cron schedule.
 
 ## Validation criteria
 
-- PR touching only `packages/cli/` does not run daemon or core tests.
-- PR touching `packages/core/` runs core + all downstream packages.
+- PR touching only `surfaces/cli/` does not run daemon or core tests.
+- PR touching `platform/core/` runs core + all downstream packages.
 - Root-level changes trigger full suite.
 - Nightly cron runs all packages regardless of recent changes.
 

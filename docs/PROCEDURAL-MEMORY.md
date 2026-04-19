@@ -61,7 +61,7 @@ so each skill has exactly one entity node.
 
 ### Skill Enrichment
 
-Source: `packages/daemon/src/pipeline/skill-enrichment.ts`
+Source: `platform/daemon/src/pipeline/skill-enrichment.ts`
 
 When a skill is installed with thin frontmatter (description shorter than
 `procCfg.enrichMinDescription` characters, or no triggers defined), the enrichment
@@ -84,7 +84,7 @@ whatever frontmatter is available.
 
 ### YAML Frontmatter Parsing
 
-Source: `packages/daemon/src/pipeline/skill-frontmatter.ts`
+Source: `platform/daemon/src/pipeline/skill-frontmatter.ts`
 
 `parseSkillFile(content)` extracts YAML frontmatter from a SKILL.md file using
 the `yaml` package's Document API. It recognizes both `name` and `title` fields
@@ -98,7 +98,7 @@ externally; the reconciler does not patch SKILL.md files).
 
 ### Skill Graph Nodes
 
-Source: `packages/daemon/src/pipeline/skill-graph.ts`
+Source: `platform/daemon/src/pipeline/skill-graph.ts`
 
 `installSkillNode(input, accessor, config, embeddingCfg, fetchEmbedding, provider)`
 performs the full install sequence:
@@ -124,7 +124,7 @@ This is a hard delete; skill nodes do not use soft-delete.
 
 ### Skill Reconciler
 
-Source: `packages/daemon/src/pipeline/skill-reconciler.ts`
+Source: `platform/daemon/src/pipeline/skill-reconciler.ts`
 
 The reconciler keeps `skill_meta` in sync with the `$SIGNET_WORKSPACE/skills/` directory.
 It runs in three modes:

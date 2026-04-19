@@ -791,7 +791,7 @@ title: "Synthetic Data Generation for Predictive Memory Scorer"
 
 1. **Build feature vector generator** (7.2) -- this is the
    foundation. Must exactly match the 17-dim format in
-   `packages/predictor/src/protocol.rs`.
+   `platform/predictor/src/protocol.rs`.
 
 2. **Build label generator** (7.3) -- deterministic from planted
    patterns, giving us known ground truth.

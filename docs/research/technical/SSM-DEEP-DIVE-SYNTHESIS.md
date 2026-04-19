@@ -176,7 +176,7 @@ Real session data with feedback labels doesn't exist in volume yet. The pipeline
 
 ### The PoC Already Proved Viability
 
-The standalone benchmark (`packages/predictor/bench/ssm_proof_of_concept.py`) ran a 50K-parameter selective SSM against an MLP baseline and the production heuristic on synthetic data matching the exact 17-dim feature layout from `protocol.rs`:
+The standalone benchmark (`platform/predictor/bench/ssm_proof_of_concept.py`) ran a 50K-parameter selective SSM against an MLP baseline and the production heuristic on synthetic data matching the exact 17-dim feature layout from `protocol.rs`:
 
 | Metric | Heuristic | MLP (3.2K) | SSM (50K) | SSM vs Heuristic |
 |--------|-----------|------------|-----------|------------------|
@@ -295,7 +295,7 @@ PHASE 0: SSM Foundation & Evaluation ──────────────�
 │      - Fair MLP baseline with ListNet loss
 │
 │  0b. Build benchmark harness [2-3 days]
-│      - Standalone Python (packages/predictor/bench/)
+│      - Standalone Python (platform/predictor/bench/)
 │      - Loads synthetic JSONL or real session exports
 │      - Trains both SSM and cross-attention on identical splits
 │      - Reports: HR@5/10, MRR@10, DCG@10, per-canary pass/fail,

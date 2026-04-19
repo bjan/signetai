@@ -17,7 +17,7 @@ reviews, code linting, status summaries, dependency checks, etc.
 The daemon evaluates cron expressions and spawns CLI processes on
 schedule.
 
-Source code: `packages/daemon/src/scheduler/`
+Source code: `platform/daemon/src/scheduler/`
 
 ## Creating Tasks
 
@@ -61,7 +61,7 @@ Standard 5-field cron syntax: `minute hour day-of-month month day-of-week`
 ### Presets
 
 The dashboard offers these built-in presets (defined in
-`packages/daemon/src/scheduler/cron.ts`):
+`platform/daemon/src/scheduler/cron.ts`):
 
 | Preset | Expression |
 |--------|-----------|
@@ -87,7 +87,7 @@ time.
 
 ### Process Commands
 
-The `spawnTask()` function in `packages/daemon/src/scheduler/spawn.ts`
+The `spawnTask()` function in `platform/daemon/src/scheduler/spawn.ts`
 builds the CLI command based on the harness:
 
 - **Claude Code**: `claude --dangerously-skip-permissions -p "<prompt>"`

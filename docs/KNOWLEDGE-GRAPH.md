@@ -104,7 +104,7 @@ In list queries (`listKnowledgeEntities`), pinned entities sort to the top:
 
 ## Graph Traversal
 
-Source: `packages/daemon/src/pipeline/graph-traversal.ts`
+Source: `platform/daemon/src/pipeline/graph-traversal.ts`
 
 ### Focal Entity Resolution
 
@@ -160,7 +160,7 @@ tables are confirmed present.
 
 ## Behavioral Feedback Loop
 
-Source: `packages/daemon/src/pipeline/aspect-feedback.ts`
+Source: `platform/daemon/src/pipeline/aspect-feedback.ts`
 
 The feedback loop adjusts aspect weights based on actual usage signals at session
 end. Two mechanisms run:
@@ -206,7 +206,7 @@ through `getFeedbackTelemetry()`.
 
 ## Graph Persistence
 
-Source: `packages/daemon/src/pipeline/graph-transactions.ts`
+Source: `platform/daemon/src/pipeline/graph-transactions.ts`
 
 Two transaction closures handle the write path for the extraction pipeline:
 

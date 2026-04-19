@@ -39,11 +39,11 @@ reviews in CI partially help but lack ownership context.
 directory and key shared files to their owner:
 
 ```
-packages/core/          @nicholai
-packages/daemon/        @nicholai
-packages/cli/           @nicholai
-packages/sdk/           @nicholai
-packages/connector-*/   @nicholai
+platform/core/          @nicholai
+platform/daemon/        @nicholai
+surfaces/cli/           @nicholai
+libs/sdk/               @nicholai
+integrations/*/connector/ @nicholai
 web/                    @nicholai
 docs/                   @nicholai
 ```
@@ -85,7 +85,7 @@ PR creation. The PR author can override or add reviewers.
 
 ## Validation criteria
 
-- PR touching `packages/daemon/` auto-assigns the daemon owner.
+- PR touching `platform/daemon/` auto-assigns the daemon owner.
 - PR labeled `priority:p0` open for 5 hours triggers an SLA warning.
 - CODEOWNERS covers all package directories in the monorepo.
 

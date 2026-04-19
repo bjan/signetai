@@ -10,7 +10,7 @@ scope_boundary: ""
 
 ## Context
 
-The Signet daemon (`packages/daemon/`) is ~23,000 lines of TypeScript
+The Signet daemon (`platform/daemon/`) is ~23,000 lines of TypeScript
 running on Bun. It's a 24/7 background service handling memory storage,
 hybrid search, an LLM extraction pipeline, file watching, git sync, MCP
 server, secrets, auth, scheduled tasks, and 100+ HTTP endpoints.
@@ -30,7 +30,7 @@ it needs from core (search queries, YAML parsing, migrations via embedded SQL).
 ## Cargo Workspace
 
 ```
-packages/daemon-rs/
+platform/daemon-rs/
   Cargo.toml              (workspace root)
   crates/
     signet-daemon/        (binary: axum server, proxy, startup)
@@ -61,7 +61,7 @@ Validate:
 - proxy overhead < 1ms on localhost
 
 Critical files:
-- `packages/daemon/src/daemon.ts` (boot sequence, lines 1-150)
+- `platform/daemon/src/daemon.ts` (boot sequence, lines 1-150)
 
 
 ## Phase 2: Read-only endpoints (search hot path)
@@ -95,9 +95,9 @@ Validate:
 - benchmark: `hey -n 1000 -c 10` on `/api/memory/recall` — Rust should win at p99
 
 Critical files:
-- `packages/daemon/src/memory-search.ts` (hybrid recall algorithm)
-- `packages/daemon/src/db-accessor.ts` (connection pool pattern, WAL, vec loading)
-- `packages/core/src/search.ts` (SQL query builders)
+- `platform/daemon/src/memory-search.ts` (hybrid recall algorithm)
+- `platform/daemon/src/db-accessor.ts` (connection pool pattern, WAL, vec loading)
+- `platform/core/src/search.ts` (SQL query builders)
 
 
 ## Phase 3: Write endpoints
@@ -130,9 +130,9 @@ Validate:
 - transaction atomicity: kill daemon mid-write, verify no partial state
 
 Critical files:
-- `packages/daemon/src/transactions.ts` (ingest envelope, modify, forget)
-- `packages/daemon/src/secrets.ts` (XSalsa20-Poly1305, BLAKE2b key derivation)
-- `packages/daemon/src/db-helpers.ts` (Float32Array → blob for vec_embeddings)
+- `platform/daemon/src/transactions.ts` (ingest envelope, modify, forget)
+- `platform/daemon/src/secrets.ts` (XSalsa20-Poly1305, BLAKE2b key derivation)
+- `platform/daemon/src/db-helpers.ts` (Float32Array → blob for vec_embeddings)
 
 
 ## Phase 4: Pipeline workers
@@ -161,10 +161,10 @@ Validate:
 - stuck job recovery: verify lease timeout releases orphaned jobs
 
 Critical files:
-- `packages/daemon/src/pipeline/worker.ts` (main extraction loop)
-- `packages/daemon/src/pipeline/decision.ts` (ADD/UPDATE/NONE/DELETE scoring)
-- `packages/daemon/src/pipeline/provider.ts` (Ollama + Claude providers)
-- `packages/daemon/src/pipeline/summary-worker.ts` (session summarizer)
+- `platform/daemon/src/pipeline/worker.ts` (main extraction loop)
+- `platform/daemon/src/pipeline/decision.ts` (ADD/UPDATE/NONE/DELETE scoring)
+- `platform/daemon/src/pipeline/provider.ts` (Ollama + Claude providers)
+- `platform/daemon/src/pipeline/summary-worker.ts` (session summarizer)
 
 
 ## Phase 5: Everything else
@@ -191,9 +191,9 @@ Validate:
 - scheduler: create cron task, verify harness subprocess spawns on schedule
 
 Critical files:
-- `packages/daemon/src/hooks.ts` (session lifecycle, 1,375 lines)
-- `packages/daemon/src/mcp/tools.ts` (MCP tool definitions)
-- `packages/daemon/src/auth/tokens.ts` (token format for backward compat)
+- `platform/daemon/src/hooks.ts` (session lifecycle, 1,375 lines)
+- `platform/daemon/src/mcp/tools.ts` (MCP tool definitions)
+- `platform/daemon/src/auth/tokens.ts` (token format for backward compat)
 
 
 ## Phase 6: Cutover
@@ -231,7 +231,7 @@ validation before tackling the harder pipeline and MCP work.
 ## Where to start
 
 Phase 1, day 1:
-1. `mkdir -p packages/daemon-rs/crates/signet-daemon`
+1. `mkdir -p platform/daemon-rs/crates/signet-daemon`
 2. `cargo init` the workspace
 3. Add axum + tokio + rusqlite (bundled) + reqwest
 4. Write `main.rs`: open DB, serve /health, proxy everything else

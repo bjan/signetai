@@ -5,9 +5,10 @@ import { fileURLToPath } from "node:url";
 
 const rootDir = fileURLToPath(new URL("../../", import.meta.url));
 const dockerfile = readFileSync(join(rootDir, "deploy/docker/Dockerfile"), "utf8");
-const openclawPackageJson = JSON.parse(readFileSync(join(rootDir, "packages/adapters/openclaw/package.json"), "utf8"));
-const daemonPackageJson = JSON.parse(readFileSync(join(rootDir, "packages/daemon/package.json"), "utf8"));
-const desktopPackageJson = JSON.parse(readFileSync(join(rootDir, "packages/desktop/package.json"), "utf8"));
+const dockerignore = readFileSync(join(rootDir, ".dockerignore"), "utf8");
+const openclawPackageJson = JSON.parse(readFileSync(join(rootDir, "integrations/openclaw/memory-adapter/package.json"), "utf8"));
+const daemonPackageJson = JSON.parse(readFileSync(join(rootDir, "platform/daemon/package.json"), "utf8"));
+const desktopPackageJson = JSON.parse(readFileSync(join(rootDir, "surfaces/desktop/package.json"), "utf8"));
 const openclawBuild =
 	typeof openclawPackageJson === "object" &&
 	openclawPackageJson !== null &&
@@ -45,7 +46,7 @@ const desktopHomepage =
 	typeof desktopPackageJson.homepage === "string"
 		? desktopPackageJson.homepage
 		: undefined;
-const openclawEntry = readFileSync(join(rootDir, "packages/adapters/openclaw/src/index.ts"), "utf8");
+const openclawEntry = readFileSync(join(rootDir, "integrations/openclaw/memory-adapter/src/index.ts"), "utf8");
 
 function getBuildCommands(source: string): string[] {
 	return source
@@ -58,6 +59,12 @@ describe("Docker build pipeline regression guard", () => {
 	it("uses shared build scripts instead of hardcoded connector filters", () => {
 		expect(dockerfile).toContain("RUN bun run build:deps");
 		expect(dockerfile).not.toContain("--filter '@signet/connector-");
+	});
+
+	it("keeps source buckets available in the Docker build context", () => {
+		expect(dockerfile).toContain("COPY dist ./dist");
+		expect(dockerignore).toContain("!dist/signetai/**");
+		expect(dockerignore).toContain("dist/signetai/dist");
 	});
 
 	it("keeps the shared prebuild sequence aligned before packaging signetai", () => {

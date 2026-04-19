@@ -204,7 +204,7 @@ a minimal HTML page listing available API endpoints instead.
 Build the dashboard to restore the full UI:
 
 ```bash
-cd packages/cli/dashboard
+cd surfaces/dashboard
 bun run build
 ```
 
@@ -215,7 +215,7 @@ Development
 To run the dashboard in dev mode with hot reload:
 
 ```bash
-cd packages/cli/dashboard
+cd surfaces/dashboard
 bun install
 bun run dev
 ```
@@ -276,7 +276,7 @@ These conventions apply to all dashboard UI work.
 ### Component Organization
 
 ```
-packages/cli/dashboard/src/lib/
+surfaces/dashboard/src/lib/
   components/
     ui/           # shadcn-svelte primitives (button, card, tabs, etc.)
     memory/       # Memory feature components
@@ -304,7 +304,7 @@ packages/cli/dashboard/src/lib/
 ### Design Tokens
 
 Tokens are CSS custom properties defined in
-`packages/cli/dashboard/src/app.css`. Dark theme is the default;
+`surfaces/dashboard/src/app.css`. Dark theme is the default;
 light activates via `data-theme="light"` on `<html>`.
 
 **Never hardcode hex colors.** Always use token variables:

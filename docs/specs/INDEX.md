@@ -362,12 +362,12 @@ cannot suppress them. This is a hard retrieval invariant.
   taxonomy. Requires updating invariant 3 when implemented.
 - DP-16 (post-fusion dampening) adds gravity, hub, and resolution
   filters after fusion scoring. Informed by Ori-Mnemos ablation data.
-  Implemented in `packages/daemon/src/pipeline/dampening.ts`.
+  Implemented in `platform/daemon/src/pipeline/dampening.ts`.
 - DP-17 (compaction resilience) adds PreCompact/PostCompact checkpoint
   hooks for mid-session context recovery. Extends session continuity.
 - DP-18 (decision auto-protection) auto-detects decisions and marks
   them as constraints (invariant 5 ensures they always surface).
-  Implemented in `packages/daemon/src/inline-entity-linker.ts` (14
+  Implemented in `platform/daemon/src/inline-entity-linker.ts` (14
   regex patterns, auto-promotes matching attributes to constraints).
 - DP-19 (adaptive write gate) evolves DP-1 significance gate from
   session-level to per-memory surprisal filtering.
@@ -509,7 +509,7 @@ Phase ordering based on hard dependencies and integration contracts.
   - Independent of cognition stack, talks to daemon API only
 - **Multi-Agent Phase 1-8**: IN PROGRESS (2026-03-24)
   - Phase 1: `AgentDefinition` type + `agents.roster` in `AgentManifest` — DONE
-  - Phase 2: `packages/core/src/agents.ts` — discovery, scaffold, identity inheritance — DONE
+  - Phase 2: `platform/core/src/agents.ts` — discovery, scaffold, identity inheritance — DONE
   - Phase 3: Migration 043 — `agents` table + `memories.agent_id` + `memories.visibility` — DONE
   - Phase 4: Daemon — scope clause, `/api/agents` endpoints, `agent-id.ts` — DONE
   - Phase 5: File watcher — watches `~/.agents/agents/` subdirectories — DONE

@@ -117,7 +117,7 @@ Same lease/retry/dead-letter mechanics. Same exponential backoff.
 
 ### 3. Pass 2a: Structural classification worker
 
-New file: `packages/daemon/src/pipeline/structural-classify.ts`
+New file: `platform/daemon/src/pipeline/structural-classify.ts`
 
 This worker:
 1. Leases `structural_classify` jobs in batches (group by entity_id,
@@ -140,7 +140,7 @@ Failed facts stay pending for retry.
 
 ### 4. Pass 2b: Dependency extraction worker
 
-New file: `packages/daemon/src/pipeline/structural-dependency.ts`
+New file: `platform/daemon/src/pipeline/structural-dependency.ts`
 
 This worker:
 1. Leases `structural_dependency` jobs in batches (max 5 per batch)
@@ -179,7 +179,7 @@ readonly structural?: {
 ### 6. Aspect type suggestions
 
 New file or constant map:
-`packages/daemon/src/pipeline/aspect-suggestions.ts`
+`platform/daemon/src/pipeline/aspect-suggestions.ts`
 
 A mapping from entity type to suggested aspect names. Used in the
 classification prompt to guide the LLM:
@@ -395,7 +395,7 @@ that task.
 ## JSON Parsing
 
 Use the same `stripFences` and `tryParseJson` helpers from
-`packages/daemon/src/pipeline/extraction.ts`. The model occasionally
+`platform/daemon/src/pipeline/extraction.ts`. The model occasionally
 wraps output in markdown fences or includes trailing commas.
 
 Additional validation for structural prompts:
@@ -409,16 +409,16 @@ Additional validation for structural prompts:
 
 ## Key Files
 
-- `packages/daemon/src/pipeline/worker.ts` — hook pass 1 after writes
-- `packages/daemon/src/pipeline/structural-classify.ts` — new, pass 2a
-- `packages/daemon/src/pipeline/structural-dependency.ts` — new, pass 2b
-- `packages/daemon/src/pipeline/aspect-suggestions.ts` — new, type map
-- `packages/daemon/src/knowledge-graph.ts` — CRUD helpers (from KA-1)
-- `packages/daemon/src/pipeline/provider.ts` — LlmProvider
-- `packages/daemon/src/pipeline/extraction.ts` — JSON parsing helpers
-- `packages/daemon/src/memory-config.ts` — structural config defaults
-- `packages/daemon/src/daemon.ts` — wire worker lifecycle
-- `packages/core/src/types.ts` — structural config types
+- `platform/daemon/src/pipeline/worker.ts` — hook pass 1 after writes
+- `platform/daemon/src/pipeline/structural-classify.ts` — new, pass 2a
+- `platform/daemon/src/pipeline/structural-dependency.ts` — new, pass 2b
+- `platform/daemon/src/pipeline/aspect-suggestions.ts` — new, type map
+- `platform/daemon/src/knowledge-graph.ts` — CRUD helpers (from KA-1)
+- `platform/daemon/src/pipeline/provider.ts` — LlmProvider
+- `platform/daemon/src/pipeline/extraction.ts` — JSON parsing helpers
+- `platform/daemon/src/memory-config.ts` — structural config defaults
+- `platform/daemon/src/daemon.ts` — wire worker lifecycle
+- `platform/core/src/types.ts` — structural config types
 
 ## What NOT to Build (KA-3+)
 

@@ -491,7 +491,7 @@ graph structure: confirmed injections raise weights, stale aspects lose weight,
 and the graph continuously reshapes itself based on what actually serves the
 agent rather than what was important when the aspect was first created.
 
-The implementation lives in `packages/daemon/src/pipeline/aspect-feedback.ts`.
+The implementation lives in `platform/daemon/src/pipeline/aspect-feedback.ts`.
 Telemetry is tracked via `getFeedbackTelemetry()` and exposed in the pipeline
 status endpoint.
 

@@ -21,7 +21,7 @@ Spec metadata:
 - Registry: `docs/specs/INDEX.md`
 
 Related docs:
-- `packages/connector-base/src/index.ts` (BaseConnector contract)
+- `libs/connector-base/src/index.ts` (BaseConnector contract)
 - `references/hermes-agent/` (Hermes source reference)
 - `docs/research/technical/RESEARCH-COMPETITIVE-SYSTEMS.md`
 
@@ -53,7 +53,7 @@ Hermes for session-local recall.
 
 ### A) BaseConnector subclass
 
-`packages/connector-hermes-agent/src/index.ts` extending `BaseConnector`.
+`integrations/hermes-agent/connector/src/index.ts` extending `BaseConnector`.
 Hermes data dir: `~/.hermes/`, config: `cli-config.yaml`.
 
 - `install(basePath)` — patch config with hooks, compose identity, symlink skills.

@@ -53,7 +53,7 @@ KA-1 through KA-4 must be complete:
 - `predictor_comparisons` and `predictor_training_log` tables exist
 - Comparison recording helpers and API endpoints exist
 
-The dashboard (`packages/cli/dashboard/`) must build and serve. The
+The dashboard (`surfaces/dashboard/`) must build and serve. The
 existing tab/navigation system must be understood — this sprint adds
 a new tab to it.
 
@@ -63,7 +63,7 @@ a new tab to it.
 
 ### 1. Structural snapshot in checkpoints
 
-**Where:** `packages/daemon/src/session-checkpoints.ts`
+**Where:** `platform/daemon/src/session-checkpoints.ts`
 
 Extend `WriteCheckpointParams` and `CheckpointRow` with optional
 structural snapshot fields:
@@ -91,9 +91,9 @@ ALTER TABLE session_checkpoints ADD COLUMN surfaced_constraint_count INTEGER;
 ALTER TABLE session_checkpoints ADD COLUMN traversal_memory_count INTEGER;
 ```
 
-Register as version 21 in `packages/core/src/migrations/index.ts`.
+Register as version 21 in `platform/core/src/migrations/index.ts`.
 
-**Wiring:** In `packages/daemon/src/hooks.ts`, inside
+**Wiring:** In `platform/daemon/src/hooks.ts`, inside
 `handleSessionStart` after traversal completes, capture the structural
 snapshot data. Pass it through to checkpoint writes (periodic,
 pre-compaction, and session-end digests).
@@ -105,7 +105,7 @@ tracked as telemetry variables — just forward them.
 
 ### 2. Recovery injection with structural priority
 
-**Where:** `packages/daemon/src/hooks.ts`, recovery injection block
+**Where:** `platform/daemon/src/hooks.ts`, recovery injection block
 (around line 1135)
 
 When a checkpoint has structural snapshot fields, the recovery section
@@ -139,7 +139,7 @@ section.
 
 ### 3. Knowledge Graph API endpoints
 
-**Where:** `packages/daemon/src/daemon.ts`
+**Where:** `platform/daemon/src/daemon.ts`
 
 Add read-only API endpoints for browsing the knowledge graph:
 
@@ -196,7 +196,7 @@ GET /api/knowledge/traversal/status
 
 ### 4. Dashboard "Knowledge" tab
 
-**Where:** `packages/cli/dashboard/src/`
+**Where:** `surfaces/dashboard/src/`
 
 Add a new "Knowledge" tab to the dashboard. This requires changes to:
 
@@ -208,7 +208,7 @@ Add a new "Knowledge" tab to the dashboard. This requires changes to:
    network icon from lucide).
 
 3. **Tab component:** New file
-   `packages/cli/dashboard/src/lib/components/tabs/KnowledgeTab.svelte`
+   `surfaces/dashboard/src/lib/components/tabs/KnowledgeTab.svelte`
 
 4. **Route wiring:** Add the tab to the conditional rendering in
    `+page.svelte`
@@ -264,7 +264,7 @@ Data source: `GET /api/knowledge/stats`
 
 ### 5. Predictor comparison visualization
 
-**Where:** `packages/cli/dashboard/src/lib/components/tabs/KnowledgeTab.svelte`
+**Where:** `surfaces/dashboard/src/lib/components/tabs/KnowledgeTab.svelte`
 (or a sub-component)
 
 Add a "Predictor Slices" section to the Knowledge tab that visualizes
@@ -319,7 +319,7 @@ runs exist.
 
 ### 7. Continuity state structural extension
 
-**Where:** `packages/daemon/src/continuity-state.ts`
+**Where:** `platform/daemon/src/continuity-state.ts`
 
 Extend `ContinuityState` to accumulate structural snapshot data
 during the session:
@@ -355,29 +355,29 @@ through to checkpoint writes.
 
 ## Key Files
 
-- `packages/daemon/src/session-checkpoints.ts` — structural snapshot
+- `platform/daemon/src/session-checkpoints.ts` — structural snapshot
   fields on checkpoints
-- `packages/daemon/src/continuity-state.ts` — structural context
+- `platform/daemon/src/continuity-state.ts` — structural context
   accumulation
-- `packages/daemon/src/hooks.ts` — wire structural snapshot into
+- `platform/daemon/src/hooks.ts` — wire structural snapshot into
   checkpoints and recovery injection
-- `packages/daemon/src/daemon.ts` — knowledge graph API endpoints
-- `packages/core/src/migrations/021-checkpoint-structural.ts` — new
+- `platform/daemon/src/daemon.ts` — knowledge graph API endpoints
+- `platform/core/src/migrations/021-checkpoint-structural.ts` — new
   migration for checkpoint columns
-- `packages/core/src/migrations/index.ts` — register migration 021
-- `packages/cli/dashboard/src/lib/stores/navigation.svelte.ts` —
+- `platform/core/src/migrations/index.ts` — register migration 021
+- `surfaces/dashboard/src/lib/stores/navigation.svelte.ts` —
   add Knowledge tab
-- `packages/cli/dashboard/src/lib/components/layout/page-headers.ts` —
+- `surfaces/dashboard/src/lib/components/layout/page-headers.ts` —
   Knowledge header
-- `packages/cli/dashboard/src/lib/components/app-sidebar.svelte` —
+- `surfaces/dashboard/src/lib/components/app-sidebar.svelte` —
   sidebar nav item
-- `packages/cli/dashboard/src/lib/components/tabs/KnowledgeTab.svelte` —
+- `surfaces/dashboard/src/lib/components/tabs/KnowledgeTab.svelte` —
   new tab component
-- `packages/cli/dashboard/src/routes/+page.svelte` — tab rendering
-- `packages/daemon/src/pipeline/graph-traversal.ts` — read
+- `surfaces/dashboard/src/routes/+page.svelte` — tab rendering
+- `platform/daemon/src/pipeline/graph-traversal.ts` — read
   (getTraversalStatus, not modified)
-- `packages/daemon/src/knowledge-graph.ts` — read helpers (not modified)
-- `packages/daemon/src/predictor-comparisons.ts` — read helpers
+- `platform/daemon/src/knowledge-graph.ts` — read helpers (not modified)
+- `platform/daemon/src/predictor-comparisons.ts` — read helpers
   (not modified)
 
 ## What NOT to Build

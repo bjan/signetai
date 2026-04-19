@@ -55,7 +55,7 @@ entry points call the same check runner.
 6. **SQLite OK**: Open the memory database, run a simple query.
    Report corruption or missing file.
 7. **migrations current**: Compare applied migration count against
-   available migration files in `packages/core/src/migrations/`.
+   available migration files in `platform/core/src/migrations/`.
 8. **disk space**: Check available space on the partition containing
    `$SIGNET_WORKSPACE`. Warn if < 1GB.
 9. **port available**: If daemon is not running, check that port 3850

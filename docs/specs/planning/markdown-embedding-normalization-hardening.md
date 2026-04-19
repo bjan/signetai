@@ -53,9 +53,9 @@ both content handling and retry behavior.
 
 ### Parity
 
-- `packages/daemon/src/content-normalization.ts`
-- `packages/native/src/normalization.rs`
-- `packages/daemon-rs/crates/signet-services/src/normalize.rs`
+- `platform/daemon/src/content-normalization.ts`
+- `platform/native/src/normalization.rs`
+- `platform/daemon-rs/crates/signet-services/src/normalize.rs`
 
 All three paths must preserve equivalent normalization semantics.
 

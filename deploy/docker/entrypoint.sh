@@ -15,7 +15,7 @@ fi
 
 
 # seed default workspace scripts/skills for fresh volumes
-tpl="/app/packages/signetai/templates"
+tpl="/app/dist/signetai/templates"
 
 if [ -d "$tpl/scripts" ] && [ ! -d "$root/scripts" ]; then
 	mkdir -p "$root/scripts"
@@ -27,4 +27,4 @@ if [ -d "$tpl/skills" ] && [ ! -d "$root/skills" ]; then
 	cp -R "$tpl/skills/." "$root/skills/"
 fi
 
-exec bun /app/packages/signetai/dist/daemon.js
+exec bun /app/dist/signetai/dist/daemon.js

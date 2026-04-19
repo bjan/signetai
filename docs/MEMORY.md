@@ -49,7 +49,7 @@ after every `remember` call when `pipelineV2.enabled = true` in
 
 ### Extraction
 
-The extraction stage (`packages/daemon/src/pipeline/extraction.ts`)
+The extraction stage (`platform/daemon/src/pipeline/extraction.ts`)
 sends the raw memory content to an LLM (default: `qwen3:4b` via
 Ollama) with a structured prompt. The model returns a JSON object with
 two arrays: `facts` and `entities`.
@@ -75,7 +75,7 @@ Extracted entity shape:
 
 ### Decision Engine
 
-The decision stage (`packages/daemon/src/pipeline/decision.ts`)
+The decision stage (`platform/daemon/src/pipeline/decision.ts`)
 evaluates each extracted fact against existing memories to determine
 what should happen next.
 
@@ -126,7 +126,7 @@ with a relationship label. Memory-entity associations are tracked in
 Hybrid Search
 -------------
 
-Search (`packages/core/src/search.ts`) blends two independent signals:
+Search (`platform/core/src/search.ts`) blends two independent signals:
 BM25 keyword relevance and cosine vector similarity. These signals are
 useful because they help build a bounded candidate pool for later
 ranking and context selection.
@@ -186,7 +186,7 @@ search:
 
 When `graphEnabled = true`, the recall endpoint runs an additional
 graph lookup before returning results
-(`packages/daemon/src/pipeline/graph-search.ts`).
+(`platform/daemon/src/pipeline/graph-search.ts`).
 
 The query is tokenized and matched against entity `canonical_name`
 values (top 20 by `mentions` count). From those seed entities, the
@@ -228,7 +228,7 @@ Content Normalization
 ---------------------
 
 Before any memory is written, content passes through normalization
-(`packages/daemon/src/content-normalization.ts`).
+(`platform/daemon/src/content-normalization.ts`).
 
 Storage content trims whitespace and collapses internal whitespace
 runs to single spaces. Normalized content additionally lowercases the
@@ -253,7 +253,7 @@ V2 `add` proposals.
 
 During controlled-write processing, `update` and `delete` proposals
 are evaluated for contradiction risk
-(`packages/daemon/src/pipeline/worker.ts`).
+(`platform/daemon/src/pipeline/worker.ts`).
 
 The detector tokenizes both the new fact and the target memory
 content (lowercase, punctuation stripped, minimum 2-char tokens).
@@ -440,7 +440,7 @@ memory:
 
 ### Retention Worker
 
-The retention worker (`packages/daemon/src/pipeline/retention-worker.ts`)
+The retention worker (`platform/daemon/src/pipeline/retention-worker.ts`)
 runs every 6 hours and purges expired data in a strict sequence. Each
 step runs in its own short write transaction to avoid holding locks.
 

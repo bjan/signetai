@@ -39,9 +39,9 @@ the connection.
 
 The current implementation lives across:
 
-- `packages/daemon/src/pipeline/prospective-index.ts`
-- `packages/daemon/src/memory-search.ts`
-- `packages/core/src/migrations/038-memory-hints.ts`
+- `platform/daemon/src/pipeline/prospective-index.ts`
+- `platform/daemon/src/memory-search.ts`
+- `platform/core/src/migrations/038-memory-hints.ts`
 
 and the current contract is:
 

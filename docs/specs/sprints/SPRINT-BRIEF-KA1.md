@@ -42,7 +42,7 @@ retrieval (KA-3) come later.
 
 ### 1. Migration: `019-knowledge-structure.ts`
 
-New migration file in `packages/core/src/migrations/`. Register it in
+New migration file in `platform/core/src/migrations/`. Register it in
 `migrations/index.ts` as version 19.
 
 #### 1a. Backfill `agent_id` on `entities`
@@ -152,7 +152,7 @@ CREATE INDEX IF NOT EXISTS idx_task_meta_retention ON task_meta(retention_until)
 
 ### 2. Core types
 
-Add to `packages/core/src/types.ts`:
+Add to `platform/core/src/types.ts`:
 
 ```typescript
 // -- Knowledge Architecture types --
@@ -247,7 +247,7 @@ export interface Entity {
 
 ### 3. Read/write helpers
 
-New module: `packages/daemon/src/knowledge-graph.ts`
+New module: `platform/daemon/src/knowledge-graph.ts`
 
 Provide CRUD operations using the `DbAccessor` pattern (same as
 `skill-graph.ts`). All write operations go through `withWriteTx`,
@@ -306,21 +306,21 @@ Key implementation notes:
 After adding `agentId` to the `Entity` interface, update any code that
 creates entity rows to include `agent_id = 'default'`. Key locations:
 
-- `packages/daemon/src/pipeline/graph-transactions.ts` — `txPersistEntities`
-- `packages/daemon/src/pipeline/skill-graph.ts` — `installSkillNode`
+- `platform/daemon/src/pipeline/graph-transactions.ts` — `txPersistEntities`
+- `platform/daemon/src/pipeline/skill-graph.ts` — `installSkillNode`
 - Any other direct INSERT into `entities`
 
 Search for: `INSERT INTO entities` and `INSERT OR REPLACE INTO entities`
 
 ## Key Files
 
-- `packages/core/src/migrations/` — new migration goes here
-- `packages/core/src/migrations/index.ts` — register migration
-- `packages/core/src/types.ts` — add types and update Entity
-- `packages/daemon/src/knowledge-graph.ts` — new module
-- `packages/daemon/src/db-accessor.ts` — DbAccessor interface (reference)
-- `packages/daemon/src/pipeline/skill-graph.ts` — pattern reference
-- `packages/daemon/src/pipeline/graph-transactions.ts` — update for agent_id
+- `platform/core/src/migrations/` — new migration goes here
+- `platform/core/src/migrations/index.ts` — register migration
+- `platform/core/src/types.ts` — add types and update Entity
+- `platform/daemon/src/knowledge-graph.ts` — new module
+- `platform/daemon/src/db-accessor.ts` — DbAccessor interface (reference)
+- `platform/daemon/src/pipeline/skill-graph.ts` — pattern reference
+- `platform/daemon/src/pipeline/graph-transactions.ts` — update for agent_id
 
 ## What NOT to Build (KA-2+)
 

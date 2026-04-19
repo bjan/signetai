@@ -19,7 +19,7 @@ Overview
 --------
 
 The daemon process is a single Bun-targeted binary at
-`packages/daemon/dist/daemon.js`. It owns two things: the SQLite database
+`platform/daemon/dist/daemon.js`. It owns two things: the SQLite database
 at `$SIGNET_WORKSPACE/memory/memories.db` and the config directory at `$SIGNET_WORKSPACE/`.
 Everything else — file watching, the memory pipeline, the dashboard —
 runs inside that one process.

@@ -37,8 +37,8 @@ Primary files reviewed:
 - `docs/KNOWLEDGE-ARCHITECTURE.md`
 - `docs/ROADMAP.md`
 - `docs/CONTRIBUTING.md`
-- `packages/daemon/src/memory-config.ts`
-- `packages/cli/templates/agent.yaml.template`
+- `platform/daemon/src/memory-config.ts`
+- `surfaces/cli/templates/agent.yaml.template`
 
 ---
 
@@ -80,8 +80,8 @@ Contradictions found at audit time:
 
 - `docs/PIPELINE.md` says: predictor disabled by default
 - `docs/DASHBOARD.md` says: predictor disabled by default
-- `packages/daemon/src/memory-config.ts` defaults `predictor.enabled` to `true`
-- `packages/cli/templates/agent.yaml.template` sets `predictor.enabled: true`
+- `platform/daemon/src/memory-config.ts` defaults `predictor.enabled` to `true`
+- `surfaces/cli/templates/agent.yaml.template` sets `predictor.enabled: true`
 
 This is a straight factual contradiction and must be resolved.
 
@@ -282,8 +282,8 @@ Quickstart should teach:
 
 - `docs/PIPELINE.md`
 - `docs/DASHBOARD.md`
-- `packages/daemon/src/memory-config.ts`
-- `packages/cli/templates/agent.yaml.template`
+- `platform/daemon/src/memory-config.ts`
+- `surfaces/cli/templates/agent.yaml.template`
 
 **Problem:**
 
@@ -292,9 +292,9 @@ The docs say the predictor is disabled by default.
 
 **Code evidence:**
 
-- `packages/daemon/src/memory-config.ts`
+- `platform/daemon/src/memory-config.ts`
   - default config sets `predictor.enabled: true`
-- `packages/cli/templates/agent.yaml.template`
+- `surfaces/cli/templates/agent.yaml.template`
   - template sets `predictor.enabled: true`
 
 **Docs evidence:**

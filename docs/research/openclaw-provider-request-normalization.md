@@ -148,7 +148,7 @@ OpenClaw loads the Signet plugin from the path in its config:
 {
   "plugins": {
     "load": {
-      "paths": ["/home/nicholai/signet/signetai/packages/adapters/openclaw"]
+      "paths": ["/home/nicholai/signet/signetai/integrations/openclaw/memory-adapter"]
     }
   }
 }
@@ -203,8 +203,8 @@ in-process fetch wrapper.
 
 ## Files Referenced
 
-- `packages/adapters/openclaw/src/index.ts` — Signet OpenClaw adapter
-- `packages/adapters/openclaw/src/index.test.ts` — Regression tests
+- `integrations/openclaw/memory-adapter/src/index.ts` — Signet OpenClaw adapter
+- `integrations/openclaw/memory-adapter/src/index.test.ts` — Regression tests
 - `references/openclaw/src/agents/system-prompt.ts:482,486` — Hardcoded identity string
 - `/usr/lib/node_modules/openclaw/node_modules/@mariozechner/pi-ai/dist/providers/anthropic.js` — Actual runtime transport
 - `/usr/lib/node_modules/openclaw/node_modules/@anthropic-ai/sdk/client.js` — SDK request pipeline

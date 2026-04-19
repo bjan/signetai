@@ -39,7 +39,7 @@ The missing mode is operational pause:
 
 ### Daemon startup
 
-`packages/daemon/src/daemon.ts` decides whether to start the extraction
+`platform/daemon/src/daemon.ts` decides whether to start the extraction
 pipeline at startup. If the pipeline does not start, Signet already falls
 back to retention-only background work.
 
@@ -51,7 +51,7 @@ if we want backlog preservation.
 
 ### Worker lifecycle
 
-`packages/daemon/src/pipeline/index.ts` already exposes a clean
+`platform/daemon/src/pipeline/index.ts` already exposes a clean
 `startPipeline()` / `stopPipeline()` split. This is a strong fit for a
 paused state because the worker graph is already centralized.
 

@@ -8,7 +8,13 @@ COPY AGENTS.md CLAUDE.md LICENSE README.md ./
 COPY scripts ./scripts
 COPY skills ./skills
 COPY memorybench ./memorybench
-COPY packages ./packages
+COPY platform ./platform
+COPY surfaces ./surfaces
+COPY integrations ./integrations
+COPY libs ./libs
+COPY dist ./dist
+COPY runtimes ./runtimes
+COPY plugins ./plugins
 COPY public ./public
 COPY web ./web
 
@@ -33,12 +39,12 @@ ENV SIGNET_PATH=/data/agents
 ENV SIGNET_BIND=0.0.0.0
 ENV SIGNET_PORT=3850
 
-COPY --from=build /app/packages/signetai/package.json ./packages/signetai/package.json
-RUN cd /app/packages/signetai && bun install --production
+COPY --from=build /app/dist/signetai/package.json ./dist/signetai/package.json
+RUN cd /app/dist/signetai && bun install --production
 
-COPY --from=build /app/packages/signetai/dist ./packages/signetai/dist
-COPY --from=build /app/packages/signetai/dashboard ./packages/signetai/dashboard
-COPY --from=build /app/packages/signetai/skills ./packages/signetai/skills
+COPY --from=build /app/dist/signetai/dist ./dist/signetai/dist
+COPY --from=build /app/dist/signetai/dashboard ./dist/signetai/dashboard
+COPY --from=build /app/dist/signetai/skills ./dist/signetai/skills
 COPY deploy/docker/entrypoint.sh ./deploy/docker/entrypoint.sh
 COPY deploy/docker/scripts ./deploy/docker/scripts
 

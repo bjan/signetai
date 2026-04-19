@@ -82,8 +82,8 @@ Run Leiden with `resolution: 0.5` (favor fewer, larger clusters since entity rel
 ### Implementation Details
 
 **Files to create:**
-- `packages/daemon/src/graph/clustering/leiden-processor.ts` — wraps vendored Leiden
-- `packages/daemon/src/graph/clustering/community-builder.ts` — converts Signet graph to graphology format
+- `platform/daemon/src/graph/clustering/leiden-processor.ts` — wraps vendored Leiden
+- `platform/daemon/src/graph/clustering/community-builder.ts` — converts Signet graph to graphology format
 
 **Migration 030:**
 ```sql
@@ -179,7 +179,7 @@ const calculateCohesion = (memberIds: string[], graph: Graph): number => {
 
 **Repair endpoint:** `/api/repair/cluster-entities`
 ```typescript
-// packages/daemon/src/routes/repair.ts
+// platform/daemon/src/routes/repair.ts
 router.post('/cluster-entities', async (req, res) => {
   const result = await clusterEntities(db);
   res.json({
@@ -267,7 +267,7 @@ CREATE INDEX idx_entity_dependencies_confidence ON entity_dependencies(confidenc
 
 **Types update:**
 ```typescript
-// packages/core/src/types.ts
+// platform/core/src/types.ts
 export type DependencyReason =
   | 'user-asserted'
   | 'multi-memory'
@@ -293,7 +293,7 @@ export interface EntityDependency {
 
 **Extraction worker update:**
 ```typescript
-// packages/daemon/src/pipeline/structural-dependency.ts
+// platform/daemon/src/pipeline/structural-dependency.ts
 
 // Level 1: Normal extraction
 const confidence = 0.7;
@@ -320,7 +320,7 @@ if (await countMemoriesWithDependency(sourceId, targetId) >= 2) {
 
 **Graph traversal update:**
 ```typescript
-// packages/daemon/src/graph/graph-traversal.ts
+// platform/daemon/src/graph/graph-traversal.ts
 
 // Weight traversal candidates by confidence * strength
 const sortedDeps = dependencies
@@ -421,7 +421,7 @@ Add branching limits to graph traversal config.
 
 **Traversal config:**
 ```typescript
-// packages/daemon/src/graph/graph-traversal.ts
+// platform/daemon/src/graph/graph-traversal.ts
 
 export interface TraversalConfig {
   maxDependencyHops: number; // existing
@@ -446,7 +446,7 @@ const DEFAULT_CONFIG: TraversalConfig = {
 
 **Traversal enforcement:**
 ```typescript
-// packages/daemon/src/graph/graph-traversal.ts
+// platform/daemon/src/graph/graph-traversal.ts
 
 const traverseEntity = (
   entityId: string,
@@ -480,7 +480,7 @@ const traverseEntity = (
 
 **Config exposure:**
 ```typescript
-// packages/daemon/src/routes/config.ts
+// platform/daemon/src/routes/config.ts
 
 router.get('/traversal', (req, res) => {
   res.json(getTraversalConfig());
@@ -774,7 +774,7 @@ P1 items are prerequisites for Desire Paths implementation. P2 items are indepen
 ## Implementation Notes
 
 **Where to put the Leiden vendor:**
-- `packages/daemon/src/graph/clustering/vendor/leiden/` — copy `index.cjs` and `utils.cjs` from GitNexus
+- `platform/daemon/src/graph/clustering/vendor/leiden/` — copy `index.cjs` and `utils.cjs` from GitNexus
 - It's MIT-licensed CommonJS, can import directly
 
 **Database considerations:**

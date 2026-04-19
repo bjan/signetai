@@ -23,13 +23,13 @@ Spec metadata:
 
 Related docs:
 - `docs/specs/planning/daemon-rust-rewrite.md` (phased rewrite plan)
-- `packages/daemon-rs/` (Rust daemon shadow implementation)
+- `platform/daemon-rs/` (Rust daemon shadow implementation)
 
 ---
 
 ## 1) Problem
 
-The Rust daemon (`packages/daemon-rs/`) is designed to shadow the JS daemon
+The Rust daemon (`platform/daemon-rs/`) is designed to shadow the JS daemon
 and log divergences to `$SIGNET_WORKSPACE/.daemon/logs/shadow-divergences.jsonl`.
 The `daemon-rust-rewrite` spec defines the six-phase implementation plan
 (proxy -> read endpoints -> writes -> pipeline -> everything else -> cutover).

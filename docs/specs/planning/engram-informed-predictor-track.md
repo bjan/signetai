@@ -58,7 +58,7 @@ Without this lane, Engram-inspired work risks becoming piecemeal:
 
 Lock a reproducible baseline for current scorer behavior and evaluate all
 variants on identical data slices:
-- synthetic canary suite from `packages/predictor/bench/`
+- synthetic canary suite from `platform/predictor/bench/`
 - real-session exports from predictor training data paths
 - identical metric set: HR@K, MRR@K, DCG@K, latency p50/p95/p99
 

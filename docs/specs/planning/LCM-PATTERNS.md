@@ -172,7 +172,7 @@ attributes in a single session is suspicious.
 ### Implementation
 
 - Add escalation logic to the extraction stage in
-  `packages/daemon/src/pipeline/worker.ts`
+  `platform/daemon/src/pipeline/worker.ts`
 - Define threshold constants (configurable via agent.yaml):
   `maxNewEntitiesPerChunk` (default 10),
   `maxNewAttributesPerEntity` (default 20)
@@ -257,7 +257,7 @@ transcript is still persisted (lossless retention applies here too)
 ### Implementation
 
 - Add `significanceGate()` function to pipeline entry
-  (`packages/daemon/src/pipeline/worker.ts`)
+  (`platform/daemon/src/pipeline/worker.ts`)
 - Gate runs before extraction, after session transcript is received
 - Configurable thresholds in agent.yaml: `pipeline.minTurns`,
   `pipeline.minEntityOverlap`, `pipeline.noveltyThreshold`
@@ -424,7 +424,7 @@ that entity and returns a structured answer.
 
 The tool does NOT spawn a sub-agent (simpler than LCM's approach).
 It runs the existing graph traversal logic
-(`packages/daemon/src/pipeline/graph-traversal.ts`) with the entity
+(`platform/daemon/src/pipeline/graph-traversal.ts`) with the entity
 as the sole focal entity and the aspect filter narrowing the walk.
 The result is formatted as a structured context block with cited
 aspect and attribute IDs.

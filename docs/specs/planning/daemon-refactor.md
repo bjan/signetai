@@ -9,7 +9,7 @@ scope_boundary: ""
 
 ## Context
 
-`packages/daemon/src/daemon.ts` is 7,746 lines — a single Hono app file
+`platform/daemon/src/daemon.ts` is 7,746 lines — a single Hono app file
 containing all HTTP routes, helpers, background services, and startup logic.
 It's the single biggest maintenance burden in the codebase. Splitting it
 into route modules improves readability, testability, and makes it possible
@@ -18,7 +18,7 @@ to work on one domain without scrolling through 7k lines.
 ## Pattern
 
 Follow the existing `mountMcpRoute(app: Hono): void` pattern from
-`packages/daemon/src/mcp/route.ts`. Each module gets the app and a shared
+`platform/daemon/src/mcp/route.ts`. Each module gets the app and a shared
 state object, registers its own routes and middleware guards.
 
 ## Shared State
@@ -31,7 +31,7 @@ every mount function. `main()` mutates auth fields before the server starts.
 ## File Plan
 
 ```
-packages/daemon/src/
+platform/daemon/src/
 ├── daemon.ts                              ~300 LOC (orchestrator only)
 ├── git-watcher.ts                         ~1,000 LOC (file watcher + git sync + ingestion)
 ├── routes/
@@ -115,13 +115,13 @@ Each step is independently buildable/testable (`bun run build && bun test`).
 
 ## Key Dependencies
 
-- `packages/daemon/src/daemon.ts` — the file being split
-- `packages/daemon/src/mcp/route.ts` — pattern to follow
-- `packages/daemon/src/db-accessor.ts` — `getDbAccessor()` singleton, used by all routes
-- `packages/daemon/src/auth/index.ts` — `AuthConfig`, `AuthRateLimiter` types for DaemonState
-- `packages/daemon/src/diagnostics.ts` — `createProviderTracker` return type
-- `packages/daemon/src/analytics.ts` — `AnalyticsCollector` type
-- `packages/daemon/src/hooks.ts` — handler functions imported by routes/hooks.ts
+- `platform/daemon/src/daemon.ts` — the file being split
+- `platform/daemon/src/mcp/route.ts` — pattern to follow
+- `platform/daemon/src/db-accessor.ts` — `getDbAccessor()` singleton, used by all routes
+- `platform/daemon/src/auth/index.ts` — `AuthConfig`, `AuthRateLimiter` types for DaemonState
+- `platform/daemon/src/diagnostics.ts` — `createProviderTracker` return type
+- `platform/daemon/src/analytics.ts` — `AnalyticsCollector` type
+- `platform/daemon/src/hooks.ts` — handler functions imported by routes/hooks.ts
 
 ## Cross-Cutting Concerns
 

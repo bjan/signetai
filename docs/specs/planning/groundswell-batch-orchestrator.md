@@ -195,7 +195,7 @@ The key insight: a Reddit thread IS a conversation — just between community me
 ### 2.2 Core Types
 
 ```typescript
-// packages/groundswell/src/types.ts
+// platform/groundswell/src/types.ts
 
 /** A fully assembled Reddit thread ready for pipeline processing */
 export interface RedditThread {
@@ -268,7 +268,7 @@ export interface EngagementSignals {
 ### 2.3 Thread Assembly
 
 ```typescript
-// packages/groundswell/src/thread-assembler.ts
+// platform/groundswell/src/thread-assembler.ts
 
 import type { PushshiftSubmission, PushshiftComment, RedditThread, RedditThreadComment } from './types';
 
@@ -354,7 +354,7 @@ export function assembleThread(
 ### 2.4 Transcript Formatting
 
 ```typescript
-// packages/groundswell/src/transcript-formatter.ts
+// platform/groundswell/src/transcript-formatter.ts
 
 import type { RedditThread, PseudoSession, ThreadMetadata, EngagementSignals } from './types';
 
@@ -506,7 +506,7 @@ The existing pipeline has `MAX_INPUT_CHARS` constraints (~12K chars for a single
 ### 3.3 Implementation
 
 ```typescript
-// packages/groundswell/src/chunking.ts
+// platform/groundswell/src/chunking.ts
 
 /** Character limits matching existing pipeline constraints */
 const MAX_INPUT_CHARS = 12_000;      // significance gate / single-pass limit
@@ -704,7 +704,7 @@ export function chunkThread(thread: RedditThread): ChunkResult {
 ### 4.2 Database Schema (SQLite)
 
 ```sql
--- packages/groundswell/migrations/001_batch_orchestrator.sql
+-- platform/groundswell/migrations/001_batch_orchestrator.sql
 
 -- Subreddits being processed
 CREATE TABLE IF NOT EXISTS groundswell_subreddits (
@@ -780,7 +780,7 @@ CREATE TABLE IF NOT EXISTS groundswell_rate_state (
 ### 4.3 Core Interfaces
 
 ```typescript
-// packages/groundswell/src/orchestrator.ts
+// platform/groundswell/src/orchestrator.ts
 
 export interface OrchestratorConfig {
   /** Max concurrent subreddit workers */
@@ -849,7 +849,7 @@ export interface OrchestratorStats {
 ### 4.4 Orchestrator Implementation
 
 ```typescript
-// packages/groundswell/src/orchestrator.ts
+// platform/groundswell/src/orchestrator.ts
 
 import { Database } from 'bun:sqlite';
 
@@ -938,7 +938,7 @@ export function createOrchestrator(config: OrchestratorConfig): OrchestratorHand
 ### 4.5 Per-Subreddit Worker
 
 ```typescript
-// packages/groundswell/src/subreddit-worker.ts
+// platform/groundswell/src/subreddit-worker.ts
 
 /**
  * Worker lifecycle:
@@ -1089,7 +1089,7 @@ Cross-subreddit ordering is not required — each subreddit's knowledge graph is
 ### 4.7 Rate Limiter
 
 ```typescript
-// packages/groundswell/src/rate-limiter.ts
+// platform/groundswell/src/rate-limiter.ts
 
 export interface TokenBucketLimiter {
   acquire(tokens?: number): Promise<void>;
@@ -1190,7 +1190,7 @@ All three must fail for a session to be gated out.
 Reddit threads don't have user↔assistant turns. We need a parallel branch that evaluates **engagement metadata** instead.
 
 ```typescript
-// packages/groundswell/src/community-significance-gate.ts
+// platform/groundswell/src/community-significance-gate.ts
 
 export interface CommunitySignificanceConfig {
   readonly enabled: boolean;
@@ -1369,7 +1369,7 @@ The orchestrator **does not modify any existing pipeline files**. It integrates 
 ### 6.2 Exact Function Call Sequence
 
 ```typescript
-// packages/groundswell/src/pipeline-bridge.ts
+// platform/groundswell/src/pipeline-bridge.ts
 
 import { getDbAccessor } from '@signet/daemon/db-accessor';
 import { enqueueSummaryJob } from '@signet/daemon/pipeline/summary-worker';
@@ -1517,7 +1517,7 @@ At 10,000 communities, migrate to Postgres:
 1. **Abstract the DB layer now** — use the existing `DbAccessor` pattern:
 
 ```typescript
-// packages/groundswell/src/db.ts
+// platform/groundswell/src/db.ts
 
 export interface GroundswellDb {
   // Job management
@@ -1622,7 +1622,7 @@ FOR UPDATE SKIP LOCKED;
 ## Appendix A: File Layout
 
 ```
-packages/
+platform/
   groundswell/
     src/
       types.ts                    # PushshiftSubmission, PushshiftComment, RedditThread, etc.
@@ -1663,12 +1663,12 @@ brew install qbittorrent  # macOS
 #    ... etc
 
 # 4. Register subreddits with the orchestrator
-bun run packages/groundswell/src/cli.ts add \
+bun run platform/groundswell/src/cli.ts add \
   --subreddit localllama \
   --submissions ./data/subreddits24/localllama_submissions.zst \
   --comments ./data/subreddits24/localllama_comments.zst \
   --priority 10
 
 # 5. Start processing
-bun run packages/groundswell/src/cli.ts start
+bun run platform/groundswell/src/cli.ts start
 ```

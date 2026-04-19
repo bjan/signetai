@@ -179,7 +179,7 @@ Package Structure
 -----------------
 
 ```
-packages/forge/
+runtimes/forge/
   Cargo.toml                (Forge Rust workspace root)
   crates/
     forge-cli/             (primary `forge` binary)
@@ -192,7 +192,7 @@ packages/forge/
 
 Forge is the monorepo-owned reference implementation of the runtime
 contract. The public contract stays the same even though the concrete
-implementation lives in `packages/forge/`.
+implementation lives in `runtimes/forge/`.
 
 `forge` remains the primary end-user command. Signet may additionally
 manage Forge installs through `signet forge ...`, but the runtime itself
@@ -352,7 +352,7 @@ Build Sequence
 --------------
 
 **Phase 1: monorepo-owned reference runtime**
-- Keep Forge as the canonical runtime implementation in `packages/forge/`
+- Keep Forge as the canonical runtime implementation in `runtimes/forge/`
 - Preserve the daemon-owned execution contract: memory, hooks, secrets, and session state stay daemon-side
 - Deliverable: `forge` remains the primary native Signet runtime surface
 
@@ -388,22 +388,22 @@ Critical Files
 --------------
 
 Reference runtime:
-- `packages/forge/crates/forge-cli/`
-- `packages/forge/crates/forge-agent/`
-- `packages/forge/crates/forge-provider/`
-- `packages/forge/crates/forge-tools/`
-- `packages/forge/crates/forge-signet/`
-- `packages/forge/crates/forge-tui/`
+- `runtimes/forge/crates/forge-cli/`
+- `runtimes/forge/crates/forge-agent/`
+- `runtimes/forge/crates/forge-provider/`
+- `runtimes/forge/crates/forge-tools/`
+- `runtimes/forge/crates/forge-signet/`
+- `runtimes/forge/crates/forge-tui/`
 
 Runtime contract + adapters:
-- `packages/sdk/`
-- `packages/connector-openclaw/`
-- `packages/connector-claude-code/`
-- `packages/connector-opencode/`
+- `libs/sdk/`
+- `integrations/openclaw/connector/`
+- `integrations/claude-code/connector/`
+- `integrations/opencode/connector/`
 
 Daemon surfaces:
-- `packages/daemon/`
-- `packages/daemon-rs/`
+- `platform/daemon/`
+- `platform/daemon-rs/`
 
 
 Open Questions

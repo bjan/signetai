@@ -90,13 +90,13 @@ which currently can only process completed sessions.
 
 ### Implementation
 
-- `packages/daemon/src/hooks.ts`: in `handleUserPromptSubmit`, after
+- `platform/daemon/src/hooks.ts`: in `handleUserPromptSubmit`, after
   transcript is read from `transcript_path`, upsert into
   `session_transcripts`. Reuse the existing `normalizeSessionTranscript`
   call and write path. Guard with `if (transcript && sessionKey)`.
-- `packages/daemon/src/daemon.ts`: add `GET /api/sessions/{key}/transcript`
+- `platform/daemon/src/daemon.ts`: add `GET /api/sessions/{key}/transcript`
   endpoint reading from `session_transcripts`.
-- `packages/daemon/src/hooks.ts` `handleSessionEnd`: change
+- `platform/daemon/src/hooks.ts` `handleSessionEnd`: change
   `INSERT OR IGNORE` to `INSERT OR REPLACE` for the terminal write.
   The per-prompt upsert handles the common case; session-end handles
   the final state.
@@ -235,7 +235,7 @@ this with no special-casing.
 
 ### Implementation
 
-- `packages/daemon/src/hooks.ts`: add parent-lookup logic to
+- `platform/daemon/src/hooks.ts`: add parent-lookup logic to
   `handleSessionStart()`. For CC: if `agent_id` is present in the
   payload, query `session_transcripts WHERE project = ? AND session_key != ?
   ORDER BY created_at DESC LIMIT 1`. For OpenClaw: if
@@ -243,17 +243,17 @@ this with no special-casing.
   format and query directly. For OpenCode: if `parentKey` is present in
   the hook body, use it directly. If parent found, call
   `assembleInheritBlock()`.
-- `packages/daemon/src/hooks.ts`: add `assembleInheritBlock(parentKey,
+- `platform/daemon/src/hooks.ts`: add `assembleInheritBlock(parentKey,
   cfg)` — fetches latest `session_checkpoints` row for parent, takes
   `cfg.tailChars` from tail of `session_transcripts.content`, fetches
   active constraints for checkpoint's focal entities. Pure DB reads,
   no LLM. Returns formatted block or `null` if no data exists yet.
-- `packages/daemon/src/mcp.ts`: register `session_search` tool. Queries
+- `platform/daemon/src/mcp.ts`: register `session_search` tool. Queries
   `session_transcripts` via FTS5; `sessionKey` param defaults to parent
   key when current session is a sub-agent.
-- `packages/daemon/src/daemon.ts`: add `GET /api/sessions/{key}/transcript`
+- `platform/daemon/src/daemon.ts`: add `GET /api/sessions/{key}/transcript`
   and `POST /api/sessions/search` endpoints.
-- `packages/core/src/types.ts`: extend `AgentManifest` with
+- `platform/core/src/types.ts`: extend `AgentManifest` with
   `memory.pipelineV2.subagents` config block.
 - No connector changes needed for CC — no `SubagentStart` hook required.
 

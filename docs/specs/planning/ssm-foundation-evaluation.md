@@ -52,7 +52,7 @@ thresholds, before any production routing changes.
 
 ## 3) Proposed capability set
 
-### A) Benchmark harness (`packages/predictor/bench/`)
+### A) Benchmark harness (`platform/predictor/bench/`)
 
 Standalone Python harness (no daemon dependency) that:
 

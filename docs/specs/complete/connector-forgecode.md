@@ -25,7 +25,7 @@ Spec metadata:
 - Registry: `docs/specs/INDEX.md`
 
 Related docs:
-- `packages/connector-base/src/index.ts`
+- `libs/connector-base/src/index.ts`
 - `references/forgecode/crates/forge_domain/src/env.rs`
 - `references/forgecode/crates/forge_services/src/instructions.rs`
 - `references/forgecode/crates/forge_domain/src/mcp.rs`

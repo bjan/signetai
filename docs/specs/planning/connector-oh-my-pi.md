@@ -24,8 +24,8 @@ Spec metadata:
 - Registry: `docs/specs/INDEX.md`
 
 Related docs:
-- `packages/connector-oh-my-pi/src/index.ts`
-- `packages/oh-my-pi-extension/src/index.ts`
+- `integrations/oh-my-pi/connector/src/index.ts`
+- `integrations/oh-my-pi/extension/src/index.ts`
 - `docs/specs/approved/signet-runtime.md`
 
 ---

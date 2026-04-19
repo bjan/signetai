@@ -23,7 +23,7 @@
 
 ### 1.1 Limits
 
-From `packages/daemon/src/pipeline/extraction.ts`:
+From `platform/daemon/src/pipeline/extraction.ts`:
 
 ```typescript
 const MAX_FACTS = 20;
@@ -91,7 +91,7 @@ Community extraction has fundamentally different concerns: multi-author content,
 Extraction profiles are selected per-agent based on `agentId` prefix convention. Each profile defines its own limits, prompt template, fact types, entity types, and post-processing behavior.
 
 ```typescript
-// packages/daemon/src/pipeline/extraction-profiles.ts
+// platform/daemon/src/pipeline/extraction-profiles.ts
 
 // ---------------------------------------------------------------------------
 // Profile Registry
@@ -293,7 +293,7 @@ export async function extractFactsAndEntities(
 ### 2.5 Config Extension
 
 ```typescript
-// In PipelineV2Config (packages/core/src/types.ts)
+// In PipelineV2Config (platform/core/src/types.ts)
 
 export interface PipelineExtractionConfig {
   // ... existing fields ...
@@ -575,7 +575,7 @@ function validateFact(
 ### 3.6 ExtractedFact Type Extension
 
 ```typescript
-// In packages/core/src/types.ts — extend ExtractedFact
+// In platform/core/src/types.ts — extend ExtractedFact
 
 export interface ExtractedFact {
   readonly content: string;
@@ -609,7 +609,7 @@ For community extraction, the equivalent signal is **karma** (upvotes). Content 
 ### 4.2 Karma → FTS Overlap Mapping
 
 ```typescript
-// packages/daemon/src/pipeline/community-feedback.ts
+// platform/daemon/src/pipeline/community-feedback.ts
 
 export interface CommunityFeedbackConfig {
   /** Base delta for FTS overlap equivalent (same as aspect-feedback) */
@@ -801,7 +801,7 @@ export interface CommunityDecayConfig {
 Current hub dampening uses a single P90 percentile threshold across all entities. Community graphs have structurally different entity scopes — a subreddit entity (r/rust) will always be high-degree, but that doesn't mean it's noise.
 
 ```typescript
-// packages/daemon/src/pipeline/dampening.ts — extended
+// platform/daemon/src/pipeline/dampening.ts — extended
 
 // ---------------------------------------------------------------------------
 // Scope-Aware Hub Dampening
@@ -951,7 +951,7 @@ function scopeAwareHub(
 The current gravity dampening tokenizes content and checks for query-term overlap against `FTS_STOP`. Community-specific content has domain stop words (terms so ubiquitous in a subreddit that they have zero discriminating power).
 
 ```typescript
-// packages/daemon/src/pipeline/community-stop-words.ts
+// platform/daemon/src/pipeline/community-stop-words.ts
 
 /**
  * Per-community stop-word management.
@@ -1392,7 +1392,7 @@ Yearly    → long-term community identity and drift
 ```
 
 ```typescript
-// packages/daemon/src/pipeline/community-summarization.ts
+// platform/daemon/src/pipeline/community-summarization.ts
 
 export type CommunitySummaryKind =
   | "thread"    // depth 0 — single Reddit thread
@@ -1573,7 +1573,7 @@ ${monthlySummaries.map((s, i) => `--- ${month(i)} ---\n${s}`).join("\n\n")}`;
 ### 7.8 Condensation Engine
 
 ```typescript
-// packages/daemon/src/pipeline/community-summarization.ts
+// platform/daemon/src/pipeline/community-summarization.ts
 
 export async function checkAndCondenseCommunity(
   accessor: DbAccessor,
@@ -1721,18 +1721,18 @@ The `session_summary_children` junction table provides full DAG provenance at ev
 
 | New File | Purpose |
 |----------|---------|
-| `packages/daemon/src/pipeline/extraction-profiles.ts` | Profile registry, selection, interfaces |
-| `packages/daemon/src/pipeline/community-feedback.ts` | Karma → FTS mapping, community feedback |
-| `packages/daemon/src/pipeline/community-stop-words.ts` | Per-community stop-word generation |
-| `packages/daemon/src/pipeline/community-summarization.ts` | Thread→daily→weekly→monthly→yearly hierarchy |
+| `platform/daemon/src/pipeline/extraction-profiles.ts` | Profile registry, selection, interfaces |
+| `platform/daemon/src/pipeline/community-feedback.ts` | Karma → FTS mapping, community feedback |
+| `platform/daemon/src/pipeline/community-stop-words.ts` | Per-community stop-word generation |
+| `platform/daemon/src/pipeline/community-summarization.ts` | Thread→daily→weekly→monthly→yearly hierarchy |
 
 | Modified File | Changes |
 |---------------|---------|
-| `packages/daemon/src/pipeline/extraction.ts` | Profile-aware extraction, parameterized limits |
-| `packages/daemon/src/pipeline/aspect-feedback.ts` | Add `applyCommunityKarmaFeedback()` |
-| `packages/daemon/src/pipeline/dampening.ts` | Scope-aware hub, community stops, type multipliers |
-| `packages/daemon/src/pipeline/prospective-index.ts` | Community FAQ hint prompts |
-| `packages/core/src/types.ts` | Extended MemoryType, CommunityExtractionConfig, ExtractedFact.scope |
+| `platform/daemon/src/pipeline/extraction.ts` | Profile-aware extraction, parameterized limits |
+| `platform/daemon/src/pipeline/aspect-feedback.ts` | Add `applyCommunityKarmaFeedback()` |
+| `platform/daemon/src/pipeline/dampening.ts` | Scope-aware hub, community stops, type multipliers |
+| `platform/daemon/src/pipeline/prospective-index.ts` | Community FAQ hint prompts |
+| `platform/core/src/types.ts` | Extended MemoryType, CommunityExtractionConfig, ExtractedFact.scope |
 
 ## Appendix B: Migration Checklist
 

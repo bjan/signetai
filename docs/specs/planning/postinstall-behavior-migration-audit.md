@@ -21,9 +21,9 @@ Spec metadata:
 - Registry: `docs/specs/INDEX.md`
 
 Related docs:
-- `packages/cli/src/cli.ts` (CLI entry point)
-- `packages/daemon/src/daemon.ts` (daemon startup)
-- `packages/core/src/migrations/` (database migrations)
+- `surfaces/cli/src/cli.ts` (CLI entry point)
+- `platform/daemon/src/daemon.ts` (daemon startup)
+- `platform/core/src/migrations/` (database migrations)
 
 ---
 

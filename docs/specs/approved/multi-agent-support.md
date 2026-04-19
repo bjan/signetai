@@ -32,18 +32,18 @@ User decisions:
 Critical files
 ---
 
-- `packages/daemon/src/daemon.ts` — HTTP server, memory schema,
+- `platform/daemon/src/daemon.ts` — HTTP server, memory schema,
   file watcher, harness sync (~4650 LOC)
-- `packages/daemon/src/hooks.ts` — Request/response interfaces
-- `packages/daemon/src/memory-config.ts` — Config loading
-- `packages/core/src/types.ts` — AgentManifest, Memory types
-- `packages/core/src/identity.ts` — Identity file detection,
+- `platform/daemon/src/hooks.ts` — Request/response interfaces
+- `platform/daemon/src/memory-config.ts` — Config loading
+- `platform/core/src/types.ts` — AgentManifest, Memory types
+- `platform/core/src/identity.ts` — Identity file detection,
   IDENTITY_FILES spec (line 56-97), loadIdentityFiles (line 206)
-- `packages/core/src/skills.ts` — Skill registry, unification
-- `packages/cli/src/cli.ts` — CLI commands (~4650 LOC)
-- `packages/cli/dashboard/src/` — SvelteKit dashboard
-- `packages/connector-openclaw/src/index.ts` — OpenClaw sync
-- `packages/adapters/openclaw/src/index.ts` — Runtime plugin
+- `platform/core/src/skills.ts` — Skill registry, unification
+- `surfaces/cli/src/cli.ts` — CLI commands (~4650 LOC)
+- `surfaces/dashboard/src/` — SvelteKit dashboard
+- `integrations/openclaw/connector/src/index.ts` — OpenClaw sync
+- `integrations/openclaw/memory-adapter/src/index.ts` — Runtime plugin
 - `~/.agents/agent.yaml` — User config manifest
 
 
@@ -52,7 +52,7 @@ Implementation phases
 
 ### Phase 1: Core types — AgentDefinition + roster
 
-File: `packages/core/src/types.ts`
+File: `platform/core/src/types.ts`
 
 ```typescript
 interface AgentDefinition {
@@ -72,7 +72,7 @@ readonly agents?: {
 
 ### Phase 2: Agent registry — discovery + scaffold + inheritance
 
-New file: `packages/core/src/agents.ts`
+New file: `platform/core/src/agents.ts`
 
 - `discoverAgents(agentsDir)` — scan `~/.agents/agents/*/`
   for subdirs, return AgentDefinition[]
@@ -97,7 +97,7 @@ resolve(file, agentName):
 
 ### Phase 3: DB schema — add agent scoping columns
 
-File: `packages/daemon/src/daemon.ts`
+File: `platform/daemon/src/daemon.ts`
 
 Add to `requiredColumns` array at line ~4509:
 ```
@@ -137,7 +137,7 @@ A `signet agent purge <name>` command explicitly deletes.
 
 ### Phase 4: Daemon API — scoped memory + agent endpoints
 
-File: `packages/daemon/src/daemon.ts`
+File: `platform/daemon/src/daemon.ts`
 
 a) Helper: `buildAgentScopeClause(agentId?)` — returns SQL
    WHERE fragment. If agentId is provided, returns memories
@@ -155,7 +155,7 @@ c) New endpoints:
    - `DELETE /api/agents/:name` — archive agent (marks
      memories, doesn't delete directory — CLI handles that)
 
-File: `packages/daemon/src/hooks.ts`
+File: `platform/daemon/src/hooks.ts`
 
 Add to RememberRequest and RecallRequest:
 ```typescript
@@ -166,7 +166,7 @@ scope?: 'global' | 'private';
 
 ### Phase 5: File watcher — watch agent subdirectories
 
-File: `packages/daemon/src/daemon.ts`, `startFileWatcher()`
+File: `platform/daemon/src/daemon.ts`, `startFileWatcher()`
 
 Add `~/.agents/agents/` to chokidar watch paths. On change
 inside an agent subdir, trigger sync for that agent only
@@ -175,7 +175,7 @@ changed file path.
 
 ### Phase 6: Harness sync — per-agent OpenClaw workspaces
 
-File: `packages/daemon/src/daemon.ts`
+File: `platform/daemon/src/daemon.ts`
 
 New function `syncAgentsToOpenClaw()` called from
 `syncHarnessConfigs()` (line ~3750):
@@ -188,7 +188,7 @@ For each agent in the roster:
 
 ### Phase 7: CLI — `signet agent` commands
 
-File: `packages/cli/src/cli.ts`
+File: `surfaces/cli/src/cli.ts`
 
 New subcommand group:
 - `signet agent list` — discovered agents + roster status
@@ -207,7 +207,7 @@ Add `--agent <name>` flag to:
 
 ### Phase 8: OpenClaw connector — multi-agent sync
 
-File: `packages/connector-openclaw/src/index.ts`
+File: `integrations/openclaw/connector/src/index.ts`
 
 New `syncMultipleAgents(roster, basePath)` method:
 
@@ -237,7 +237,7 @@ b) Optionally generate `bindings` array if user provides
 
 c) Keep the deep-merge pattern — idempotent, safe to re-run.
 
-File: `packages/adapters/openclaw/src/index.ts`
+File: `integrations/openclaw/memory-adapter/src/index.ts`
 
 The adapter already accepts `agentId` on `onSessionStart()`
 (line 66-100). The gap is that `createPlugin()` (line 274)
@@ -248,7 +248,7 @@ through to all daemon calls.
 
 ### Phase 9: Dashboard — agent roster view
 
-File: `packages/cli/dashboard/src/`
+File: `surfaces/dashboard/src/`
 
 a) New API functions in `lib/api.ts`:
    - `listAgents()` → GET /api/agents
@@ -272,7 +272,7 @@ d) Update `+page.ts` data loader to fetch agent list on
 
 ### Phase 10: Setup wizard — multi-agent configuration
 
-File: `packages/cli/src/cli.ts`, `setupWizard()` (line 1413)
+File: `surfaces/cli/src/cli.ts`, `setupWizard()` (line 1413)
 
 Add a new path in the existing setup wizard decision tree:
 

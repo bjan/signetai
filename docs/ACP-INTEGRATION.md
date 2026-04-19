@@ -199,7 +199,7 @@ Replace raw `Bun.spawn` in the scheduler with acpx session management.
 
 ### What Changes
 
-`packages/daemon/src/scheduler/spawn.ts` gains an `acpx` spawn mode.
+`platform/daemon/src/scheduler/spawn.ts` gains an `acpx` spawn mode.
 When a task's harness is configured for acpx (or a global flag
 enables it), the scheduler calls acpx instead of the harness CLI
 directly.
@@ -337,7 +337,7 @@ enables:
 ### Implementation
 
 - New CLI command: `signet acp --agent <name>`
-- New module: `packages/daemon/src/acp-bridge/`
+- New module: `platform/daemon/src/acp-bridge/`
 - Implements ACP server-side protocol (using `@agentclientprotocol/sdk`
   `AgentSideConnection`)
 - Spawns the underlying agent as a child ACP client
@@ -517,7 +517,7 @@ Dependencies
 - `acpx` npm package (or vendored binary)
 - `@agentclientprotocol/sdk` for Phase 2+ (ACP server-side protocol)
 - No changes to existing harness connectors for Phase 1
-- Phase 2 requires new `packages/daemon/src/acp-bridge/` module
+- Phase 2 requires new `platform/daemon/src/acp-bridge/` module
 - Phase 3 requires multi-agent support from the existing spec
 
 ---

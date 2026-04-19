@@ -21,8 +21,8 @@ Spec metadata:
 - Registry: `docs/specs/INDEX.md`
 
 Related docs:
-- `packages/cli/dashboard/src/routes/+page.svelte`
-- `packages/cli/dashboard/src/lib/stores/navigation.svelte.ts`
+- `surfaces/dashboard/src/routes/+page.svelte`
+- `surfaces/dashboard/src/lib/stores/navigation.svelte.ts`
 - `docs/DASHBOARD.md`
 
 ---

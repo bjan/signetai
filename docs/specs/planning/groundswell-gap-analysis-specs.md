@@ -119,7 +119,7 @@ This is a new feedback source. The feedback infrastructure (aspect_weight update
 
 **Classification: NEEDS CHANGES**
 
-DP-16 (post-fusion dampening: gravity, hub, resolution) is COMPLETE, implemented in `packages/daemon/src/pipeline/dampening.ts`.
+DP-16 (post-fusion dampening: gravity, hub, resolution) is COMPLETE, implemented in `platform/daemon/src/pipeline/dampening.ts`.
 
 The PRD wants three community-specific adaptations:
 

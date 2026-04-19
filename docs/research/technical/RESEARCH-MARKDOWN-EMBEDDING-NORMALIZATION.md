@@ -16,11 +16,11 @@ creating repeated warning spam.
 
 ## Observed code paths
 
-- `packages/daemon/src/content-normalization.ts`
-- `packages/native/src/normalization.rs`
-- `packages/daemon-rs/crates/signet-services/src/normalize.rs`
-- `packages/daemon/src/embedding-tracker.ts`
-- `packages/daemon/src/daemon.ts`
+- `platform/daemon/src/content-normalization.ts`
+- `platform/native/src/normalization.rs`
+- `platform/daemon-rs/crates/signet-services/src/normalize.rs`
+- `platform/daemon/src/embedding-tracker.ts`
+- `platform/daemon/src/daemon.ts`
 
 The current normalization contract collapses all whitespace for storage,
 which includes real newlines. That is safe for plain prose dedupe, but it
@@ -61,7 +61,7 @@ payload cannot create continuous warning spam.
 ## Implications
 
 - Regression tests are required for multiline markdown tables.
-- Rust parity must be updated in both `packages/native` and
-  `packages/daemon-rs`.
+- Rust parity must be updated in both `platform/native` and
+  `platform/daemon-rs`.
 - The incident should leave a durable guardrail in the spec system and the
   test suite.

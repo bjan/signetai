@@ -147,6 +147,6 @@ session-end summary format. The native harness passes by definition.
 
 ## 9) Open decisions
 
-1. Whether the benchmark runner lives in `packages/cli` or a new `packages/bench`.
+1. Whether the benchmark runner stays under `memorybench/` or gets a CLI-facing wrapper in `surfaces/cli`.
 2. How to handle tool-calling loops that exceed a max iteration count.
 3. Whether interactive mode supports multi-turn or resets each turn.

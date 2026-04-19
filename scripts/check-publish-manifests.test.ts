@@ -27,9 +27,9 @@ describe("check-publish-manifests", () => {
 	test("discovers publishable manifest targets from workspace files", () => {
 		const root = mkdtempSync(join(tmpdir(), "signet-publish-manifests-"));
 		try {
-			const signetaiDir = join(root, "packages", "signetai");
-			const adapterDir = join(root, "packages", "adapters", "openclaw");
-			const connectorDir = join(root, "packages", "connector-pi");
+			const signetaiDir = join(root, "dist", "signetai");
+			const adapterDir = join(root, "integrations", "openclaw", "memory-adapter");
+			const connectorDir = join(root, "integrations", "pi", "connector");
 			mkdirSync(signetaiDir, { recursive: true });
 			mkdirSync(adapterDir, { recursive: true });
 			mkdirSync(connectorDir, { recursive: true });
@@ -62,8 +62,8 @@ describe("check-publish-manifests", () => {
 	test("flags runtime dependencies on unpublished workspace packages", () => {
 		const root = mkdtempSync(join(tmpdir(), "signet-publish-manifests-"));
 		try {
-			const signetaiDir = join(root, "packages", "signetai");
-			const connectorPiDir = join(root, "packages", "connector-pi");
+			const signetaiDir = join(root, "dist", "signetai");
+			const connectorPiDir = join(root, "integrations", "pi", "connector");
 			mkdirSync(signetaiDir, { recursive: true });
 			mkdirSync(connectorPiDir, { recursive: true });
 
@@ -96,7 +96,7 @@ describe("check-publish-manifests", () => {
 	test("flags workspace protocol in runtime dependency fields", () => {
 		const root = mkdtempSync(join(tmpdir(), "signet-publish-manifests-"));
 		try {
-			const signetaiDir = join(root, "packages", "signetai");
+			const signetaiDir = join(root, "dist", "signetai");
 			mkdirSync(signetaiDir, { recursive: true });
 
 			const signetaiFile = join(signetaiDir, "package.json");
@@ -122,8 +122,8 @@ describe("check-publish-manifests", () => {
 	test("allows runtime dependencies on publishable workspace packages", () => {
 		const root = mkdtempSync(join(tmpdir(), "signet-publish-manifests-"));
 		try {
-			const signetaiDir = join(root, "packages", "signetai");
-			const adapterDir = join(root, "packages", "adapters", "openclaw");
+			const signetaiDir = join(root, "dist", "signetai");
+			const adapterDir = join(root, "integrations", "openclaw", "memory-adapter");
 			mkdirSync(signetaiDir, { recursive: true });
 			mkdirSync(adapterDir, { recursive: true });
 
@@ -156,8 +156,8 @@ describe("check-publish-manifests", () => {
 	test("ignores devDependencies on workspace packages for publish checks", () => {
 		const root = mkdtempSync(join(tmpdir(), "signet-publish-manifests-"));
 		try {
-			const adapterDir = join(root, "packages", "adapters", "openclaw");
-			const coreDir = join(root, "packages", "core");
+			const adapterDir = join(root, "integrations", "openclaw", "memory-adapter");
+			const coreDir = join(root, "platform", "core");
 			mkdirSync(adapterDir, { recursive: true });
 			mkdirSync(coreDir, { recursive: true });
 

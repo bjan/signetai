@@ -24,59 +24,85 @@ Package Overview
 ----------------
 
 Signet is organized as a bun workspace monorepo under `signetai/`.
-Packages divide along a clear ownership boundary: `@signet/core` owns
-types and data; the daemon owns all runtime behavior; connectors own
-the platform-specific surface area.
+The repository is grouped by developer intent:
 
-`@signet/core` is the shared foundation. It defines TypeScript
+- `platform/` contains the core runtime substrate.
+- `surfaces/` contains human-facing applications.
+- `integrations/` contains external harness integrations, grouped by tool.
+- `libs/` contains reusable developer libraries.
+- `plugins/` contains Signet-native plugins.
+- `dist/` contains assembled shipping artifacts.
+- `runtimes/` contains separate runtime ecosystems.
+- `web/` contains the marketing site and Cloudflare workers.
+- `memorybench/` contains the benchmark harness, providers, reports, and UI.
+
+See [Repository Map](./REPO_MAP.md) for the full path map. The important
+ownership boundary is unchanged: `@signet/core` owns types and data; the
+daemon owns runtime behavior; connectors own install-time harness integration;
+runtime plugins and adapters live beside the tool they extend.
+
+`@signet/core` lives in `platform/core/`. It is the shared foundation and
+defines TypeScript
 interfaces, the SQLite wrapper, hybrid search, manifest parsing, and
 constants. Every other package imports from core; core imports from
 nothing internal.
 
-`@signet/daemon` is the background service. It runs the Hono HTTP
+`@signet/daemon` lives in `platform/daemon/`. It is the background service
+and runs the Hono HTTP
 server on port 3850, the pipeline workers, the file watcher, and the
 retention and maintenance workers. It targets bun directly, which
 gives it access to `bun:sqlite` and JSX for the dashboard.
 
-`@signet/cli` is the user-facing tool. It handles setup, config
+`@signet/cli` lives in `surfaces/cli/`. It is the user-facing tool and
+handles setup, config
 editing, daemon lifecycle, secrets, and skills. It targets Node for
 broad compatibility, but runs fine under bun.
 
-`@signet/connector-base` provides the abstract `BaseConnector` class
+`signet-dashboard` lives in `surfaces/dashboard/`. It is built to static
+assets and served by the daemon.
+
+`@signet/connector-base` lives in `libs/connector-base/` and provides the abstract `BaseConnector` class
 that all platform connectors extend. It re-exports shared utilities
 (block injection, skill symlinking) so connector implementations stay
 thin.
 
-`@signet/connector-claude-code`, `@signet/connector-opencode`, and
-`@signet/connector-openclaw` are concrete platform adapters. Each
-implements `install`, `uninstall`, `isInstalled`, and `getConfigPath`.
+`@signet/connector-claude-code`, `@signet/connector-opencode`,
+`@signet/connector-openclaw`, and the other `@signet/connector-*`
+packages live under `integrations/<tool>/connector/`. They are concrete
+install-time platform adapters. Each implements `install`, `uninstall`,
+`isInstalled`, and `getConfigPath`.
 
-`@signet/sdk` is the embedding library for third-party apps that want
+`@signet/sdk` lives in `libs/sdk/`. It is the embedding library for third-party apps that want
 to call the daemon [[api|HTTP API]] without shelling out to the [[cli|CLI]].
 
-`@signet/opencode-plugin` is the runtime plugin for OpenCode. It
+`@signet/opencode-plugin` lives in `integrations/opencode/plugin/`. It
+is the runtime plugin for OpenCode and
 provides memory tools and session lifecycle hooks that call the daemon
 API during OpenCode sessions.
 
-`@signetai/signet-memory-openclaw` is the runtime adapter for OpenClaw.
+`@signetai/signet-memory-openclaw` lives in
+`integrations/openclaw/memory-adapter/`. It is the runtime adapter for OpenClaw.
 It bridges OpenClaw's plugin interface to the daemon API for memory
 operations during conversations.
 
-`@signet/desktop` is the Electron desktop application. It provides the native
-desktop UI, menu bar tray, bundled daemon runtime, quick actions, and notifications.
-`@signet/tray` is a shared tray/menu state utility package only.
+`@signet/desktop` lives in `surfaces/desktop/`. It is the Electron desktop
+application and provides the native desktop UI, menu bar tray, bundled daemon
+runtime, quick actions, and notifications. `@signet/tray` lives in
+`surfaces/tray/` and is a shared tray/menu state utility package only.
 
-`predictor` is the predictive memory scorer sidecar, written in Rust.
+`predictor` lives in `platform/predictor/`. It is the predictive memory scorer sidecar, written in Rust.
 It implements autograd, checkpointing, and data loading for real-time
 preference scoring. (WIP)
 
-`@signet/native` provides Rust/NAPI bindings for SIMD vector operations
+`@signet/native` lives in `platform/native/` and provides Rust/NAPI bindings for SIMD vector operations
 (cosine similarity, normalization) used by the daemon for fast
 embedding math. Targets bun/node.
 
-`@signet/connector-codex` is the Codex harness connector. It handles
-hook installation and config patching for the Codex harness. Targets
-node.
+`signetai` lives in `dist/signetai/`. It is the assembled installable
+meta-package that exposes the `signet` binary.
+
+`@signet/web` lives in `web/marketing/`. It is the Astro marketing site
+deployed to Cloudflare Pages. Web workers live under `web/workers/<worker>/`.
 
 ---
 
@@ -126,7 +152,7 @@ User edits $SIGNET_WORKSPACE/AGENTS.md
 Pipeline V2
 -----------
 
-The memory pipeline lives at `packages/daemon/src/pipeline/`. It
+The memory pipeline lives at `platform/daemon/src/pipeline/`. It
 processes memories asynchronously through a job queue, using an LLM
 for extraction and a second LLM pass for decision-making. The key
 architectural constraint is the transaction boundary rule: no LLM
@@ -389,7 +415,7 @@ limit is exceeded, the response is 429 with a `Retry-After` header.
 Analytics
 ---------
 
-`packages/daemon/src/analytics.ts` implements an in-memory [[analytics]]
+`platform/daemon/src/analytics.ts` implements an in-memory [[analytics]]
 accumulator. All state is ephemeral — it resets on daemon restart.
 Durable history lives in `memory_history` and structured logs.
 
@@ -484,7 +510,7 @@ error message. The job follows standard retry logic — up to
 Diagnostics and Repair
 -----------------------
 
-`packages/daemon/src/diagnostics.ts` provides read-only health signals
+`platform/daemon/src/diagnostics.ts` provides read-only health signals
 across six domains. All functions accept a `ReadDb` or `ProviderTracker`
 and return plain data — no mutations, no side effects.
 
@@ -539,7 +565,7 @@ Database Schema
 ---------------
 
 SQLite with WAL mode. Migrations are numbered sequentially under
-`packages/core/src/migrations/`. Each migration is idempotent — safe
+`platform/core/src/migrations/`. Each migration is idempotent — safe
 to re-run against an existing database. Schema version is tracked in
 `schema_migrations`.
 
@@ -762,7 +788,7 @@ in graph-augmented search results.
 Content Normalization
 ---------------------
 
-`packages/daemon/src/content-normalization.ts` provides deterministic
+`platform/daemon/src/content-normalization.ts` provides deterministic
 normalization and hashing for deduplication.
 
 The pipeline is:
@@ -795,7 +821,7 @@ overlap before either check is applied.
 UMAP Projection
 ---------------
 
-`packages/daemon/src/umap-projection.ts` computes server-side 2D or 3D
+`platform/daemon/src/umap-projection.ts` computes server-side 2D or 3D
 projections from stored embeddings using the UMAP algorithm.
 
 Key implementation details:
@@ -817,7 +843,7 @@ Key implementation details:
 Retention
 ---------
 
-`packages/daemon/src/pipeline/retention-worker.ts` purges expired data
+`platform/daemon/src/pipeline/retention-worker.ts` purges expired data
 on a configurable interval (default 6 hours). Each purge step runs in
 its own short `withWriteTx` to avoid holding write locks across the
 full sweep.
@@ -992,13 +1018,13 @@ Key Files
 ---------
 
 ```
-packages/core/src/
+platform/core/src/
     types.ts                  TypeScript interfaces
     database.ts               SQLite wrapper (runtime-detecting)
     search.ts                 Hybrid search
     migrations/               Numbered migration scripts
 
-packages/daemon/src/
+platform/daemon/src/
     daemon.ts                 HTTP server + file watcher
     db-accessor.ts            withReadDb / withWriteTx wrappers
     transactions.ts           txIngestEnvelope and history helpers

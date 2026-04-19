@@ -30,7 +30,7 @@ if (!targetArg) {
 	fail("[dashboard-bundle] target package path is required");
 }
 
-const src = join(root, "packages", "cli", "dashboard");
+const src = join(root, "surfaces", "dashboard");
 const build = join(src, "build");
 const target = resolve(process.cwd(), targetArg);
 const out = join(target, "dashboard");

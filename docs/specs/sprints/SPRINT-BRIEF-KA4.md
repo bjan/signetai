@@ -47,7 +47,7 @@ KA-1, KA-2, and KA-3 must be complete:
   traversal candidates
 
 The predictor Rust crate (phases 1-2) should exist at
-`packages/predictor/` with the JSON-RPC protocol defined in
+`platform/predictor/` with the JSON-RPC protocol defined in
 `src/protocol.rs`. The daemon-side predictor client does NOT need
 to exist yet — this sprint prepares the data it will send.
 
@@ -82,7 +82,7 @@ that the predictor protocol already supports.
 
 ### 1. Structural feature assembler
 
-New file: `packages/daemon/src/structural-features.ts`
+New file: `platform/daemon/src/structural-features.ts`
 
 This module computes structural features for a batch of candidate
 memories. It's called before sending candidates to the predictor.
@@ -212,7 +212,7 @@ which encoding path (downprojection vs HashTrick) is being used.
 
 ### 3. Update predictor protocol types
 
-Update `packages/predictor/src/protocol.rs` to document the
+Update `platform/predictor/src/protocol.rs` to document the
 structural feature indices:
 
 ```rust
@@ -242,7 +242,7 @@ reflect 17 features instead of 12.
 
 ### 4. Predictor comparison migration
 
-New migration: `packages/core/src/migrations/020-predictor-comparisons.ts`
+New migration: `platform/core/src/migrations/020-predictor-comparisons.ts`
 
 ```sql
 CREATE TABLE IF NOT EXISTS predictor_comparisons (
@@ -291,7 +291,7 @@ CREATE INDEX IF NOT EXISTS idx_predictor_training_agent
   ON predictor_training_log(agent_id);
 ```
 
-Register as version 20 in `packages/core/src/migrations/index.ts`.
+Register as version 20 in `platform/core/src/migrations/index.ts`.
 
 Key additions beyond the base scorer spec:
 - `agent_id` on both tables (cross-cutting invariant)
@@ -303,7 +303,7 @@ Key additions beyond the base scorer spec:
 
 ### 5. Comparison recording helpers
 
-New file: `packages/daemon/src/predictor-comparisons.ts`
+New file: `platform/daemon/src/predictor-comparisons.ts`
 
 ```typescript
 export interface RecordComparisonParams {
@@ -382,7 +382,7 @@ export function recordTrainingRun(
 
 ### 6. API endpoints for structural slices
 
-Add to `packages/daemon/src/daemon.ts`:
+Add to `platform/daemon/src/daemon.ts`:
 
 ```
 GET /api/predictor/comparisons
@@ -433,21 +433,21 @@ it the structural signals directly.
 
 ## Key Files
 
-- `packages/daemon/src/structural-features.ts` — new, feature assembly
-- `packages/daemon/src/predictor-comparisons.ts` — new, comparison
+- `platform/daemon/src/structural-features.ts` — new, feature assembly
+- `platform/daemon/src/predictor-comparisons.ts` — new, comparison
   recording and slicing
-- `packages/core/src/migrations/020-predictor-comparisons.ts` — new,
+- `platform/core/src/migrations/020-predictor-comparisons.ts` — new,
   comparison + training tables + session_memories columns
-- `packages/core/src/migrations/index.ts` — register migration 020
-- `packages/predictor/src/protocol.rs` — update feature layout docs
-- `packages/predictor/src/model.rs` — update gate layer dimension
-- `packages/daemon/src/daemon.ts` — new API endpoints
-- `packages/daemon/src/hooks.ts` — wire feature assembly into
+- `platform/core/src/migrations/index.ts` — register migration 020
+- `platform/predictor/src/protocol.rs` — update feature layout docs
+- `platform/predictor/src/model.rs` — update gate layer dimension
+- `platform/daemon/src/daemon.ts` — new API endpoints
+- `platform/daemon/src/hooks.ts` — wire feature assembly into
   session candidate recording
-- `packages/daemon/src/session-memories.ts` — extend recording with
+- `platform/daemon/src/session-memories.ts` — extend recording with
   structural columns
-- `packages/daemon/src/knowledge-graph.ts` — read helpers (not modified)
-- `packages/daemon/src/pipeline/graph-traversal.ts` — read (not modified)
+- `platform/daemon/src/knowledge-graph.ts` — read helpers (not modified)
+- `platform/daemon/src/pipeline/graph-traversal.ts` — read (not modified)
 
 ## What NOT to Build (Scorer Phase 3+)
 

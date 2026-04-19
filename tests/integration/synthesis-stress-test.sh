@@ -47,7 +47,7 @@ echo ""
 
 # -- 1. Start daemon -------------------------------------------------------
 SIGNET_PATH="$WORKSPACE" SIGNET_PORT=3851 SIGNET_BIND=127.0.0.1 \
-  bun run "$WORKTREE/packages/daemon/src/daemon.ts" >"$LOG" 2>&1 &
+  bun run "$WORKTREE/platform/daemon/src/daemon.ts" >"$LOG" 2>&1 &
 DAEMON_PID=$!
 echo "Daemon started (PID=$DAEMON_PID), waiting for healthy..."
 

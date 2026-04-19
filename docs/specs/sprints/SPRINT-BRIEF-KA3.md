@@ -94,7 +94,7 @@ KA-3 adds a PARALLEL traversal path through the NEW KA tables
 
 ### 1. Traversal query builder
 
-New file: `packages/daemon/src/pipeline/graph-traversal.ts`
+New file: `platform/daemon/src/pipeline/graph-traversal.ts`
 
 This is the core of KA-3. A single function that takes focal entity
 IDs and returns a structurally coherent set of memory IDs plus
@@ -220,7 +220,7 @@ as search tokens. `/home/nicholai/signet/signetai` → search for
 
 ### 3. Wire traversal into session-start
 
-**Where:** `packages/daemon/src/hooks.ts`, inside `handleSessionStart`
+**Where:** `platform/daemon/src/hooks.ts`, inside `handleSessionStart`
 
 After `getAllScoredCandidates()` and before `selectWithBudget()`:
 
@@ -256,7 +256,7 @@ focal entity resolution query.
 
 ### 4. Wire traversal into hybrid recall
 
-**Where:** `packages/daemon/src/memory-search.ts`, inside
+**Where:** `platform/daemon/src/memory-search.ts`, inside
 `hybridRecall`
 
 After the existing graph boost block (line ~270) and before the
@@ -282,8 +282,8 @@ as existing graph boost).
 
 ### 5. Update candidate pool fusion
 
-**Where:** `packages/daemon/src/hooks.ts` and
-`packages/daemon/src/session-memories.ts`
+**Where:** `platform/daemon/src/hooks.ts` and
+`platform/daemon/src/session-memories.ts`
 
 The KA spec defines the new candidate pool as:
 
@@ -307,7 +307,7 @@ came from traversal vs effective score vs FTS.
 
 ### 6. Traversal configuration
 
-Add to `PipelineV2Config` (in `packages/core/src/types.ts`):
+Add to `PipelineV2Config` (in `platform/core/src/types.ts`):
 
 ```typescript
 readonly traversal?: {
@@ -322,7 +322,7 @@ readonly traversal?: {
 };
 ```
 
-Wire defaults in `packages/daemon/src/memory-config.ts` with YAML
+Wire defaults in `platform/daemon/src/memory-config.ts` with YAML
 parsing, same pattern as `structural` config from KA-2.
 
 Guard: traversal only runs when `traversal.enabled && graph.enabled`.
@@ -348,17 +348,17 @@ can show traversal health.
 
 ## Key Files
 
-- `packages/daemon/src/pipeline/graph-traversal.ts` — new, core
+- `platform/daemon/src/pipeline/graph-traversal.ts` — new, core
   traversal logic
-- `packages/daemon/src/pipeline/graph-search.ts` — existing graph
+- `platform/daemon/src/pipeline/graph-search.ts` — existing graph
   boost (reference, not modified)
-- `packages/daemon/src/hooks.ts` — wire traversal into session-start
-- `packages/daemon/src/memory-search.ts` — wire traversal into recall
-- `packages/daemon/src/session-memories.ts` — extend source type
-- `packages/daemon/src/knowledge-graph.ts` — KA-1 helpers (read, not
+- `platform/daemon/src/hooks.ts` — wire traversal into session-start
+- `platform/daemon/src/memory-search.ts` — wire traversal into recall
+- `platform/daemon/src/session-memories.ts` — extend source type
+- `platform/daemon/src/knowledge-graph.ts` — KA-1 helpers (read, not
   modified)
-- `packages/core/src/types.ts` — traversal config types
-- `packages/daemon/src/memory-config.ts` — traversal config defaults
+- `platform/core/src/types.ts` — traversal config types
+- `platform/daemon/src/memory-config.ts` — traversal config defaults
 
 ## What NOT to Build (KA-4+)
 

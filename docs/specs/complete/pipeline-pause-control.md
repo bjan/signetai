@@ -21,16 +21,16 @@ Spec metadata:
 
 Related docs:
 - `docs/research/technical/RESEARCH-PIPELINE-PAUSE-CONTROL.md`
-- `packages/cli/src/commands/daemon.ts`
-- `packages/cli/src/features/daemon.ts`
-- `packages/daemon/src/daemon.ts`
-- `packages/daemon/src/pipeline/index.ts`
-- `packages/daemon/src/memory-config.ts`
-- `packages/cli/src/features/pipeline-pause.ts`
-- `packages/cli/src/features/pipeline-pause.test.ts`
-- `packages/cli/dashboard/src/lib/api.ts`
-- `packages/cli/dashboard/src/lib/api.pipeline.test.js`
-- `packages/cli/dashboard/src/lib/components/tabs/PipelineTab.svelte`
+- `surfaces/cli/src/commands/daemon.ts`
+- `surfaces/cli/src/features/daemon.ts`
+- `platform/daemon/src/daemon.ts`
+- `platform/daemon/src/pipeline/index.ts`
+- `platform/daemon/src/memory-config.ts`
+- `surfaces/cli/src/features/pipeline-pause.ts`
+- `surfaces/cli/src/features/pipeline-pause.test.ts`
+- `surfaces/dashboard/src/lib/api.ts`
+- `surfaces/dashboard/src/lib/api.pipeline.test.js`
+- `surfaces/dashboard/src/lib/components/tabs/PipelineTab.svelte`
 
 ## 1) Problem
 

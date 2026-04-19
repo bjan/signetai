@@ -316,7 +316,7 @@ async function main(): Promise<void> {
 		console.log("--ingest-openrouter only applies to bench:ingest; leaving current command model config unchanged.");
 	}
 	if (useOpenRouterIngest) {
-		console.log(`OpenRouter ingestion: enabled (${env.MEMORYBENCH_EXTRACTION_MODEL})`);
+		console.log("OpenRouter ingestion: enabled.");
 	}
 	console.log(`MemoryBench command: bun src/index.ts ${memorybenchArgs.join(" ")}`);
 
@@ -331,7 +331,7 @@ async function main(): Promise<void> {
 			await run("bun", ["run", "build"]);
 		}
 
-		daemon = spawn("bun", ["packages/daemon/src/daemon.ts"], {
+		daemon = spawn("bun", ["platform/daemon/src/daemon.ts"], {
 			cwd: repoRoot,
 			env,
 			stdio: ["ignore", "inherit", "inherit"],

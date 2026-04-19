@@ -26,14 +26,14 @@ jobs:
         id: changes
         run: |
           CODE_CHANGES=$(git diff --name-only HEAD~1 HEAD -- \
-            'packages/**' 'scripts/**' \
+            'platform/**' 'surfaces/**' 'integrations/**' 'libs/**' 'dist/**' 'runtimes/**' 'scripts/**' \
             'package.json' 'bunfig.toml' 'tsconfig*.json' \
             '.github/workflows/**' \
             | grep -v '\.md$' \
             | grep -v '^.github/workflows/forge-release.yml$' \
-            | grep -v '^packages/forge/' \
-            | grep -v '^packages/cli/templates/forge/manifest.json$' \
-            | grep -v '^packages/signetai/templates/forge/manifest.json$' \
+            | grep -v '^runtimes/forge/' \
+            | grep -v '^surfaces/cli/templates/forge/manifest.json$' \
+            | grep -v '^dist/signetai/templates/forge/manifest.json$' \
             | grep -v '\.jpg$' \
             | grep -v '\.jpeg$' \
             | grep -v '\.png$' \
@@ -60,7 +60,7 @@ jobs:
 
       - name: CLI runtime smoke check
         if: steps.changes.outputs.skip != 'true'
-        run: node packages/signetai/bin/signet.js --help > /dev/null
+        run: node dist/signetai/bin/signet.js --help > /dev/null
 
       - name: Configure Git
         if: steps.changes.outputs.skip != 'true'
@@ -85,8 +85,8 @@ jobs:
         run: |
           set -euo pipefail
 
-          LOCAL_VERSION=$(jq -r '.version' packages/signetai/package.json)
-          REMOTE_VERSION_JSON=$(git show 'origin/main:packages/signetai/package.json' 2>/dev/null || true)
+          LOCAL_VERSION=$(jq -r '.version' dist/signetai/package.json)
+          REMOTE_VERSION_JSON=$(git show 'origin/main:dist/signetai/package.json' 2>/dev/null || true)
 
           if [ -n "$REMOTE_VERSION_JSON" ]; then
             REMOTE_VERSION=$(printf '%s' "$REMOTE_VERSION_JSON" | jq -r '.version')
@@ -111,7 +111,7 @@ jobs:
           echo "bump_level=$BUMP" >> $GITHUB_OUTPUT
           rm -f .bump-level
 
-          mapfile -t PACKAGE_FILES < <(git ls-files package.json 'packages/**/package.json' | grep -v '^packages/cli/dashboard/package.json$')
+          mapfile -t PACKAGE_FILES < <(git ls-files package.json 'platform/**/package.json' 'surfaces/**/package.json' 'integrations/**/package.json' 'libs/**/package.json' 'dist/**/package.json' 'web/**/package.json' | grep -v '^surfaces/dashboard/package.json$')
           for file in "${PACKAGE_FILES[@]}"; do
             jq --arg v "$NEW_VERSION" '.version = $v' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
           done
@@ -206,14 +206,14 @@ jobs:
       - name: Build predictor
         shell: bash
         run: cargo build --release --target "$RELEASE_TARGET"
-        working-directory: packages/predictor
+        working-directory: platform/predictor
 
       - name: Upload to release
         shell: bash
         run: |
           EXT=""
           [ "$RUNNER_OS" = "Windows" ] && EXT=".exe"
-          BINARY="packages/predictor/target/${RELEASE_TARGET}/release/signet-predictor${EXT}"
+          BINARY="platform/predictor/target/${RELEASE_TARGET}/release/signet-predictor${EXT}"
           # Copy binary with the platform-specific asset name into a temp
           # directory so gh uploads it under the correct name (not just as a
           # label) and we don't leave artifacts in the repo root.
@@ -276,13 +276,13 @@ jobs:
       - name: Build daemon
         shell: bash
         run: cargo build --release --target "$RELEASE_TARGET" -p signet-daemon
-        working-directory: packages/daemon-rs
+        working-directory: platform/daemon-rs
       - name: Upload to release
         shell: bash
         run: |
           EXT=""
           [ "$RUNNER_OS" = "Windows" ] && EXT=".exe"
-          BINARY="packages/daemon-rs/target/${RELEASE_TARGET}/release/signet-daemon${EXT}"
+          BINARY="platform/daemon-rs/target/${RELEASE_TARGET}/release/signet-daemon${EXT}"
           # Copy binary with the platform-specific asset name into a temp
           # directory so gh uploads it under the correct name (not just as a
           # label) and we don't leave artifacts in the repo root.
@@ -341,8 +341,8 @@ jobs:
           if [ "$CURRENT" = "$NEW_VERSION" ]; then
             echo "signetai@$NEW_VERSION already published, skipping"
           else
-            cd packages/signetai && npm publish --tag next --access public
-            cd ../adapters/openclaw && npm publish --tag next --access public || true
+            cd dist/signetai && npm publish --tag next --access public
+            cd ../../integrations/openclaw/memory-adapter && npm publish --tag next --access public || true
           fi
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

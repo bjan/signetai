@@ -39,7 +39,7 @@ The daemon can be installed as a system service for auto-start on boot.
 
 **macOS (launchd):**
 ```bash
-cd packages/daemon
+cd platform/daemon
 bun run install:service
 
 launchctl load ~/Library/LaunchAgents/ai.signet.daemon.plist
@@ -48,7 +48,7 @@ launchctl unload ~/Library/LaunchAgents/ai.signet.daemon.plist
 
 **Linux (systemd):**
 ```bash
-cd packages/daemon
+cd platform/daemon
 bun run install:service
 
 systemctl --user start signet.service
@@ -97,7 +97,7 @@ worker runs its own loop and stops cleanly when the daemon shuts down.
 
 ### Pipeline Workers
 
-The pipeline lives at `packages/daemon/src/pipeline/` and is managed
+The pipeline lives at `platform/daemon/src/pipeline/` and is managed
 by `startPipeline()` / `stopPipeline()`. Four workers run in parallel:
 
 **Extraction worker** (`worker.ts`) polls the `memory_jobs` queue for
@@ -403,7 +403,7 @@ Confirm the daemon is running and the dashboard was built:
 ```bash
 signet status
 curl http://localhost:3850/health
-ls packages/cli/dashboard/build/
+ls surfaces/dashboard/build/
 ```
 
 ### File changes not syncing

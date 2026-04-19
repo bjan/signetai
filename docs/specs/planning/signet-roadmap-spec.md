@@ -66,8 +66,8 @@ it enabled, push an update that turns it on.
 
 ### Technical approach
 
-1. Update default config generation in `packages/cli/src/cli.ts`
-   (setup command) and `packages/core/src/types.ts` (default values)
+1. Update default config generation in `surfaces/cli/src/cli.ts`
+   (setup command) and `platform/core/src/types.ts` (default values)
 2. Add a migration or post-update hook that flips defaults for
    existing installs where values were never explicitly set by the user
 3. Auto-detect harness (claude-code vs opencode) and set extraction
@@ -149,7 +149,7 @@ signet setup --config ./my-setup.yaml
 
 ### Scope
 
-1. Add `--non-interactive` mode to `packages/cli/src/cli.ts`
+1. Add `--non-interactive` mode to `surfaces/cli/src/cli.ts`
 2. Every interactive prompt needs a corresponding CLI flag
 3. Sensible defaults for anything not explicitly provided
 4. Update the `/onboarding` skill to explain the non-interactive API
@@ -314,8 +314,8 @@ supporting custom workspaces.
 ### Technical approach
 
 1. Add `workspace_path` field to agent.yaml schema
-   (`packages/core/src/types.ts`)
-2. Update `packages/core/src/identity.ts` to resolve all file paths
+   (`platform/core/src/types.ts`)
+2. Update `platform/core/src/identity.ts` to resolve all file paths
    relative to configured workspace
 3. Update daemon file watcher to watch configured path
 4. Update all harness connectors to read from configured path
@@ -497,7 +497,7 @@ Append-only record of completed work against this spec.
 
 ### Changes
 
-**`packages/daemon/src/daemon.ts`** — Added `isInternalCall(c)` guards
+**`platform/daemon/src/daemon.ts`** — Added `isInternalCall(c)` guards
 to `/api/hooks/remember` and `/api/hooks/recall` routes. These were the
 only two hook routes missing the guard. Pattern matches the existing
 guards on session-start, user-prompt-submit, and session-end routes.
@@ -506,7 +506,7 @@ Guards are placed before `try` block for consistency.
 - remember returns `{ success: true, memories: [] }` on internal call
 - recall returns `{ memories: [], count: 0 }` on internal call
 
-**`packages/daemon/src/pipeline/provider.ts`** — Added
+**`platform/daemon/src/pipeline/provider.ts`** — Added
 `env: { ...process.env, SIGNET_NO_HOOKS: "1" }` to the
 `Bun.spawn(["claude", "--version"])` call in the ClaudeCode provider's
 `available()` method. Low practical risk (--version doesn't trigger
@@ -518,7 +518,7 @@ to development workflow section.
 ### What worked
 
 - All three edits applied cleanly, typecheck and build passed
-- Tested by running daemon from local source (`bun packages/daemon/src/daemon.ts`)
+- Tested by running daemon from local source (`bun platform/daemon/src/daemon.ts`)
   since the system-installed daemon doesn't pick up local changes
 - Four test cases verified:
   1. remember + internal header → no-op response (pass)

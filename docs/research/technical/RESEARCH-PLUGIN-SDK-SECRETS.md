@@ -5,8 +5,8 @@ informed_by:
   - "docs/specs/approved/signet-runtime.md"
   - "docs/specs/planning/plugin-api-ecosystem.md"
   - "docs/specs/planning/git-marketplace-monorepo.md"
-  - "packages/daemon/src/secrets.ts"
-  - "packages/daemon/src/routes/secrets-routes.ts"
+  - "platform/daemon/src/secrets.ts"
+  - "platform/daemon/src/routes/secrets-routes.ts"
 relevance:
   - plugin-api-ecosystem
   - signet-runtime
@@ -32,8 +32,8 @@ first-party code paths rather than plugin contributions.
 
 Secrets are currently daemon-owned:
 
-- storage and encryption live in `packages/daemon/src/secrets.ts`
-- HTTP routes live in `packages/daemon/src/routes/secrets-routes.ts`
+- storage and encryption live in `platform/daemon/src/secrets.ts`
+- HTTP routes live in `platform/daemon/src/routes/secrets-routes.ts`
 - values are encrypted at rest in `$SIGNET_WORKSPACE/.secrets/secrets.enc`
 - the local store uses libsodium `secretbox`
 - the key is derived from a machine-specific identifier using BLAKE2b

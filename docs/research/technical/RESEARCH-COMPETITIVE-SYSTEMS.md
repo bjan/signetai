@@ -239,10 +239,10 @@ to their state-of-the-art LongMemEval performance.
 
 **Integration contract.**
 - Maps to: DP-6 enhancement (new substory DP-6.4)
-- Insertion point: `packages/daemon/src/memory-search.ts`, after Channel
+- Insertion point: `platform/daemon/src/memory-search.ts`, after Channel
   A/B fusion and DP-16 dampening
 - Interface: `rerank(query: string, candidates: ScoredMemory[]): Promise<ScoredMemory[]>`
-- Existing code: `packages/daemon/src/pipeline/reranker.ts` already
+- Existing code: `platform/daemon/src/pipeline/reranker.ts` already
   provides a reranking interface. Extend with cross-encoder backend.
 - Model hosting: ONNX Runtime via Bun FFI, or sidecar HTTP service
   (mirrors predictor Rust sidecar pattern)
@@ -296,7 +296,7 @@ inherits date ranges from the earliest and latest source facts.
 - New table: `observations` (id, content, entity_id, aspect_id,
   proof_count, source_memory_ids JSON, embedding, status, agent_id,
   created_at, updated_at)
-- New file: `packages/daemon/src/pipeline/consolidation.ts`
+- New file: `platform/daemon/src/pipeline/consolidation.ts`
 - Trigger: idle timeout (DP-20 spec default 300s) or after extraction
 - LLM call: runs OUTSIDE write transaction (transaction boundary rule)
 - Retrieval hierarchy: `memory-search.ts` traversal checks observations
@@ -349,7 +349,7 @@ then reranks with cross-encoder.
 **Integration contract.**
 - Maps to: DP-6 extension (currently Channel A = traversal, Channel B
   = FTS5 flat search)
-- Current code: `packages/daemon/src/memory-search.ts` has 2 channels
+- Current code: `platform/daemon/src/memory-search.ts` has 2 channels
 - Expand to 4 channels:
   - Channel A: Graph traversal (existing, `graph-traversal.ts`)
   - Channel B: FTS5 keyword search (existing but entity-scoped,
@@ -358,8 +358,8 @@ then reranks with cross-encoder.
     as independent parallel path)
   - Channel D: Temporal search (NEW, filter by session timestamps,
     memory created_at ranges)
-- New file: `packages/daemon/src/pipeline/rrf-fusion.ts`
-- New file: `packages/daemon/src/pipeline/temporal-search.ts`
+- New file: `platform/daemon/src/pipeline/rrf-fusion.ts`
+- New file: `platform/daemon/src/pipeline/temporal-search.ts`
 - Budget split: existing 40% minimum for flat candidates (Channel B)
   applies to Channels B+C+D combined. Channel A retains primary status.
 - Invariant 5: constraints surface regardless of RRF rank
@@ -459,7 +459,7 @@ and forgetReason string fields.
   - `forgotten_at INTEGER` (unix timestamp, nullable)
   - `forget_reason TEXT` (nullable)
 - Extraction: add temporal bound detection to extraction prompt in
-  `packages/daemon/src/pipeline/worker.ts`
+  `platform/daemon/src/pipeline/worker.ts`
 - Background sweep: new maintenance task checks
   `WHERE forget_after IS NOT NULL AND forget_after < now()
   AND forgotten_at IS NULL`, sets forgotten_at = now()
@@ -897,7 +897,7 @@ function refreshObservation(obsId: number, evidence: Memory[]): Promise<void>
 
 ### 5.1 Retrieval Tests
 
-Location: `packages/daemon/src/__tests__/retrieval/`
+Location: `platform/daemon/src/__tests__/retrieval/`
 
 | Test File | Coverage |
 |-----------|----------|
@@ -911,7 +911,7 @@ full regression. 10 synthetic temporal queries with date ranges.
 
 ### 5.2 Memory Lifecycle Tests
 
-Location: `packages/daemon/src/__tests__/lifecycle/`
+Location: `platform/daemon/src/__tests__/lifecycle/`
 
 | Test File | Coverage |
 |-----------|----------|
@@ -925,7 +925,7 @@ update chains.
 
 ### 5.3 Consolidation Tests
 
-Location: `packages/daemon/src/__tests__/consolidation/`
+Location: `platform/daemon/src/__tests__/consolidation/`
 
 | Test File | Coverage |
 |-----------|----------|
@@ -937,7 +937,7 @@ Location: `packages/daemon/src/__tests__/consolidation/`
 
 ### 5.4 Profile and Config Tests
 
-Location: `packages/daemon/src/__tests__/`
+Location: `platform/daemon/src/__tests__/`
 
 | Test File | Coverage |
 |-----------|----------|
@@ -950,7 +950,7 @@ Location: `packages/daemon/src/__tests__/`
 All tests use Signet's existing patterns (Bun test runner, bunfig.toml).
 Test database: in-memory SQLite with migrations applied. LLM mocking:
 mock extraction responses for deterministic tests. Benchmark fixtures
-checked into `packages/daemon/src/__tests__/fixtures/`.
+checked into `platform/daemon/src/__tests__/fixtures/`.
 
 ---
 
@@ -1028,7 +1028,7 @@ Port 3851 (isolated benchmark daemon, per existing convention).
 Separate SQLite database (never pollute production). Reproducible:
 dataSourceRunId pinned for consistent data. CI-compatible: JSON output,
 automated comparison against baseline. Location:
-`packages/daemon/src/__tests__/benchmarks/`.
+`platform/daemon/src/__tests__/benchmarks/`.
 
 ---
 

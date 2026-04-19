@@ -1,0 +1,52 @@
+{
+	"$schema": "https://turbo.build/schema.json",
+	"tasks": {
+		"build": {
+			"dependsOn": ["^build"],
+			"outputs": ["dist/**", "build/**", "dashboard/**", "target/**", "!.svelte-kit/**"]
+		},
+		"test": {
+			"dependsOn": ["^build"],
+			"outputs": []
+		},
+		"typecheck": {
+			"dependsOn": ["^build"],
+			"outputs": []
+		},
+		"lint": {
+			"outputs": []
+		},
+		"dev": {
+			"cache": false,
+			"persistent": true
+		},
+		"@signet/connector-opencode#build": {
+			"dependsOn": ["@signet/opencode-plugin#build", "^build"],
+			"outputs": ["dist/**", "build/**", "dashboard/**", "target/**", "!.svelte-kit/**"]
+		},
+		"@signet/connector-oh-my-pi#build": {
+			"dependsOn": ["@signet/oh-my-pi-extension#build", "^build"],
+			"outputs": ["dist/**", "build/**", "dashboard/**", "target/**", "!.svelte-kit/**"]
+		},
+		"@signet/connector-pi#build": {
+			"dependsOn": ["@signet/pi-extension#build", "^build"],
+			"outputs": ["dist/**", "build/**", "dashboard/**", "target/**", "!.svelte-kit/**"]
+		},
+		"signetai#build": {
+			"dependsOn": [
+				"@signet/core#build",
+				"@signet/connector-base#build",
+				"@signet/connector-claude-code#build",
+				"@signet/connector-codex#build",
+				"@signet/connector-forge#build",
+				"@signet/connector-hermes-agent#build",
+				"@signet/connector-oh-my-pi#build",
+				"@signet/connector-openclaw#build",
+				"@signet/connector-opencode#build",
+				"@signet/connector-pi#build",
+				"@signet/daemon#build"
+			],
+			"outputs": ["dist/**", "build/**", "dashboard/**", "target/**", "!.svelte-kit/**"]
+		}
+	}
+}

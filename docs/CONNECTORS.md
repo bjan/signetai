@@ -14,8 +14,8 @@ content into the memory store as searchable [[documents]]. Each connector
 follows a consistent register-sync-health lifecycle managed through
 the [[daemon]]'s [[api|HTTP API]].
 
-The connector framework lives in `packages/daemon/src/connectors/`.
-Type definitions are in `packages/core/src/connector-types.ts`.
+The connector framework lives in `platform/daemon/src/connectors/`.
+Type definitions are in `platform/core/src/connector-types.ts`.
 
 
 Overview
@@ -40,7 +40,7 @@ Connector Status States
 
 Every connector has a `status` field that tracks its current state.
 The possible values (from `CONNECTOR_STATUSES` in
-`packages/core/src/connector-types.ts`):
+`platform/core/src/connector-types.ts`):
 
 | Status | Description |
 |--------|-------------|
@@ -57,7 +57,7 @@ error → syncing → idle      (next sync succeeds)
 ```
 
 The `status` field is updated via `updateConnectorStatus()` in
-`packages/daemon/src/connectors/registry.ts`.
+`platform/daemon/src/connectors/registry.ts`.
 
 
 Connector Lifecycle
@@ -358,7 +358,7 @@ To add a new provider, implement the `ConnectorRuntime` interface from
 
 ### Step 1: Implement ConnectorRuntime
 
-Create a new file in `packages/daemon/src/connectors/`:
+Create a new file in `platform/daemon/src/connectors/`:
 
 ```typescript
 import type {
@@ -444,7 +444,7 @@ class MyConnector implements ConnectorRuntime {
 
 ### Step 2: Add the provider to the type system
 
-In `packages/core/src/connector-types.ts`, add your provider string to
+In `platform/core/src/connector-types.ts`, add your provider string to
 the `CONNECTOR_PROVIDERS` tuple:
 
 ```typescript
@@ -460,7 +460,7 @@ This ensures the API validates the provider name at registration time.
 
 ### Step 3: Wire the factory into the daemon
 
-In `packages/daemon/src/daemon.ts`, find where `createFilesystemConnector`
+In `platform/daemon/src/daemon.ts`, find where `createFilesystemConnector`
 is called in the sync route handlers. Add a branch for your provider:
 
 ```typescript
@@ -538,7 +538,7 @@ triggers syncs and needs to know when they complete.
 Registered Providers
 --------------------
 
-The `CONNECTOR_PROVIDERS` tuple in `packages/core/src/connector-types.ts`
+The `CONNECTOR_PROVIDERS` tuple in `platform/core/src/connector-types.ts`
 defines the valid provider names:
 
 | Provider | Status | Description |

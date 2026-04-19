@@ -34,7 +34,7 @@ share some plumbing but diverge in orchestration and presentation:
    wraps the same engine but still acts like a separate product boundary.
 4. CLI, MCP, and connector consumers flatten results differently and often
    throw away metadata such as source labels, scores, type, and provenance.
-5. `packages/daemon/src/hooks.ts` still contains an older `handleRecall()`
+5. `platform/daemon/src/hooks.ts` still contains an older `handleRecall()`
    helper that appears to be legacy logic instead of a live source of truth.
 
 The result is not six different retrieval engines, but it is still a
@@ -74,33 +74,33 @@ the wrong layer.
 
 | Surface | File | Role |
 |---|---|---|
-| `hybridRecall()` | `packages/daemon/src/memory-search.ts` | Canonical explicit recall engine |
-| prompt-submit orchestration | `packages/daemon/src/hooks.ts` | Hot-path injection control flow, not a rich query surface |
-| temporal fallback helpers | `packages/daemon/src/temporal-fallback.ts` | Supporting continuity fallback |
-| transcript fallback helpers | `packages/daemon/src/session-transcripts.ts` | Supporting continuity fallback |
-| `/api/memory/recall` | `packages/daemon/src/daemon.ts` | Canonical explicit recall API |
+| `hybridRecall()` | `platform/daemon/src/memory-search.ts` | Canonical explicit recall engine |
+| prompt-submit orchestration | `platform/daemon/src/hooks.ts` | Hot-path injection control flow, not a rich query surface |
+| temporal fallback helpers | `platform/daemon/src/temporal-fallback.ts` | Supporting continuity fallback |
+| transcript fallback helpers | `platform/daemon/src/session-transcripts.ts` | Supporting continuity fallback |
+| `/api/memory/recall` | `platform/daemon/src/daemon.ts` | Canonical explicit recall API |
 
 ### Keep, but thin down
 
 | Surface | File | Current issue |
 |---|---|---|
-| `/api/hooks/recall` | `packages/daemon/src/daemon.ts` | Useful harness entry point, but should remain a thin wrapper |
-| CLI `signet recall` | `packages/cli/src/commands/memory.ts` | Loses too much structure in display |
-| MCP `memory_search` | `packages/daemon/src/mcp/tools.ts` | Returns raw text payload without a stronger recall contract |
-| OpenClaw `/recall` rendering | `packages/connector-openclaw/src/index.ts` | Flattens results into plain content bullets |
+| `/api/hooks/recall` | `platform/daemon/src/daemon.ts` | Useful harness entry point, but should remain a thin wrapper |
+| CLI `signet recall` | `surfaces/cli/src/commands/memory.ts` | Loses too much structure in display |
+| MCP `memory_search` | `platform/daemon/src/mcp/tools.ts` | Returns raw text payload without a stronger recall contract |
+| OpenClaw `/recall` rendering | `integrations/openclaw/connector/src/index.ts` | Flattens results into plain content bullets |
 
 ### Likely remove or collapse
 
 | Surface | File | Current issue |
 |---|---|---|
-| `handleRecall()` | `packages/daemon/src/hooks.ts` | Looks like legacy standalone recall logic rather than a live source of truth |
+| `handleRecall()` | `platform/daemon/src/hooks.ts` | Looks like legacy standalone recall logic rather than a live source of truth |
 | ad hoc formatter duplication | multiple consumers | Rich metadata is repeatedly discarded in slightly different ways |
 
 ## Proposed architecture
 
 ### 1) Canonical explicit recall engine
 
-`packages/daemon/src/memory-search.ts` remains the only retrieval engine for
+`platform/daemon/src/memory-search.ts` remains the only retrieval engine for
 explicit TypeScript recall.
 
 `hybridRecall()` already owns:
@@ -173,7 +173,7 @@ into peer retrieval engines that compete with `hybridRecall()`.
 
 ### Phase 1, dead-weight audit
 
-1. Confirm whether `handleRecall()` in `packages/daemon/src/hooks.ts` is
+1. Confirm whether `handleRecall()` in `platform/daemon/src/hooks.ts` is
    actually used anywhere meaningful.
 2. Remove it if dead, or demote it to a thin wrapper if it still serves a
    compatibility role.

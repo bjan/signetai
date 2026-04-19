@@ -243,7 +243,7 @@ avoid holding a SQLite write lock during network I/O. Each chunk's memory
 write is its own short transaction.
 
 The worker is started alongside the extraction pipeline in
-`packages/daemon/src/pipeline/index.ts` and stops cleanly when the daemon
+`platform/daemon/src/pipeline/index.ts` and stops cleanly when the daemon
 shuts down.
 
 

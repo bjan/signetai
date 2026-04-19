@@ -94,7 +94,7 @@ Integration contracts:
 
 ## Architecture
 
-Standalone Rust binary at `packages/predictor/` (new crate). Daemon spawns
+Standalone Rust binary at `platform/predictor/` (new crate). Daemon spawns
 it as a sidecar, communicates via stdin/stdout JSON-RPC 2.0.
 
 ### Candidate Pre-Filtering
@@ -698,7 +698,7 @@ knowing what was served and whether it helped.
 
 New migration: `014-session-memories.ts`
 
-**Migration numbering rule:** always check `packages/core/src/migrations/index.ts`
+**Migration numbering rule:** always check `platform/core/src/migrations/index.ts`
 before assigning version numbers. As of this plan, `013` already exists.
 
 ```sql
@@ -828,7 +828,7 @@ verified should real model inference be connected.
 
 ### Phase 1: Rust Crate Scaffold + Autograd (from microgpt)
 
-Create `packages/predictor/` with:
+Create `platform/predictor/` with:
 - `Cargo.toml` - deps: `serde`, `serde_json`, `rusqlite` (minimal, no ML framework)
 - `src/main.rs` - stdin/stdout JSON-line server, command dispatch
 - `src/autograd.rs` - Operation-level tape from microgpt (adapt existing)
@@ -921,18 +921,18 @@ surfaced in `/api/predictor/training` responses.
 ### Phase 3: Daemon Integration
 
 Files to modify:
-- `packages/daemon/src/daemon.ts` - Spawn predictor sidecar on startup
-- `packages/daemon/src/hooks.ts` - Wire parallel scoring into
+- `platform/daemon/src/daemon.ts` - Spawn predictor sidecar on startup
+- `platform/daemon/src/hooks.ts` - Wire parallel scoring into
   `handleSessionStart()` and `handleUserPromptSubmit()`
-- `packages/daemon/src/pipeline/summary-worker.ts` - After continuity
+- `platform/daemon/src/pipeline/summary-worker.ts` - After continuity
   scoring: compare predictor vs baseline recommendations, record to
   `predictor_comparisons`, update success_rate EMA, trigger retrain
   if interval reached
-- `packages/core/src/migrations/015-predictor.ts` - New migration for
+- `platform/core/src/migrations/015-predictor.ts` - New migration for
   `predictor_comparisons` + `predictor_training_log` tables
 
 New files:
-- `packages/daemon/src/predictor-client.ts` - JSON-RPC 2.0 client for
+- `platform/daemon/src/predictor-client.ts` - JSON-RPC 2.0 client for
   communicating with the Rust sidecar
 
 ### Phase 4: Observability + Dashboard
@@ -1353,7 +1353,7 @@ The architecture must support: **load base weights -> fine-tune on user data.**
 ### Phase 7: Documentation (subagent task)
 
 After implementation, launch a `markdown-docs` subagent to generate:
-- `packages/predictor/README.md` - architecture, build, usage
+- `platform/predictor/README.md` - architecture, build, usage
 - `docs/predictor.md` - how the predictive scorer works, training
   pipeline, observability, dashboard guide
 - `docs/predictor-architecture.md` - technical deep dive with diagrams
@@ -1365,44 +1365,44 @@ After implementation, launch a `markdown-docs` subagent to generate:
 
 | File | Action | Purpose |
 |------|--------|---------|
-| `packages/core/src/migrations/014-session-memories.ts` | CREATE | `session_memories` join table (includes `fts_hit_count`) |
-| `packages/daemon/src/hooks.ts` | MODIFY | Pre-filter candidates, record all candidates + injected per session, FTS hit tracking in userPromptSubmit, topic diversity post-scoring |
-| `packages/daemon/src/pipeline/summary-worker.ts` | MODIFY | Per-memory relevance scoring via continuity scorer, behavioral label adjustment from FTS overlap |
+| `platform/core/src/migrations/014-session-memories.ts` | CREATE | `session_memories` join table (includes `fts_hit_count`) |
+| `platform/daemon/src/hooks.ts` | MODIFY | Pre-filter candidates, record all candidates + injected per session, FTS hit tracking in userPromptSubmit, topic diversity post-scoring |
+| `platform/daemon/src/pipeline/summary-worker.ts` | MODIFY | Per-memory relevance scoring via continuity scorer, behavioral label adjustment from FTS overlap |
 
 ### Phases 1-3: Predictor + Integration
 
 | File | Action | Purpose |
 |------|--------|---------|
-| `packages/predictor/` | CREATE | New Rust crate (all src/ files below) |
-| `packages/predictor/src/main.rs` | CREATE | JSON-line stdin/stdout server |
-| `packages/predictor/src/autograd.rs` | CREATE | Operation-level tape from microgpt |
-| `packages/predictor/src/model.rs` | CREATE | Cross-attention scorer + listwise loss |
-| `packages/predictor/src/data.rs` | CREATE | SQLite reader for session_memories |
-| `packages/predictor/src/tokenizer.rs` | CREATE | HashTrick (16K buckets) |
-| `packages/predictor/src/training.rs` | CREATE | Training loop + Adam |
-| `packages/predictor/src/protocol.rs` | CREATE | Serde types for JSON-line protocol |
-| `packages/predictor/src/checkpoint.rs` | CREATE | Model save/load + pre-train flag |
-| `packages/daemon/src/hooks.ts` | MODIFY | RRF fusion, α from success rate |
-| `packages/daemon/src/daemon.ts` | MODIFY | Spawn predictor sidecar |
-| `packages/daemon/src/predictor-client.ts` | CREATE | JSON-RPC 2.0 client for sidecar |
-| `packages/daemon/src/pipeline/summary-worker.ts` | MODIFY | NDCG comparison + success rate EMA |
-| `packages/core/src/migrations/015-predictor.ts` | CREATE | `predictor_comparisons` + `predictor_training_log` |
-| `packages/core/src/types.ts` | MODIFY | PredictorConfig, SessionMemory types |
+| `platform/predictor/` | CREATE | New Rust crate (all src/ files below) |
+| `platform/predictor/src/main.rs` | CREATE | JSON-line stdin/stdout server |
+| `platform/predictor/src/autograd.rs` | CREATE | Operation-level tape from microgpt |
+| `platform/predictor/src/model.rs` | CREATE | Cross-attention scorer + listwise loss |
+| `platform/predictor/src/data.rs` | CREATE | SQLite reader for session_memories |
+| `platform/predictor/src/tokenizer.rs` | CREATE | HashTrick (16K buckets) |
+| `platform/predictor/src/training.rs` | CREATE | Training loop + Adam |
+| `platform/predictor/src/protocol.rs` | CREATE | Serde types for JSON-line protocol |
+| `platform/predictor/src/checkpoint.rs` | CREATE | Model save/load + pre-train flag |
+| `platform/daemon/src/hooks.ts` | MODIFY | RRF fusion, α from success rate |
+| `platform/daemon/src/daemon.ts` | MODIFY | Spawn predictor sidecar |
+| `platform/daemon/src/predictor-client.ts` | CREATE | JSON-RPC 2.0 client for sidecar |
+| `platform/daemon/src/pipeline/summary-worker.ts` | MODIFY | NDCG comparison + success rate EMA |
+| `platform/core/src/migrations/015-predictor.ts` | CREATE | `predictor_comparisons` + `predictor_training_log` |
+| `platform/core/src/types.ts` | MODIFY | PredictorConfig, SessionMemory types |
 
 ### Phases 4-5: Observability + Dashboard
 
 | File | Action | Purpose |
 |------|--------|---------|
-| `packages/cli/dashboard/src/lib/components/tabs/PredictorTab.svelte` | CREATE | Main predictor dashboard (cold start + active modes) |
-| `packages/cli/dashboard/src/lib/components/SplitGauge.svelte` | CREATE | Adoption rate gauge (α visualized) |
-| `packages/cli/dashboard/src/lib/components/ComparisonInspector.svelte` | CREATE | Per-session deep dive with FTS overlay + confidence gate |
-| `packages/cli/dashboard/src/lib/components/WinLossTimeline.svelte` | CREATE | Session dots with success rate overlay |
-| `packages/cli/dashboard/src/lib/components/TrainingProgress.svelte` | CREATE | Cold start progress bar + session list |
-| `packages/daemon/src/diagnostics.ts` | MODIFY | Add `predictor` health domain to DiagnosticsReport |
-| `packages/daemon/src/analytics.ts` | MODIFY | Add `predictor` error stage + `predictor_score`/`predictor_train` latency ops |
-| `packages/daemon/src/timeline.ts` | MODIFY | Add predictor event types to timeline builder |
-| `packages/daemon/src/daemon.ts` | MODIFY | Add `/api/predictor/*` routes, extend pipeline status with predictor worker |
-| `packages/core/src/types.ts` | MODIFY | PredictorHealth, PredictorTimelineEvent types |
+| `surfaces/dashboard/src/lib/components/tabs/PredictorTab.svelte` | CREATE | Main predictor dashboard (cold start + active modes) |
+| `surfaces/dashboard/src/lib/components/SplitGauge.svelte` | CREATE | Adoption rate gauge (α visualized) |
+| `surfaces/dashboard/src/lib/components/ComparisonInspector.svelte` | CREATE | Per-session deep dive with FTS overlay + confidence gate |
+| `surfaces/dashboard/src/lib/components/WinLossTimeline.svelte` | CREATE | Session dots with success rate overlay |
+| `surfaces/dashboard/src/lib/components/TrainingProgress.svelte` | CREATE | Cold start progress bar + session list |
+| `platform/daemon/src/diagnostics.ts` | MODIFY | Add `predictor` health domain to DiagnosticsReport |
+| `platform/daemon/src/analytics.ts` | MODIFY | Add `predictor` error stage + `predictor_score`/`predictor_train` latency ops |
+| `platform/daemon/src/timeline.ts` | MODIFY | Add predictor event types to timeline builder |
+| `platform/daemon/src/daemon.ts` | MODIFY | Add `/api/predictor/*` routes, extend pipeline status with predictor worker |
+| `platform/core/src/types.ts` | MODIFY | PredictorHealth, PredictorTimelineEvent types |
 
 ## Existing Code to Reuse
 
@@ -1412,26 +1412,26 @@ After implementation, launch a `markdown-docs` subagent to generate:
 - `references/acan/train/train.py` - LLM-based scoring loss reference
 
 ### Scoring + Memory Selection
-- `packages/daemon/src/hooks.ts:effectiveScore()` (line 205) - Existing scorer
-- `packages/daemon/src/hooks.ts:getPredictedContextMemories()` (line 432) - Current prediction (to be replaced)
-- `packages/daemon/src/hooks.ts:updateAccessTracking()` (line 538) - Access tracking pattern
-- `packages/daemon/src/pipeline/reranker-embedding.ts` - Embedding cosine sim pattern
-- `packages/daemon/src/pipeline/summary-worker.ts` - Continuity scoring flow (lines 254-362)
+- `platform/daemon/src/hooks.ts:effectiveScore()` (line 205) - Existing scorer
+- `platform/daemon/src/hooks.ts:getPredictedContextMemories()` (line 432) - Current prediction (to be replaced)
+- `platform/daemon/src/hooks.ts:updateAccessTracking()` (line 538) - Access tracking pattern
+- `platform/daemon/src/pipeline/reranker-embedding.ts` - Embedding cosine sim pattern
+- `platform/daemon/src/pipeline/summary-worker.ts` - Continuity scoring flow (lines 254-362)
 
 ### Infrastructure
-- `packages/daemon/src/db-helpers.ts` - `vectorToBlob()`/`blobToVector()` for embedding I/O
-- `packages/daemon/src/scheduler/spawn.ts` - Child process spawning pattern
-- `packages/core/src/database.ts` - SQLite wrapper patterns
-- `packages/core/src/migrations/011-session-scores.ts` - Migration pattern reference
+- `platform/daemon/src/db-helpers.ts` - `vectorToBlob()`/`blobToVector()` for embedding I/O
+- `platform/daemon/src/scheduler/spawn.ts` - Child process spawning pattern
+- `platform/core/src/database.ts` - SQLite wrapper patterns
+- `platform/core/src/migrations/011-session-scores.ts` - Migration pattern reference
 
 ### Observability (extend these, don't reinvent)
-- `packages/daemon/src/analytics.ts` - Error ring buffer (500 entries, stage-categorized), latency histograms (p50/p95/p99), endpoint/actor/provider/connector metrics
-- `packages/daemon/src/diagnostics.ts` - Health domain pattern (8 domains, composite score, status enum), `ProviderTracker` ring buffer pattern for availability
-- `packages/daemon/src/timeline.ts` - Timeline builder joining memory_history + jobs + logs + errors by ID
-- `packages/daemon/src/repair-actions.ts` - Policy-gated idempotent repair pattern with rate limiting and audit trail
-- `packages/cli/dashboard/src/lib/components/tabs/PipelineTab.svelte` - Pipeline worker status display, live log feed, error display
-- `packages/cli/dashboard/src/lib/components/tabs/LogsTab.svelte` - Structured log filtering by level/category
-- `packages/cli/dashboard/src/lib/api.ts` - Dashboard API client patterns
+- `platform/daemon/src/analytics.ts` - Error ring buffer (500 entries, stage-categorized), latency histograms (p50/p95/p99), endpoint/actor/provider/connector metrics
+- `platform/daemon/src/diagnostics.ts` - Health domain pattern (8 domains, composite score, status enum), `ProviderTracker` ring buffer pattern for availability
+- `platform/daemon/src/timeline.ts` - Timeline builder joining memory_history + jobs + logs + errors by ID
+- `platform/daemon/src/repair-actions.ts` - Policy-gated idempotent repair pattern with rate limiting and audit trail
+- `surfaces/dashboard/src/lib/components/tabs/PipelineTab.svelte` - Pipeline worker status display, live log feed, error display
+- `surfaces/dashboard/src/lib/components/tabs/LogsTab.svelte` - Structured log filtering by level/category
+- `surfaces/dashboard/src/lib/api.ts` - Dashboard API client patterns
 
 ## Inference Latency Analysis
 
@@ -1641,7 +1641,7 @@ explicit: what each agent does, what it delivers, and what "done" means.
 
 ### Agent 2: Rust Autograd + Model Core (opus, foreground)
 **Scope**: Phases 1 — the Rust crate scaffold and autograd engine.
-- Port microgpt's Tape/Op/Param/Adam to `packages/predictor/src/autograd.rs`
+- Port microgpt's Tape/Op/Param/Adam to `platform/predictor/src/autograd.rs`
 - Add new ops: Sigmoid, MeanPool, FeatureConcat, ListwiseLoss (KL div)
 - Implement CrossAttentionScorer in `model.rs`
 - Implement HashTrick tokenizer in `tokenizer.rs`
@@ -1737,7 +1737,7 @@ Uses `/api/predictor/*`, `/api/diagnostics/predictor`,
 
 ### Agent 6: Documentation (markdown-docs agent, background)
 **Scope**: Phase 7 — comprehensive documentation.
-- `packages/predictor/README.md`: build, run, architecture
+- `platform/predictor/README.md`: build, run, architecture
 - `docs/predictor.md`: user-facing guide
 - `docs/predictor-architecture.md`: technical deep dive with diagrams
 - Update `CLAUDE.md` with predictor sections
@@ -1820,7 +1820,7 @@ after everything. Agent 6 runs in background after Agent 4.
 
 ### What was implemented
 
-**Migration 015-session-memories** (`packages/core/src/migrations/015-session-memories.ts`)
+**Migration 015-session-memories** (`platform/core/src/migrations/015-session-memories.ts`)
 - `session_memories` table with full schema as planned (id, session_key,
   memory_id, source, effective_score, predictor_score, final_score, rank,
   was_injected, relevance_score, fts_hit_count, agent_preference, created_at)
@@ -1829,7 +1829,7 @@ after everything. Agent 6 runs in background after Agent 4.
 - Two new columns on session_scores: `confidence REAL`, `continuity_reasoning TEXT`
 - Registered as version 15 in migration index
 
-**Session memory recording** (`packages/daemon/src/session-memories.ts`)
+**Session memory recording** (`platform/daemon/src/session-memories.ts`)
 - `recordSessionCandidates()`: batch INSERT OR IGNORE in a single write transaction
 - `trackFtsHits()`: UPDATE existing + INSERT OR IGNORE for new fts_only rows
 - Both bail early on missing sessionKey or empty inputs
@@ -1846,7 +1846,7 @@ after everything. Agent 6 runs in background after Agent 4.
 - Predicted context memories that aren't in the main candidate pool are
   included in recording with source="effective"
 
-**Enhanced continuity scoring** (`packages/daemon/src/pipeline/summary-worker.ts`)
+**Enhanced continuity scoring** (`platform/daemon/src/pipeline/summary-worker.ts`)
 - `loadInjectedMemories()`: joins session_memories + memories to get injected
   memory content previews. Falls back to empty array for old sessions.
 - `writePerMemoryRelevance()`: maps 8-char ID prefixes from LLM response
@@ -1906,14 +1906,14 @@ LogCategory union in logger.ts.
 
 ### What was implemented
 
-**New Rust crate scaffold** (`packages/predictor/`)
+**New Rust crate scaffold** (`platform/predictor/`)
 - Added `Cargo.toml`, `Cargo.lock`, and module structure:
   `autograd.rs`, `model.rs`, `tokenizer.rs`, `training.rs`, `data.rs`,
   `protocol.rs`, `checkpoint.rs`, `main.rs`, `lib.rs`
 - Stdin/stdout JSON-RPC service with `score`, `train`, and `status`
   methods in `main.rs`
 
-**Autograd core** (`packages/predictor/src/autograd.rs`)
+**Autograd core** (`platform/predictor/src/autograd.rs`)
 - Implemented operation-level tape with parameter storage and gradients
 - Added ops required by Phase 1 plan:
   - `Sigmoid`
@@ -1926,7 +1926,7 @@ LogCategory union in logger.ts.
 - Backward pass now consumes op tape via `std::mem::take` and iterates
   by ownership (no per-iteration `Op` clone in reverse loop)
 
-**Model core** (`packages/predictor/src/model.rs`)
+**Model core** (`platform/predictor/src/model.rs`)
 - Implemented cross-attention style scorer with:
   - pre-embedded path (`native_dim -> internal_dim` downprojection)
   - attention projections (`Q`, `K`, `V`)
@@ -1938,7 +1938,7 @@ LogCategory union in logger.ts.
 - Added project embedding table (`project_slots x internal_dim`) and
   included project signal in gate input
 
-**Training execution** (`packages/predictor/src/training.rs`, `main.rs`)
+**Training execution** (`platform/predictor/src/training.rs`, `main.rs`)
 - Implemented Adam optimizer
 - Implemented `train_batch()` with listwise loss and model update
 - JSON-RPC `train` now performs real gradient updates (no longer stub),

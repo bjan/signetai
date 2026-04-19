@@ -49,38 +49,52 @@ Common local loops:
 bun run build
 
 # Daemon local dev
-cd packages/daemon && bun run dev
+cd platform/daemon && bun run dev
 
 # Website local dev
-cd web && bun run dev
+cd web/marketing && bun run dev
 ```
 
 Project Structure
 ---
 
-This is a Bun workspace monorepo. Packages live under `packages/`:
+This is a Bun workspace monorepo organized by intent:
 
 ```
-packages/
-├── core/                  # @signet/core — types, database, search, identity
-├── cli/                   # @signet/cli — setup wizard, TUI, daemon management
-├── daemon/                # @signet/daemon — HTTP API, file watcher, pipeline
-├── sdk/                   # @signet/sdk — integration SDK for third-party apps
-├── connector-base/        # @signet/connector-base — shared connector primitives
-├── connector-claude-code/ # @signet/connector-claude-code — Claude Code integration
-├── connector-opencode/    # @signet/connector-opencode — OpenCode integration
-├── connector-openclaw/    # @signet/connector-openclaw — OpenClaw integration
-├── connector-codex/       # @signet/connector-codex — Codex wrapper + session hooks
-├── opencode-plugin/       # @signet/opencode-plugin — OpenCode runtime plugin (bundled)
-├── adapters/openclaw/     # @signetai/signet-memory-openclaw — OpenClaw runtime adapter
-├── native/                # @signet/native — native embedding accelerators (Rust)
-├── desktop/               # @signet/desktop — Electron desktop application
-├── extension/             # @signet/extension — browser extension (popup, highlight-to-remember)
-├── signetai/              # signetai — meta-package bundling CLI + daemon
-└── web/                   # @signet/web — marketing site (Cloudflare Pages)
+platform/               # engine/runtime: core, daemon, daemon-rs, predictor, native
+surfaces/               # human-facing surfaces: CLI, dashboard, desktop, tray, browser extension
+integrations/           # external harness integrations grouped by tool
+libs/                   # reusable developer libraries: SDK, connector-base
+plugins/                # Signet-native plugins loaded by Signet
+dist/                   # assembled shipping artifacts, including signetai
+runtimes/               # separate runtime ecosystems, currently Forge
+web/                    # marketing site and Cloudflare workers
+memorybench/            # benchmark harness, datasets, reports, and local UI
 ```
 
-> Note: `predictor/` is a Rust sidecar (predictive memory scorer, WIP) at the monorepo root.
+Key packages:
+
+```
+platform/core/                         # @signet/core — types, database, search, identity
+platform/daemon/                       # @signet/daemon — HTTP API, file watcher, pipeline
+platform/daemon-rs/                    # Rust shadow daemon/parity runtime
+platform/predictor/                    # Rust predictive memory scorer sidecar
+surfaces/cli/                          # @signet/cli — setup wizard and daemon management
+surfaces/dashboard/                    # signet-dashboard — Svelte dashboard
+surfaces/desktop/                      # @signet/desktop — Electron desktop application
+surfaces/browser-extension/            # @signet/extension — browser extension
+libs/sdk/                              # @signet/sdk — integration SDK for third-party apps
+libs/connector-base/                   # @signet/connector-base — shared connector primitives
+integrations/<tool>/connector/         # install-time harness connectors
+integrations/<tool>/plugin/            # plugins loaded by external tools
+integrations/openclaw/memory-adapter/  # @signetai/signet-memory-openclaw
+plugins/core/secrets/                  # core Signet-native secrets plugin
+dist/signetai/                         # signetai — installable distribution package
+runtimes/forge/                        # Forge runtime ecosystem
+web/marketing/                         # @signet/web — marketing site (Cloudflare Pages)
+web/workers/reviews/                   # Cloudflare Worker for review automation
+memorybench/                           # benchmark harness and benchmark UI
+```
 
 Key Modules
 ---
@@ -88,28 +102,28 @@ Key Modules
 These are the areas most likely to be touched in non-trivial contributions.
 Familiarize yourself with them before diving in.
 
-**`packages/daemon/src/pipeline/`** is the LLM-based memory extraction
+**`platform/daemon/src/pipeline/`** is the LLM-based memory extraction
 pipeline. It runs in stages: extraction (`extraction.ts`, uses Ollama by
 default with `qwen3:4b`) → decision (`decision.ts`, write/update/skip) →
 optional graph operations → retention decay. The entrypoint is `worker.ts`;
 `provider.ts` wires up the stages. Config modes like `shadowMode` and
 `mutationsFrozen` are respected here. For live prompt checks against local
-Ollama models, see `packages/daemon/src/pipeline/README.md`.
+Ollama models, see `platform/daemon/src/pipeline/README.md`.
 
-**`packages/daemon/src/auth/`** handles token-based auth for the
+**`platform/daemon/src/auth/`** handles token-based auth for the
 HTTP API. Key files: `middleware.ts` (Hono middleware), `tokens.ts` (token
 lifecycle), `policy.ts` (access rules), `rate-limiter.ts`.
 
-**`packages/daemon/src/connectors/`** is the connector framework used by
+**`platform/daemon/src/connectors/`** is the connector framework used by
 the daemon. `registry.ts` manages connector registration; `filesystem.ts`
 handles connector-driven file operations.
 
-**`packages/daemon/src/analytics.ts`**, **`timeline.ts`**, and
+**`platform/daemon/src/analytics.ts`**, **`timeline.ts`**, and
 **`diagnostics.ts`** provide observability. Analytics tracks pipeline
 events; timeline records structured agent history; diagnostics exposes
 health and repair tooling. Tests live alongside each file.
 
-**`packages/core/src/database.ts`** owns the SQLite schema and migrations.
+**`platform/core/src/database.ts`** owns the SQLite schema and migrations.
 Any schema change must go through here. The wrapper supports both
 `bun:sqlite` (under Bun) and `better-sqlite3` (under Node.js) via runtime
 detection.
@@ -121,10 +135,10 @@ Make changes, rebuild the affected package, then test:
 
 ```bash
 # Rebuild a single package
-cd packages/daemon && bun run build
+cd platform/daemon && bun run build
 
 # Run a single test file
-bun test packages/daemon/src/pipeline/worker.test.ts
+bun test platform/daemon/src/pipeline/worker.test.ts
 
 # Full rebuild
 bun run build
@@ -133,7 +147,7 @@ bun run build
 For daemon changes specifically:
 
 ```bash
-cd packages/daemon
+cd platform/daemon
 bun run dev           # watch mode
 bun run start         # run directly without watch
 ```
@@ -276,9 +290,9 @@ or the push only changes non-code files (markdown, images, etc.).
 ### Automated steps
 
 1. **Build** — `bun install && bun run build` on all packages
-2. **Version bump** — Reads the current version from `packages/signetai/package.json`,
+2. **Version bump** — Reads the current version from `dist/signetai/package.json`,
    compares with remote, computes bump level from commit messages, and increments
-   accordingly. All `package.json` files (except `packages/cli/dashboard/package.json`)
+   accordingly. All `package.json` files (except `surfaces/dashboard/package.json`)
    are updated to the new version.
 3. **Changelog** — `bun scripts/changelog.ts --bump-only` computes the bump level from
    conventional commit subjects since the last tag, then
@@ -311,9 +325,9 @@ All scripts live in `scripts/` and are written in TypeScript (run via
 |--------|-------------|
 | `changelog.ts` | Computes the semver bump from conventional commits since the last git tag, can prepend a CHANGELOG.md entry for an explicit release version, and can rebuild the full changelog from git tags. Generated entries include a short release summary, optional tag range, and grouped sections (`feat`, `fix`, `perf`, `refactor`, `docs`). Writes a `.bump-level` file used by CI to determine the semver bump. Called automatically during the release workflow. |
 | `bump-level.ts` | Exports `computeBumpLevel()` — scans commit subjects for `BREAKING CHANGE:` (→ major), `feat:` (→ minor), or defaults to patch. Used by `changelog.ts`. |
-| `version-sync.ts` | Aligns the `version` field in all workspace `package.json` files to match the reference version in `packages/signetai/package.json`. Run manually with `bun run version:sync` or pass `--to <version>` to set an explicit version. |
+| `version-sync.ts` | Aligns the `version` field in all workspace `package.json` files to match the reference version in `dist/signetai/package.json`. Run manually with `bun run version:sync` or pass `--to <version>` to set an explicit version. |
 | `extract-changelog-section.ts` | Extracts a single version's section from CHANGELOG.md. Used by CI to populate GitHub release notes. |
-| `check-install-guide.ts` | Validates that the install guide (`web/public/skill.md`), README, and landing page components contain the expected install prompt and don't reference deprecated commands. |
+| `check-install-guide.ts` | Validates that the install guide (`web/marketing/public/skill.md`), README, and landing page components contain the expected install prompt and don't reference deprecated commands. |
 | `post-push-sync.sh` | Watches for the release workflow to complete after a push to `main`, then pulls the resulting release commit locally. Useful for staying in sync after pushing. |
 
 Identity Files
@@ -332,7 +346,7 @@ Signet recognizes these standard identity files at `$SIGNET_WORKSPACE/`:
 | TOOLS.md | no | Tool preferences and notes |
 | BOOTSTRAP.md | no | Setup ritual (typically deleted after first run) |
 
-The `detectExistingSetup()` function in `packages/core/src/identity.ts`
+The `detectExistingSetup()` function in `platform/core/src/identity.ts`
 detects existing setups from OpenClaw, Claude Code, and OpenCode.
 
 Reference Repos
@@ -365,27 +379,19 @@ bun scripts/check-install-guide.ts
 Test Discovery
 ---
 
-Test discovery is configured in `bunfig.toml`:
-
-```toml
-[test]
-root = "packages"
-```
-
-This scopes `bun test` to only discover test files under `packages/`.
-The `references/` directory (which contains third-party codebases like
-OpenClaw for local development reference) is explicitly excluded to
-prevent foreign test files from running.
+Test discovery runs through workspace package scripts. Prefer targeted
+package tests or `bun run --filter ... test` over bare root `bun test`, since
+`references/` contains third-party codebases with their own tests.
 
 To run tests for a specific package:
 
 ```bash
 # Run all tests in a package
-bun test packages/daemon/
+bun test platform/daemon/
 
 # Run a single test file
-bun test packages/daemon/src/pipeline/worker.test.ts
+bun test platform/daemon/src/pipeline/worker.test.ts
 
-# Run all tests across all packages
-bun test
+# Run all tests across all workspaces
+bun run test
 ```

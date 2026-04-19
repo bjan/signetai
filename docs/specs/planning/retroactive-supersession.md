@@ -166,14 +166,14 @@ New fields under `PipelineStructuralConfig` (nested under
 
 | File | Change |
 |---|---|
-| `packages/daemon/src/pipeline/supersession.ts` | Core supersession logic: heuristic detection, inline hook, sweep scan |
-| `packages/daemon/src/pipeline/supersession.test.ts` | 13 tests, all passing |
-| `packages/daemon/src/pipeline/antonyms.ts` | Shared antonym pairs, extracted from worker.ts |
-| `packages/daemon/src/pipeline/structural-classify.ts` | Inline pass hook in `processClassifyBatch()` post-transaction |
-| `packages/daemon/src/pipeline/maintenance-worker.ts` | Sweep integration alongside `propagateMemoryStatus()` |
-| `packages/core/src/types.ts` | Config type additions for `PipelineStructuralConfig` |
-| `packages/daemon/src/memory-config.ts` | Config defaults and parsing for new fields |
-| `packages/daemon/src/pipeline/worker.ts` | Imports antonym pairs from shared `antonyms.ts` instead of inline |
+| `platform/daemon/src/pipeline/supersession.ts` | Core supersession logic: heuristic detection, inline hook, sweep scan |
+| `platform/daemon/src/pipeline/supersession.test.ts` | 13 tests, all passing |
+| `platform/daemon/src/pipeline/antonyms.ts` | Shared antonym pairs, extracted from worker.ts |
+| `platform/daemon/src/pipeline/structural-classify.ts` | Inline pass hook in `processClassifyBatch()` post-transaction |
+| `platform/daemon/src/pipeline/maintenance-worker.ts` | Sweep integration alongside `propagateMemoryStatus()` |
+| `platform/core/src/types.ts` | Config type additions for `PipelineStructuralConfig` |
+| `platform/daemon/src/memory-config.ts` | Config defaults and parsing for new fields |
+| `platform/daemon/src/pipeline/worker.ts` | Imports antonym pairs from shared `antonyms.ts` instead of inline |
 
 
 ## 7) External Research Informing This Design

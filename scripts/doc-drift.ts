@@ -102,9 +102,9 @@ interface RouteEntry {
 
 function extractRoutesFromSource(): RouteEntry[] {
 	const files = [
-		"packages/daemon/src/daemon.ts",
-		...listTsFilesRecursive("packages/daemon/src/routes"),
-		"packages/daemon/src/mcp/route.ts",
+		"platform/daemon/src/daemon.ts",
+		...listTsFilesRecursive("platform/daemon/src/routes"),
+		"platform/daemon/src/mcp/route.ts",
 	];
 
 	// NOTE: Only matches routes registered directly on `app`. Sub-router patterns
@@ -230,7 +230,7 @@ interface MigrationDrift {
 }
 
 function checkMigrationDrift(claudeMd: string): MigrationDrift {
-	const migFiles = globDir("packages/core/src/migrations", /^\d{3}.*\.ts$/)
+	const migFiles = globDir("platform/core/src/migrations", /^\d{3}.*\.ts$/)
 		.filter((f) => !f.includes(".test.") && f !== "index.ts")
 		.sort();
 
@@ -307,7 +307,7 @@ interface PackageInfo {
 }
 
 function getActualPackages(): PackageInfo[] {
-	const packagesDir = join(ROOT, "packages");
+	const workspaceRoots = ["platform", "surfaces", "integrations", "libs", "dist", "web"];
 	const packages: PackageInfo[] = [];
 	const visitedDirs = new Set<string>();
 
@@ -328,7 +328,7 @@ function getActualPackages(): PackageInfo[] {
 					// Skip private packages (workspace roots etc.) — they are
 					// intentionally omitted from documentation tables.
 					if (pkg.name && !pkg.private) {
-						packages.push({ name: pkg.name, dir: `packages/${rel}` });
+						packages.push({ name: pkg.name, dir: rel });
 					}
 				} catch {
 					// Skip malformed package manifests.
@@ -342,10 +342,12 @@ function getActualPackages(): PackageInfo[] {
 		}
 	}
 
-	scan(packagesDir, "");
+	for (const rootName of workspaceRoots) {
+		scan(join(ROOT, rootName), rootName);
+	}
 
 	// Check special top-level locations
-	for (const extra of ["web", "predictor"]) {
+	for (const extra of []) {
 		const pkgJson = join(ROOT, extra, "package.json");
 		if (existsSync(pkgJson)) {
 			try {
