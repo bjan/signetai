@@ -61,6 +61,7 @@ const KNOWN_MODELS: Record<string, ModelRegistryEntry[]> = {
 	],
 	codex: [
 		{ id: "gpt-5-codex-mini", provider: "codex", label: "GPT Mini", tier: "low", deprecated: false },
+		{ id: "gpt-5.4-mini", provider: "codex", label: "GPT 5.4 Mini", tier: "low", deprecated: false },
 		{ id: "gpt-5.4", provider: "codex", label: "GPT 5.4", tier: "high", deprecated: false },
 		{ id: "gpt-5.3-codex", provider: "codex", label: "GPT 5.3 Codex", tier: "high", deprecated: false },
 		{ id: "gpt-5.3-codex-spark", provider: "codex", label: "GPT 5.3 Codex Spark", tier: "high", deprecated: false },

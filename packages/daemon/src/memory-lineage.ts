@@ -1450,9 +1450,6 @@ export function renderMemoryProjection(agentId = "default"): {
 			: ["- no thread heads yet."];
 	const openLines =
 		threadHeads.length > 0 ? threadHeads.slice(0, 8).map((row) => `- ${row.label}`) : ["- no open thread heads yet."];
-	const durableLines =
-		memories.length > 0 ? memories.slice(0, 8).map((row) => `- ${row.content}`) : ["- no durable notes yet."];
-
 	const parts = [
 		"# Working Memory Summary",
 		renderSection({
@@ -1466,10 +1463,6 @@ export function renderMemoryProjection(agentId = "default"): {
 		renderSection({
 			heading: "## Open Threads",
 			lines: openLines,
-		}),
-		renderSection({
-			heading: "## Durable Notes & Constraints",
-			lines: durableLines,
 		}),
 	];
 	const ledgerBlock = renderLedgerSection(ledger, parts);

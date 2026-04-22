@@ -234,24 +234,6 @@ Memory Check Loop:
 - pitfalls: do not treat a missing automatic memory match as proof no prior context exists; do not trust memory blindly when repo, files, or live system state can verify it; do not spam broad recalls for trivial self-contained prompts
 - verification: before acting, know what context you found, what remains unknown, and whether it is safe to proceed
 
-Memory tools:
-- mcp__signet__memory_search: search stored memories by keyword or meaning
-- mcp__signet__lcm_expand: expand a session summary into its full lineage and linked memories
-- mcp__signet__knowledge_expand: expand a known entity into its aspects, attributes, and dependencies
-- mcp__signet__knowledge_expand_session: find sessions linked to a known entity
-- mcp__signet__memory_store: save something to memory explicitly
-
-Cross-session history:
-- linked summary and transcript artifacts in your Signet workspace are inspectable across sessions
-- use transcript and summary artifacts when you need deeper history than MEMORY.md or recall snippets provide
-
-Identity files in your Signet workspace:
-- AGENTS.md: how you operate (maintain this)
-- SOUL.md: personality and values (maintain this)
-- IDENTITY.md: who you are (maintain this)
-- USER.md: who the user is (maintain this)
-- MEMORY.md: auto-generated working memory summary (system-managed)
-
 Secrets:
 - mcp__signet__secret_list
 - mcp__signet__secret_exec
@@ -280,6 +262,8 @@ export interface HooksConfig {
 		recallLimit?: number;
 		candidatePoolLimit?: number;
 		includeIdentity?: boolean;
+		includePeerSessions?: boolean;
+		includeUpdateStatus?: boolean;
 		includeRecentContext?: boolean;
 		recencyBias?: number;
 		query?: string;
@@ -649,16 +633,12 @@ function buildNoStrongMemoryMatchInject(metadataHeader: string, pluginContext = 
 	const parts = [
 		metadataHeader.trimEnd(),
 		"",
-		"## Memory Check",
-		"",
-		"No strong automatic memory match was injected for this turn. If the request depends on prior context, preferences, project history, or unresolved work, run 1-3 targeted Signet recalls before executing commands, editing files, or making decisions.",
-		"",
+		"[no automatic memory match — recall manually if needed]",
 	];
 	if (pluginContext.trim().length > 0) {
-		parts.push(pluginContext.trimEnd());
 		parts.push("");
+		parts.push(pluginContext.trimEnd());
 	}
-	parts.push("If you learn something durable, save it with /remember or memory_store.");
 	return `${parts.join("\n").trimEnd()}\n`;
 }
 
@@ -1342,6 +1322,8 @@ export async function handleSessionStart(req: SessionStartRequest): Promise<Sess
 	const start = Date.now();
 	const config = loadHooksConfig().sessionStart || {};
 	const includeIdentity = config.includeIdentity !== false;
+	const includePeerSessions = config.includePeerSessions !== false;
+	const includeUpdateStatus = config.includeUpdateStatus !== false;
 
 	logger.info("hooks", "Session start hook", {
 		harness: req.harness,
@@ -1797,7 +1779,7 @@ export async function handleSessionStart(req: SessionStartRequest): Promise<Sess
 	});
 	injectParts.push(`\n# Current Date & Time\n${now} (${tz})\n`);
 
-	if (req.project) {
+	if (includePeerSessions && req.project) {
 		const peerSessions = listAgentPresence({
 			agentId: resolveAgentId(req),
 			sessionKey: req.sessionKey,
@@ -1856,13 +1838,19 @@ export async function handleSessionStart(req: SessionStartRequest): Promise<Sess
 	}
 
 	if (memories.length > 0) {
-		injectParts.push(
-			`\n## Relevant Memories (auto-loaded | scored by importance x recency | ${memories.length} results)\n`,
-		);
-		for (const mem of memories) {
-			const tagStr = mem.tags ? ` [${mem.tags}]` : "";
-			const dateStr = formatMemoryDate(mem.created_at);
-			injectParts.push(`- ${mem.content}${tagStr} (${dateStr})`);
+		// Deduplicate: skip memories whose content already appears in MEMORY.md
+		const novelMemories = memoryMdContent
+			? memories.filter((mem) => !memoryMdContent.includes(mem.content.slice(0, 80)))
+			: memories;
+		if (novelMemories.length > 0) {
+			injectParts.push(
+				`\n## Relevant Memories (auto-loaded | scored by importance x recency | ${novelMemories.length} results)\n`,
+			);
+			for (const mem of novelMemories) {
+				const tagStr = mem.tags ? ` [${mem.tags}]` : "";
+				const dateStr = formatMemoryDate(mem.created_at);
+				injectParts.push(`- ${mem.content}${tagStr} (${dateStr})`);
+			}
 		}
 	}
 
@@ -1906,10 +1894,12 @@ export async function handleSessionStart(req: SessionStartRequest): Promise<Sess
 		}
 	}
 
-	const updateStatus = getUpdateSummary();
-	if (updateStatus) {
-		injectParts.push("\n## Signet Status\n");
-		injectParts.push(updateStatus);
+	if (includeUpdateStatus) {
+		const updateStatus = getUpdateSummary();
+		if (updateStatus) {
+			injectParts.push("\n## Signet Status\n");
+			injectParts.push(updateStatus);
+		}
 	}
 
 	const sessionPluginContext = buildPluginPromptContributionSection("session-start", logger);
