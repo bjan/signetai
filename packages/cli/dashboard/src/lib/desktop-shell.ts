@@ -40,8 +40,13 @@ export function getDesktopShell(): SignetDesktopBridge | null {
 	return window.signetDesktop ?? null;
 }
 
+export function isDesktopAppProtocol(): boolean {
+	if (typeof window === "undefined") return false;
+	return window.location.protocol === "app:";
+}
+
 export function isDesktopShell(): boolean {
-	return getDesktopShell() !== null;
+	return getDesktopShell() !== null || isDesktopAppProtocol();
 }
 
 export function desktopApiBase(): string {

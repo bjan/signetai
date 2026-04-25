@@ -152,7 +152,7 @@ function activateItem(item: NavItem): void {
 							<img
 								src="/logo-dark.png"
 								alt=""
-								class="sidebar-signet-icon h-5 w-5 shrink-0"
+								class="sidebar-signet-icon h-4 w-auto min-w-[14px] shrink-0 object-contain"
 								aria-hidden="true"
 							/>
 							<div class="flex flex-col gap-0.5 leading-none overflow-hidden
@@ -394,12 +394,12 @@ function activateItem(item: NavItem): void {
 
 	:global([data-sidebar="menu-button"]):hover .sidebar-signet-icon {
 		filter: drop-shadow(0 0 6px var(--sig-highlight)) drop-shadow(0 0 12px var(--sig-highlight));
-		transform: scale(1.15);
+		transform: scale(1.08);
 	}
 
 	:global([data-theme="light"]) :global([data-sidebar="menu-button"]):hover .sidebar-signet-icon {
 		filter: invert(1) drop-shadow(0 0 6px var(--sig-highlight)) drop-shadow(0 0 12px var(--sig-highlight));
-		transform: scale(1.15);
+		transform: scale(1.08);
 	}
 
 	@media (prefers-reduced-motion: reduce) {

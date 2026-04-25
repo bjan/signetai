@@ -8,6 +8,7 @@ import {
 	readFileSync,
 	readdirSync,
 	readlinkSync,
+	renameSync,
 	rmSync,
 	statSync,
 	writeFileSync,
@@ -159,8 +160,7 @@ export function installLinuxDesktopApp(
 	mkdirSync(iconsDir, { recursive: true });
 
 	const appImage = join(appDir, "Signet.AppImage");
-	copyFileSync(source, appImage);
-	chmodSync(appImage, 0o755);
+	installManagedAppImage(source, appImage);
 
 	const icon = join(iconsDir, "signet.png");
 	copyFileSync(join(repo, "packages", "desktop", "icons", "icon.png"), icon);
@@ -172,6 +172,21 @@ export function installLinuxDesktopApp(
 	writeFileSync(desktopEntry, desktopEntryContent(binary, icon));
 
 	return { repo, releaseDir, appImage, binary, desktopEntry, icon, workspace };
+}
+
+function installManagedAppImage(source: string, target: string): void {
+	const dir = dirname(target);
+	const tmp = join(dir, `.Signet.AppImage.${process.pid}.${Date.now()}.tmp`);
+	try {
+		rmSync(tmp, { force: true });
+		copyFileSync(source, tmp);
+		chmodSync(tmp, 0o755);
+		renameSync(tmp, target);
+		chmodSync(target, 0o755);
+	} catch (err) {
+		rmSync(tmp, { force: true });
+		throw err;
+	}
 }
 
 function ancestorCandidates(path: string): string[] {

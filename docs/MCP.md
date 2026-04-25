@@ -27,6 +27,21 @@ MCP complements Signet's existing hook-based integration:
 Both systems can be active simultaneously — they serve different purposes and
 don't conflict.
 
+Remote MCP endpoints expose tools only. If a harness also needs automatic
+identity, session-start context, prompt-time recall, or session-end
+extraction, install that harness's Signet hooks as well. For Codex, run the
+connector with `SIGNET_DAEMON_URL` set to the remote daemon URL so the
+generated hooks and `[mcp_servers.signet]` block target the same instance:
+
+```bash
+SIGNET_DAEMON_URL=http://192.168.0.60:3850 signet setup --harness codex
+```
+
+`SIGNET_DAEMON_URL` must point at the daemon origin only. Signet rejects
+paths, query strings, fragments, credentials, and non-HTTP protocols so a
+remote MCP registration cannot silently fall back to localhost or bake
+unsafe shell syntax into generated lifecycle hooks.
+
 
 When to Use MCP vs Hooks
 ------------------------
@@ -439,14 +454,14 @@ the main Signet memory architecture.
 
 | Tool | Purpose |
 |------|---------|
-| `code_search` | Search the active indexed project for symbols and implementation context |
-| `code_context` | Read source and structural neighborhood for a symbol |
-| `code_blast` | Analyze forward/backward impact radius for a symbol |
-| `code_status` | Show GraphIQ status for the active project |
-| `code_doctor` | Diagnose GraphIQ artifact health |
-| `code_constants` | Find shared numeric and string constants |
+| `signet_code_search` | Search the active indexed project for symbols and implementation context |
+| `signet_code_context` | Read source and structural neighborhood for a symbol |
+| `signet_code_blast` | Analyze forward/backward impact radius for a symbol |
+| `signet_code_status` | Show GraphIQ status for the active project |
+| `signet_code_doctor` | Diagnose GraphIQ artifact health |
+| `signet_code_constants` | Find shared numeric and string constants |
 
-`code_search` parameters:
+`signet_code_search` parameters:
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
@@ -455,7 +470,7 @@ the main Signet memory architecture.
 | `file` | string | no | Optional file path filter |
 | `debug` | boolean | no | Include GraphIQ score/debug details |
 
-`code_context` and `code_blast` both take a `symbol` string. `code_blast` also
+`signet_code_context` and `signet_code_blast` both take a `symbol` string. `signet_code_blast` also
 accepts optional `depth` and `direction` (`forward`, `backward`, or `both`).
 
 

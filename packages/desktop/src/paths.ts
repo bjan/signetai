@@ -42,5 +42,5 @@ export function iconPath(name: string): string {
 }
 
 export function preloadPath(): string {
-	return join(distDir, "preload.js");
+	return join(distDir, "preload.cjs");
 }
