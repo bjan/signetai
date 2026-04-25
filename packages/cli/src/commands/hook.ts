@@ -208,6 +208,7 @@ export function registerHookCommands(program: Command, deps: HookDeps): void {
 		.description("Get relevant memories for a user prompt")
 		.requiredOption("-H, --harness <harness>", "Harness name")
 		.option("--project <project>", "Project path")
+		.option("--agent-id <id>", "Agent ID")
 		.option("--json", "Output as JSON")
 		.option("--codex-json", "Output Codex hook JSON")
 		.action(async (options) => {
@@ -220,7 +221,10 @@ export function registerHookCommands(program: Command, deps: HookDeps): void {
 				{
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(buildUserPromptSubmitBody(input, options.harness, options.project || stdinProject)),
+					body: JSON.stringify({
+						...buildUserPromptSubmitBody(input, options.harness, options.project || stdinProject),
+						...(options.agentId ? { agentId: options.agentId } : {}),
+					}),
 					timeout: PROMPT_SUBMIT_TIMEOUT_MS,
 				},
 			);
@@ -241,12 +245,16 @@ export function registerHookCommands(program: Command, deps: HookDeps): void {
 		.command("session-end")
 		.description("Extract and save memories from session transcript")
 		.requiredOption("-H, --harness <harness>", "Harness name")
+		.option("--agent-id <id>", "Agent ID")
 		.action(async (options) => {
 			const body = (await readJson()) ?? {};
 			const data = await fetchHookData<{ memoriesSaved?: number }>(deps, "session-end", "/api/hooks/session-end", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(buildSessionEndBody(body, options.harness)),
+				body: JSON.stringify({
+					...buildSessionEndBody(body, options.harness),
+					...(options.agentId ? { agentId: options.agentId } : {}),
+				}),
 				timeout: 60_000,
 			});
 			if (!data) {
@@ -262,6 +270,7 @@ export function registerHookCommands(program: Command, deps: HookDeps): void {
 		.description("Get summary instructions before session compaction")
 		.requiredOption("-H, --harness <harness>", "Harness name")
 		.option("--project <project>", "Project path")
+		.option("--agent-id <id>", "Agent ID")
 		.option("--message-count <count>", "Number of messages in session", Number.parseInt)
 		.option("--json", "Output as JSON")
 		.action(async (options) => {
@@ -280,6 +289,7 @@ export function registerHookCommands(program: Command, deps: HookDeps): void {
 						sessionKey,
 						sessionContext,
 						runtimePath: LEGACY_RUNTIME_PATH,
+						...(options.agentId ? { agentId: options.agentId } : {}),
 					}),
 				},
 			);
