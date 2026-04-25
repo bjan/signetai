@@ -1123,7 +1123,7 @@ function readTopMemories(agentId: string): ReadonlyArray<{
 					 FROM memories m
 					 WHERE m.is_deleted = 0${clause.sql}
 					 ORDER BY m.pinned DESC, m.importance DESC, m.created_at DESC
-					 LIMIT 8`,
+					 LIMIT 4`,
 					)
 					.all(...clause.args) as Array<{
 					content: string;
@@ -1496,35 +1496,22 @@ export function renderMemoryProjection(agentId = "default"): {
 					"",
 				])
 			: ["- no thread heads yet."];
-	const openLines =
-		threadHeads.length > 0 ? threadHeads.slice(0, 8).map((row) => `- ${row.label}`) : ["- no open thread heads yet."];
 	const parts = [
 		"# Working Memory Summary",
 		renderSection({
 			heading: "## Global Head (Tier 1)",
 			lines: globalLines,
 		}),
-		renderSection({
-			heading: "## Thread Heads (Tier 2)",
-			lines: threadLines,
-		}),
-		renderSection({
-			heading: "## Open Threads",
-			lines: openLines,
-		}),
 	];
+	// Open Threads, Session Ledger, and Temporal Index are daemon-internal
+	// metadata that wastes LLM context — omitted from projection.
 	const ledgerBlock = renderLedgerSection(ledger, parts);
 	syncManifestRefs(ledgerBlock.refs, changedManifests, agentId);
-	parts.push(ledgerBlock.block);
-	const trimmedIndex = renderIndexSection(indexBlock, parts);
-	if (trimmedIndex.length > 0) {
-		parts.push(trimmedIndex);
-	}
 
 	return {
 		content: joinParts(parts),
-		fileCount: memories.length + threadHeads.length + ledgerBlock.count + nodes.length,
-		indexBlock: trimmedIndex,
+		fileCount: memories.length,
+		indexBlock: "",
 	};
 }
 
