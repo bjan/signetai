@@ -687,7 +687,8 @@ function createSterileCodexEnv(baseEnv: Record<string, string | undefined>): {
 	readonly env: Record<string, string | undefined>;
 	cleanup(): void;
 } {
-	const root = join(tmpdir(), "signet-codex-home");
+	const cacheBase = process.env.XDG_CACHE_HOME ?? join(homedir(), ".cache");
+	const root = join(cacheBase, "signet-codex-home");
 	mkdirSync(root, { recursive: true });
 	const home = mkdtempSync(join(root, "home-"));
 	const codexHome = join(home, ".codex");
@@ -2082,8 +2083,6 @@ export function createCodexProvider(config?: Partial<CodexProviderConfig>): LlmP
 					"--ephemeral",
 					"--sandbox",
 					"read-only",
-					"-c",
-					"mcp_servers.signet.enabled=false",
 					"-C",
 					cfg.workingDirectory,
 					"--model",
